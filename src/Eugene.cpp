@@ -4,7 +4,7 @@
 #include "plugin.hpp"
 
 const auto max_rhythm_length = 32;
-static std::bitset<max_rhythm_length> euclidianRhythm(unsigned int number_of_hits, unsigned int length_of_sequence)
+static std::bitset<max_rhythm_length> euclideanRhythm(unsigned int number_of_hits, unsigned int length_of_sequence)
 {
 	assert(number_of_hits <= length_of_sequence);
 
@@ -239,8 +239,8 @@ struct RareBreeds_Orbits_Eugene : Module {
 		outputs[BEAT_OUTPUT].setVoltage(outputGenerator.process(args.sampleTime) ? 10.f : 0.f);
 	}
 
-	void updateEuclidianRhythm(unsigned int hits, unsigned int length, unsigned int shift, bool invert) {
-		rhythm = euclidianRhythm(hits, length);
+	void updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift, bool invert) {
+		rhythm = euclideanRhythm(hits, length);
 
 		auto tmp = rhythm;
 		for(unsigned int i = 0; i < length; ++i)
@@ -303,7 +303,7 @@ struct RareBreeds_Orbits_Eugene : Module {
 		{
 			// This function can take a bit of time to run
 			// Calling it for every sample is way too expensive
-			updateEuclidianRhythm(hits, length, shift, invert);
+			updateEuclideanRhythm(hits, length, shift, invert);
 		}
 	}
 
