@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>Orbits VCV Rack Plugin</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Orbits Manual";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> Orbits VCV Rack Plugin</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Orbits Manual</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#eugene">Eugene</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#specifications">Specifications</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#panel">Panel</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#out-output">Out : Output</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#clk-input">Clk : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-input">Sync : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#len-input">Len : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hits-input">Hits : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#shift-input">Shift : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reverse-input">Reverse : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#invert-input">Invert : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cv-input">CV : Input</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">Orbits VCV Rack Plugin</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Orbits Manual</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="orbits-manual">Orbits Manual</h1>
+<h2 id="eugene">Eugene</h2>
+<p>Eugene is a <a href="https://en.wikipedia.org/wiki/Euclidean_rhythm">Euclidean Rhythm</a> Generator plugin for <a href="https://vcvrack.com/">VCV Rack</a>.</p>
+<h3 id="specifications">Specifications</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Euclidean_rhythm">Euclidean Rhythms</a> up to 32 beats long</li>
+<li>Rhythms are both reversible and invertible</li>
+<li>External clock input</li>
+<li>Sync input for syncing the start of the rhythm with another signal</li>
+<li>Shift knob for selecting the initial beat of the rhythm</li>
+<li>Lots of CV controllable parameters</li>
+</ul>
+<h3 id="panel">Panel</h3>
+<p><img alt="Controls" src="img/controls.png" /></p>
+<p><img alt="Display" src="img/display.png" /></p>
+<h3 id="out-output">Out : Output</h3>
+<p>A pulse is output when an on-beat (hit) is clocked. 0-10V Unipolar CV 1ms pulse duration.</p>
+<h3 id="clk-input">Clk : Input</h3>
+<p>On pulse advances the current beat. Schmitt triggered.</p>
+<h3 id="sync-input">Sync : Input</h3>
+<p>On pulse resets the current beat to the first beat of the rhythm. Schmitt triggered.</p>
+<h3 id="len-input">Len : Input</h3>
+<p>The number of beats in the rhythm. Integer range between 1 to 32 inclusive.</p>
+<h3 id="hits-input">Hits : Input</h3>
+<p>The number of on-beats in the rhythm, or the density. Integer range between 0 and the current Length inclusive.</p>
+<h3 id="shift-input">Shift : Input</h3>
+<p>Sets the beat in the rhythm to start from. A sync pulse will reset the current beat to this beat. Integer range between 0 and the current Length - 1 inclusive.</p>
+<h3 id="reverse-input">Reverse : Input</h3>
+<p>Sets the direction that the clock advances the beat. Clockwise when Off, Anticlockwise when On.</p>
+<h3 id="invert-input">Invert : Input</h3>
+<p>Inverts the Euclidean algorithm. When this switch is on on-beats become off-beats and off-beats become on-beats. Visually you can tell this is enabled by the on-beats being represented as empty circles rather than whole ones.</p>
+<p><img alt="Invert" src="img/invert.png" /></p>
+<h3 id="cv-input">CV : Input</h3>
+<p>All manually controlled inputs are also CV controllable.</p>
+<p>Len, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The CV is summed with the current knob setting.</p>
+<p>Reverse and Invert have Schmitt triggered CV inputs that override the switch settings.</p>
+<p><img alt="CV" src="img/cv.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.1.2
+Build Date UTC : 2020-12-22 23:04:39.247514+00:00
+-->
