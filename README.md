@@ -1,6 +1,9 @@
 # Orbits
 VCV Rack Plugin
 
+## Modules
+  * Eugene - Euclidean Rhythm Generator
+
 ## Building
 
     git clone https://github.com/RareBreeds/Orbits.git && cd Orbits && make
