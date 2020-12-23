@@ -2,7 +2,7 @@
 VCV Rack Plugin
 
 ## Modules
-  * Eugene - Euclidean Rhythm Generator
+  * [Eugene](https://rarebreeds.github.io/Orbits/#eugene) - Euclidean Rhythm Generator
 
 ## Building
 
