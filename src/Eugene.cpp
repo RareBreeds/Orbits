@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <string>
+#include <bitset>
 
 #include "plugin.hpp"
 
