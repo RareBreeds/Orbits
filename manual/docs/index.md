@@ -4,6 +4,10 @@
 
 Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) Generator plugin for [VCV Rack](https://vcvrack.com/).
 
+### Example Patch
+
+![Patch](img/patch.png)
+
 ### Specifications
  * [Euclidean Rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm) up to 32 beats long
  * Rhythms are both reversible and invertible
