@@ -1,3 +1,7 @@
+---
+title: Orbits Manual
+summary: Online manual for the Orbits plugin to VCV Rack from RareBreeds.
+---
 # Orbits Manual
 
 ## Eugene
