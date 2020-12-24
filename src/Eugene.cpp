@@ -156,6 +156,7 @@ struct RareBreeds_Orbits_Eugene : Module
         dsp::PulseGenerator outputGenerator;
         unsigned int index = 0;
         uint32_t rhythm;
+        bool apply_sync = false;
 
         RareBreeds_Orbits_Eugene()
         {
@@ -275,11 +276,6 @@ struct RareBreeds_Orbits_Eugene : Module
                 }
         }
 
-        bool resetActive()
-        {
-                return inputs[SYNC_INPUT].isConnected() && syncTrigger.process(inputs[SYNC_INPUT].getVoltage());
-        }
-
         void process(const ProcessArgs &args) override
         {
                 unsigned int length = readLength();
@@ -293,12 +289,22 @@ struct RareBreeds_Orbits_Eugene : Module
 
                 rhythm = euclideanRhythm(length, readHits(length));
 
+                if(inputs[SYNC_INPUT].isConnected())
+                {
+                        syncTrigger.process(inputs[SYNC_INPUT].getVoltage());
+                        if(syncTrigger.isHigh())
+                        {
+                                apply_sync = true;
+                        }
+                }
+
                 if(inputs[CLOCK_INPUT].isConnected() && clockTrigger.process(inputs[CLOCK_INPUT].getVoltage()))
                 {
                         advanceIndex(length, readReverse());
 
-                        if(resetActive())
+                        if(apply_sync)
                         {
+                                apply_sync = false;
                                 index = 0;
                         }
 
