@@ -26,10 +26,10 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) G
 A pulse is output when an on-beat (hit) is clocked. 0-10V Unipolar CV 1ms pulse duration.
 
 ### Clk : Input
-On pulse advances the current beat. Schmitt triggered.
+A rising edge advances the current beat. Schmitt triggered.
 
 ### Sync : Input
-On pulse resets the current beat to the first beat of the rhythm. Schmitt triggered.
+Resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. This input is synchronous, so the sync is only applied if a rising edge of Clk happens whilst this signal is high. Schmitt triggered.
 
 ### Len : Input
 The number of beats in the rhythm. Integer range between 1 to 32 inclusive.
@@ -38,7 +38,8 @@ The number of beats in the rhythm. Integer range between 1 to 32 inclusive.
 The number of on-beats in the rhythm, or the density. Integer range between 0 and the current Length inclusive.
 
 ### Shift : Input
-Sets the beat in the rhythm to start from. A sync pulse will reset the current beat to this beat. Integer range between 0 and the current Length - 1 inclusive.
+Sets the beat in the rhythm to start from. A sync pulse will set the current beat to this number of beats before beat 0. Integer range between 0 and the current Length - 1 inclusive.
+Rotating this knob has the effect of rotating the beat the same direction around the circle.
 
 ### Reverse : Input
 Sets the direction that the clock advances the beat. Clockwise when Off, Anticlockwise when On.
