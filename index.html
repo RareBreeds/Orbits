@@ -133,17 +133,20 @@
 <h3 id="out-output">Out : Output</h3>
 <p>A pulse is output when an on-beat (hit) is clocked. 0-10V Unipolar CV 1ms pulse duration.</p>
 <h3 id="clk-input">Clk : Input</h3>
-<p>On pulse advances the current beat. Schmitt triggered.</p>
+<p>A rising edge advances the current beat. Schmitt triggered.</p>
 <h3 id="sync-input">Sync : Input</h3>
-<p>On pulse resets the current beat to the first beat of the rhythm. Schmitt triggered.</p>
+<p>Resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.</p>
+<p>In versions after v1.1.0 the input is latched and applied on the next rising clock edge. This allows any high level at any time during the clock period to be used to reset the rhythm, for example the output of one Eugene can be fed into the sync input to start a rhythm again based on the on-beat in another rhythm.</p>
+<p>In the first release (v1.1.0) this input was synchronous, the sync was only applied if a rising edge of Clk happened whilst this signal was high.</p>
 <h3 id="len-input">Len : Input</h3>
 <p>The number of beats in the rhythm. Integer range between 1 to 32 inclusive.</p>
 <h3 id="hits-input">Hits : Input</h3>
 <p>The number of on-beats in the rhythm, or the density. Integer range between 0 and the current Length inclusive.</p>
 <h3 id="shift-input">Shift : Input</h3>
-<p>Sets the beat in the rhythm to start from. A sync pulse will reset the current beat to this beat. Integer range between 0 and the current Length - 1 inclusive.</p>
+<p>Sets the beat in the rhythm to start from. A sync pulse will set the current beat to this number of beats before beat 0. Integer range between 0 and the current Length - 1 inclusive.
+Rotating this knob has the effect of rotating the beat the same direction around the circle.</p>
 <h3 id="reverse-input">Reverse : Input</h3>
-<p>Sets the direction that the clock advances the beat. Clockwise when Off, Anticlockwise when On.</p>
+<p>Sets the direction that the clock advances the beat. Clockwise when off, anticlockwise when on.</p>
 <h3 id="invert-input">Invert : Input</h3>
 <p>Inverts the Euclidean algorithm. When this switch is on on-beats become off-beats and off-beats become on-beats. Visually you can tell this is enabled by the on-beats being represented as empty circles rather than whole ones.</p>
 <p><img alt="Invert" src="img/invert.png" /></p>
@@ -196,5 +199,5 @@
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-12-23 11:53:45.445936+00:00
+Build Date UTC : 2020-12-25 18:19:18.383530+00:00
 -->
