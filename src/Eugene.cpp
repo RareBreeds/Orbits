@@ -114,6 +114,11 @@ static uint32_t euclideanRhythm(unsigned int length, unsigned int on_beats)
         }
 }
 
+static unsigned int clamp_rounded(float value, unsigned int min, unsigned int max)
+{
+        return clamp(int(std::round(value)), min, max);
+}
+
 struct RareBreeds_Orbits_Eugene : Module
 {
         enum ParamIds
@@ -181,76 +186,63 @@ struct RareBreeds_Orbits_Eugene : Module
                 return ((rotated >> index) & 1) != invert;
         }
 
+        float readAttenuation(enum InputIds cv_input, enum ParamIds cv_knob)
+        {
+                if(inputs[cv_input].isConnected())
+                {
+                        // bipolar +-5V input
+                        float input = inputs[cv_input].getVoltage();
+                        float normalized_input = input / 5.f;
+                        float attenuation = params[cv_knob].getValue();
+                        return attenuation * normalized_input;
+                }
+
+                return 0.0f;
+        }
+
         unsigned int readLength(void)
         {
                 float value = params[LENGTH_KNOB_PARAM].getValue();
-                if(inputs[LENGTH_CV_INPUT].isConnected())
-                {
-                        // bipolar +-5V input
-                        float input = inputs[LENGTH_CV_INPUT].getVoltage();
-                        float normalized_input = input / 5.f;
-                        float attenuation = params[LENGTH_CV_KNOB_PARAM].getValue();
-                        value += attenuation * normalized_input * (max_rhythm_length - 1);
-                }
-
-                return clamp(int(std::round(value)), 1, max_rhythm_length);
+                value += readAttenuation(LENGTH_CV_INPUT, LENGTH_CV_KNOB_PARAM) * (max_rhythm_length - 1);
+                return clamp_rounded(value, 1, max_rhythm_length);
         }
 
         unsigned int readHits(unsigned int length)
         {
                 float value = params[HITS_KNOB_PARAM].getValue();
-                if(inputs[HITS_CV_INPUT].isConnected())
-                {
-                        // bipolar +-5V input
-                        float input = inputs[HITS_CV_INPUT].getVoltage();
-                        float normalized_input = input / 5.f;
-                        float attenuation = params[HITS_CV_KNOB_PARAM].getValue();
-                        value += attenuation * normalized_input;
-                }
-
+                value += readAttenuation(HITS_CV_INPUT, HITS_CV_KNOB_PARAM);
                 float hits_float = value * length;
-                return clamp(int(std::round(hits_float)), 0, length);
+                return clamp_rounded(hits_float, 0, length);
         }
 
         unsigned int readShift(unsigned int length)
         {
                 float value = params[SHIFT_KNOB_PARAM].getValue();
-                if(inputs[SHIFT_CV_INPUT].isConnected())
-                {
-                        // bipolar +-5V input
-                        float input = inputs[SHIFT_CV_INPUT].getVoltage();
-                        float normalized_input = input / 5.f;
-                        float attenuation = params[SHIFT_CV_KNOB_PARAM].getValue();
-                        value += attenuation * normalized_input * (max_rhythm_length - 1);
-                }
+                value += readAttenuation(SHIFT_CV_INPUT, SHIFT_CV_KNOB_PARAM) * (max_rhythm_length - 1);
+                return clamp_rounded(value, 0, max_rhythm_length - 1) % length;
+        }
 
-                return clamp(int(std::round(value)), 0, max_rhythm_length - 1) % length;
+        bool readSwitchWithCv(enum InputIds input, enum ParamIds param, dsp::SchmittTrigger &trigger)
+        {
+                if(inputs[input].isConnected())
+                {
+                        trigger.process(inputs[input].getVoltage());
+                        return trigger.isHigh();
+                }
+                else
+                {
+                        return std::round(params[param].getValue());
+                }
         }
 
         bool readReverse(void)
         {
-                if(inputs[REVERSE_CV_INPUT].isConnected())
-                {
-                        reverseTrigger.process(inputs[REVERSE_CV_INPUT].getVoltage());
-                        return reverseTrigger.isHigh();
-                }
-                else
-                {
-                        return std::round(params[REVERSE_KNOB_PARAM].getValue());
-                }
+                return readSwitchWithCv(REVERSE_CV_INPUT, REVERSE_KNOB_PARAM, reverseTrigger);
         }
 
         bool readInvert(void)
         {
-                if(inputs[INVERT_CV_INPUT].isConnected())
-                {
-                        invertTrigger.process(inputs[INVERT_CV_INPUT].getVoltage());
-                        return invertTrigger.isHigh();
-                }
-                else
-                {
-                        return std::round(params[INVERT_KNOB_PARAM].getValue());
-                }
+                return readSwitchWithCv(INVERT_CV_INPUT, INVERT_KNOB_PARAM, invertTrigger);
         }
 
         void advanceIndex(unsigned int length, bool reverse)
@@ -268,10 +260,13 @@ struct RareBreeds_Orbits_Eugene : Module
                 }
                 else
                 {
-                        ++index;
-                        if(index >= length)
+                        if(index == length - 1)
                         {
                                 index = 0;
+                        }
+                        else
+                        {
+                                ++index;
                         }
                 }
         }
@@ -331,7 +326,9 @@ struct RhythmDisplay : TransparentWidget
         void draw(const DrawArgs &args) override
         {
                 if(!module)
+                {
                         return;
+                }
 
                 const auto length = module->readLength();
                 const auto hits = module->readHits(length);
