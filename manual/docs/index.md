@@ -30,8 +30,10 @@ A rising edge advances the current beat. Schmitt triggered.
 
 ### Sync : Input
 Resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.
+
 In versions after v1.1.0 the input is latched and applied on the next rising clock edge. This allows any high level at any time during the clock period to be used to reset the rhythm, for example the output of one Eugene can be fed into the sync input to start a rhythm again based on the on-beat in another rhythm.
-In the first release (v1.1.0) this input was synchronous, the sync was only applied if a rising edge of Clk happens whilst this signal is high.
+
+In the first release (v1.1.0) this input was synchronous, the sync was only applied if a rising edge of Clk happened whilst this signal was high.
 
 ### Len : Input
 The number of beats in the rhythm. Integer range between 1 to 32 inclusive.
