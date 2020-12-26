@@ -36,7 +36,8 @@ def euclideanRhythm(length, hits):
     return pattern
 
 def _asInt(rhythm):
-    assert rhythm, "Can't convert 0 length rhythms to an integer."
+    if not rhythm:
+        raise ValueError("Can't convert 0 length rhythm to an integer.")
     return int("".join("1" if p else "0" for p in reversed(rhythm)), 2)
 
 def _asStr(euclid):
