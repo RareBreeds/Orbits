@@ -35,8 +35,9 @@ def euclideanRhythm(length, hits):
     assert sum(pattern) == hits, "Bad number of hits"
     return pattern
 
-def _asHex(rhythm):
-    return hex(int(''.join('1' if p else '0' for p in reversed(rhythm)), 2))
+def _asInt(rhythm):
+    assert rhythm, "Can't convert 0 length rhythms to an integer."
+    return int("".join("1" if p else "0" for p in reversed(rhythm)), 2)
 
 def _asStr(euclid):
     return ''.join('x' if b else '.' for b in euclid)
@@ -108,6 +109,9 @@ def euclideanRhythmStr(length, hits):
     '''
     return _asStr(euclideanRhythm(length, hits))
 
+def array(lengths):
+    return ",\n".join(",".join(hex(_asInt(euclideanRhythm(l, h))) for h in range(l + 1)) for l in lengths)
+
 def svg(length=32):
     size = 768
     svg = '<?xml version="1.0"?>\n'
@@ -121,9 +125,10 @@ def svg(length=32):
                 svg += f'<circle cx="{i + 0.5}" cy="{h + 0.5}" r="0.1" fill="black"/>\n'
     svg += '</g>\n'
     svg += '</svg>\n'
-    print(svg)
+    return svg
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    svg()
+    print(svg(256))
+    print(array(range(1, 33)))
