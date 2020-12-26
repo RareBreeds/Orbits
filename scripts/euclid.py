@@ -94,6 +94,17 @@ def euclideanRhythmStr(length, hits):
     >>> euclideanRhythmStr(24, 13)
     'x.xx.x.x.x.x.x.xx.x.x.x.'
 
+    >>> euclideanRhythmStr(1, 0)
+    '.'
+
+    >>> euclideanRhythmStr(1, 1)
+    'x'
+
+    >>> euclideanRhythmStr(8, 0)
+    '........'
+
+    >>> euclideanRhythmStr(8, 8)
+    'xxxxxxxx'
     '''
     return _asStr(euclideanRhythm(length, hits))
 
