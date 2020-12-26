@@ -2,7 +2,7 @@
 
 ## Eugene
 
-Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) Generator plugin for [VCV Rack](https://vcvrack.com/).
+Eugene is an [Open Source](https://github.com/RareBreeds/Orbits/), [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) Generator plugin for [VCV Rack](https://vcvrack.com/).
 
 ### Example Patch
 
