@@ -68,7 +68,6 @@ static uint32_t rotL(uint32_t val, uint32_t size, uint32_t amount)
         return (val << amount | val >> (size - amount));
 }
 
-
 static unsigned int euclideanRhythmIndex(unsigned int length, unsigned int on_beats_m2, unsigned int first_entry_length)
 {
         unsigned int first_entry_elements = first_entry_length - 2;

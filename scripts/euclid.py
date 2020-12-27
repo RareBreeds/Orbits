@@ -43,9 +43,12 @@ def _asInt(rhythm):
 def _asStr(euclid):
     return ''.join('x' if b else '.' for b in euclid)
 
+def _isRotation(s1, s2):
+    return len(s1) == len(s2) and s1 in s2*2
+
 def euclideanRhythmStr(length, hits):
     '''
-    These tests are for rhythms terminating then the remainder is 0.
+    These tests are for rhythms terminating when the remainder is 0.
 
     The paper on Euclidean Rhythms terminates at 1 so these results are a rotation of the
     ones in the paper.
