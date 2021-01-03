@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import math
+import random
 import itertools
 
 def _necklacesOfLengthAndDensity(n, d, k=2):
@@ -202,6 +203,14 @@ class Rhythm:
     def fromOnsetList(cls, length, onset_list):
         return Rhythm(True if b in onset_list else False for b in range(length))
 
+    @classmethod
+    def fromInt(cls, length, integer):
+        return Rhythm(reversed(f'{integer:0{length}b}'[0:length]))
+
+    @classmethod
+    def random(cls, length):
+        return Rhythm.fromInt(length, random.getrandbits(length))
+
     def __init__(self, rhythm):
         '''
         Accepts the following rhythm initialisation formats:
@@ -331,15 +340,11 @@ class Rhythm:
         if len(self) == 0:
             return 0
 
-        period = 1
-        for i,r in enumerate(self):
-            if self[i % period] != r:
-                period = i + 1
+        for i in range(1, len(self)):
+            if Rhythm(self[:i] * (len(self) // i)) == self:
+                return i
 
-        if len(self) % period:
-            period = len(self)
-
-        return period
+        return len(self)
 
     @property
     def is_euclidean(self):
@@ -351,6 +356,18 @@ class Rhythm:
 
     def isRotationOf(self, rhythm):
         return len(self) == len(rhythm) and self in rhythm
+
+    def reverse(self):
+        return Rhythm(reversed(self))
+
+    def invert(self):
+        return Rhythm(not b for b in self)
+
+    def rotate(self, amount):
+        return Rhythm(self._rhythm[-amount:] + self._rhythm[:-amount])
+
+    def append(self, other):
+        return Rhythm(self._rhythm + other._rhythm)
 
     def svgCircle(self):
         rhythm_size = 500
@@ -439,9 +456,30 @@ class Rhythm:
     def __eq__(self, other):
         return self._rhythm == other._rhythm
 
+    def __invert__(self):
+        return self.invert()
+
+    def __add__(self, other):
+        return self.append(other)
+
+    def __lshift__(self, amount):
+        return self.rotate(-amount)
+
+    def __rshift__(self, amount):
+        return self.rotate(amount)
+
+    def __and__(self, other):
+        return Rhythm(a and b for a,b in itertools.zip_longest(self, other, fillvalue=False))
+
+    def __or__(self, other):
+        return Rhythm(a or b for a,b in itertools.zip_longest(self, other, fillvalue=False))
+
+    def __xor__(self, other):
+        return Rhythm(a != b for a,b in itertools.zip_longest(self, other, fillvalue=False))
+
     @staticmethod
     def canonicalise(rhythm):
-        return [b in {True, 'x', 'X', '1'} for b in rhythm]
+        return tuple(b in {True, 'x', 'X', '1'} for b in rhythm)
 
     @staticmethod
     def asStr(rhythm):
@@ -465,8 +503,19 @@ class Rhythm:
         return [(n // density, n % density) for n in range(0, density * length, length)]
 
 if __name__ == "__main__":
-    #print(Rhythm(Rhythm.maximallyEven(17, 6)).svgCircle())
-    #print(Rhythm(Rhythm.maximallyEven(65, 38)).svgBoxes())
-    #for length in range(1, 20):
-    #    for density in range(length + 1):
-    #        print(Rhythm.maximallyEven(length, density))
+    print(Rhythm.maximallyEven(20, 17).svgCircle())
+    print(Rhythm.maximallyEven(65, 38).svgBoxes())
+    print(Rhythm.fromInt(1, 3).svgBoxes())
+    for length in range(1, 20):
+        for density in range(length + 1):
+            print(Rhythm.maximallyEven(length, density))
+    print(Rhythm("xxxx...."))
+    print(Rhythm("xxxx....").invert())
+    print(~Rhythm("xxxx...."))
+    print(Rhythm("xxxx....") + Rhythm(".x.x.x.x"))
+    print(Rhythm("...,.x.x") >> 3)
+    print(Rhythm(".....x.x") << 3)
+    print(Rhythm(".....x.x") & Rhythm(".xxxxxxxxxx"))
+    print(Rhythm(".....x.x") | Rhythm(".xxxxxxxxxx"))
+    print(Rhythm(".....x.x") ^ Rhythm(".xxxxxxxxxx"))
+    print(Rhythm("x.x.x...x.x.....xx.xx.x.x...x.x.....xx.xx.x.x...x.x.....xx.x").period)
