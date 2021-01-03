@@ -352,6 +352,66 @@ class Rhythm:
     def isRotationOf(self, rhythm):
         return len(self) == len(rhythm) and self in rhythm
 
+    def svgCircle(self):
+        size = 780
+        background_colour = "none"
+        stroke_colour = "black"
+        max_beat_radius = 0.03
+        rhythm_radius = 0.4
+        stroke_width = 0.005
+        beat_radius = min(0.95 / len(self), max_beat_radius)
+
+        svg = '<?xml version="1.0"?>'
+        svg += f'<svg width="{size:.0f}" height="{size:.0f}" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background-color:{background_colour}">'
+        svg += f'<g transform="scale({size:.0f} {size:.0f}) translate(.5 .5)">'
+
+        # Ring to join the beats
+        svg += '<mask id="m">'
+        svg += f'<rect x="-.5" y="-.5" width="1" height="1" fill="white"/>'
+        for i,r in enumerate(self):
+            angle = 360 * i / len(self) - 180
+            svg += f'<circle r="{beat_radius:.4f}" cy="{rhythm_radius:.3f}" stroke="black" stroke-width="{stroke_width:.3f}" fill="black" transform="rotate({angle})"/>'
+        svg += '</mask>'
+        svg += f'<circle r="{rhythm_radius:.3f}" fill="none" mask="url(#m)" stroke="{stroke_colour}" stroke-width="{stroke_width:.3f}"/>'
+
+        # Beats
+        for i,r in enumerate(self):
+            fill = stroke_colour if r else "none"
+            angle = 360 * i / len(self) - 180
+            svg += f'<circle r="{beat_radius:.4f}" cy="{rhythm_radius:.3f}" stroke="{stroke_colour}" stroke-width="{stroke_width:.3f}" fill="{fill}" transform="rotate({angle})"/>'
+
+        svg += '</g>'
+        svg += '</svg>'
+
+        return svg
+
+    def svgBoxes(self):
+        box_size = 84
+        border_pc = 0.05
+        background_colour = "none"
+        stroke_colour = "black"
+        stroke_width = 0.05
+        beat_radius = 0.3
+
+        border = box_size * border_pc
+        svg_height = svg_width = box_size * len(self) + 2*border
+
+        svg = '<?xml version="1.0"?>'
+        svg += f'<svg width="{svg_width:.0f}" height="{svg_height:.0f}" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background-color:{background_colour}">'
+        svg += f'<g transform="translate({border} {border}) scale({box_size} {box_size})">'
+
+        for i,r in enumerate(self):
+            svg += f'<rect x="{i}" width="1.0" height="1.0" fill="none" stroke-width="{stroke_width}" stroke="{stroke_colour}"/>'
+
+        for i,r in enumerate(self):
+            if r:
+                svg += f'<circle r="{beat_radius}" cx="{i + 0.5}" cy="0.5" fill="{stroke_colour}" stroke-width="{stroke_width}" stroke="{stroke_colour}"/>'
+
+        svg += '</g>'
+        svg += '</svg>'
+
+        return svg
+
     def __mul__(self, other):
         return Rhythm(self._rhythm * other)
 
@@ -408,6 +468,8 @@ class Rhythm:
         return [(n // density, n % density) for n in range(0, density * length, length)]
 
 if __name__ == "__main__":
-    for length in range(1, 17):
-        for density in range(length + 1):
-            print(Rhythm.maximallyEven(length, density))
+    print(Rhythm(Rhythm.maximallyEven(17, 6)).svgCircle())
+    #print(Rhythm(Rhythm.maximallyEven(8, 6)).svgBoxes())
+    #for length in range(1, 20):
+    #    for density in range(length + 1):
+    #        print(Rhythm.maximallyEven(length, density))
