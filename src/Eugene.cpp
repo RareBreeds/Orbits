@@ -137,6 +137,8 @@ struct RareBreeds_Orbits_Eugene : Module
 {
         enum ParamIds
         {
+		CHANNEL_NEXT_PARAM,
+		CHANNEL_PREV_PARAM,
                 LENGTH_KNOB_PARAM,
                 HITS_KNOB_PARAM,
                 SHIFT_KNOB_PARAM,
@@ -145,8 +147,6 @@ struct RareBreeds_Orbits_Eugene : Module
                 SHIFT_CV_KNOB_PARAM,
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
-                CHANNEL_NEXT_PARAM,
-                CHANNEL_PREV_PARAM,
                 NUM_PARAMS
         };
         enum InputIds
@@ -173,7 +173,7 @@ struct RareBreeds_Orbits_Eugene : Module
         // The old knob state, if the knob state changes the current channel is updated
 
         // The channel currently being displayed and controlled by the knobs
-        int m_active_channel = 0;
+        int m_active_channel_id = 0;
         // The number of channels that are active
         int m_active_channels = 0;
 
@@ -196,7 +196,6 @@ struct RareBreeds_Orbits_Eugene : Module
                 dsp::SchmittTrigger m_invert_trigger;
                 dsp::PulseGenerator m_output_generator;
                 bool m_apply_sync = false;
-                bool m_sensitive = false;
                 // Values for the knobs for this channel
                 float m_length, m_length_cv;
                 float m_hits, m_hits_cv;
@@ -301,7 +300,7 @@ struct RareBreeds_Orbits_Eugene : Module
                                 auto invert = false;
                                 if(((rotL(m_rhythm, length, shift) >> m_current_step) & 1) != invert)
                                 {
-                                        m_output_generator.trigger(1e-3f * 100);
+                                        m_output_generator.trigger(1e-3f);
                                 }
                         }
 
@@ -310,10 +309,15 @@ struct RareBreeds_Orbits_Eugene : Module
         };
 
         Channel m_channels[max_channels];
+        Channel *m_active_channel;
+        dsp::BooleanTrigger channel_next_trigger;
+        dsp::BooleanTrigger channel_prev_trigger;
 
         RareBreeds_Orbits_Eugene()
         {
                 config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+		configParam(CHANNEL_NEXT_PARAM, 0.f, 1.f, 0.f, "Next Channel");
+		configParam(CHANNEL_PREV_PARAM, 0.f, 1.f, 0.f, "Previous Channel");
                 configParam(LENGTH_KNOB_PARAM, 1.f, max_rhythm_length, max_rhythm_length, "Length");
                 configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
                 configParam(SHIFT_KNOB_PARAM, 0.f, max_rhythm_length - 1, 0.f, "Shift");
@@ -329,13 +333,8 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_channels[i].m_channel = i;
                 }
 
-                setActiveChannel(0);
-        }
-
-        void setActiveChannel(unsigned int channel)
-        {
-                m_channels[channel].m_sensitive = true;
-                m_active_channel = channel;
+                m_active_channel_id = 0;
+                m_active_channel = &m_channels[m_active_channel_id];
         }
 
         void process(const ProcessArgs &args) override
@@ -356,27 +355,53 @@ struct RareBreeds_Orbits_Eugene : Module
                 outputs[BEAT_OUTPUT].setChannels(m_active_channels);
                 // Update the active channel if its out of range of the active channels
                 // Relies on clamp returning 'a' if 'b' < 'a'
-                setActiveChannel(clamp(m_active_channel, 0, m_active_channels - 1));
+                m_active_channel_id = clamp(m_active_channel_id, 0, m_active_channels - 1);
+
+                if(channel_next_trigger.process(std::round(params[CHANNEL_NEXT_PARAM].getValue())))
+                {
+                        if(m_active_channel_id == m_active_channels - 1)
+                        {
+                                m_active_channel_id = 0;
+                        }
+                        else
+                        {
+                                ++m_active_channel_id;
+                        }
+                }
+
+                if(channel_prev_trigger.process(std::round(params[CHANNEL_PREV_PARAM].getValue())))
+                {
+                        if(m_active_channel_id ==  0)
+                        {
+                                m_active_channel_id = m_active_channels - 1;
+                        }
+                        else
+                        {
+                                --m_active_channel_id;
+                        }
+                }    
+
+                m_active_channel = &m_channels[m_active_channel_id];
 
                 // If any of the knobs have changes since the last round update the active channel
                 float length = params[LENGTH_KNOB_PARAM].getValue();
                 if(length != m_length)
                 {
-                        m_channels[m_active_channel].m_length = length;
+                        m_active_channel->m_length = length;
                         m_length = length;
                 }
 
                 float hits = params[HITS_KNOB_PARAM].getValue();
                 if(hits != m_hits)
                 {
-                        m_channels[m_active_channel].m_hits = hits;
+                        m_active_channel->m_hits = hits;
                         m_hits = hits;
                 }
 
                 float shift = params[SHIFT_KNOB_PARAM].getValue();
                 if(shift != m_shift)
                 {
-                        m_channels[m_active_channel].m_shift = shift;
+                        m_active_channel->m_shift = shift;
                         m_shift = shift;
                 }
                 // TODO: CV knobs
@@ -405,9 +430,9 @@ struct RhythmDisplay : TransparentWidget
                         return;
                 }
 
-                const auto length = module->m_channels[module->m_active_channel].readLength();
-                const auto hits = module->m_channels[module->m_active_channel].readHits(length);
-                const auto shift = module->m_channels[module->m_active_channel].readShift(length);
+                const auto length = module->m_active_channel->readLength();
+                const auto hits = module->m_active_channel->readHits(length);
+                const auto shift = module->m_active_channel->readShift(length);
 
                 nvgStrokeColor(args.vg, color::WHITE);
                 nvgSave(args.vg);
@@ -425,6 +450,10 @@ struct RhythmDisplay : TransparentWidget
                 nvgFillColor(args.vg, color::WHITE);
                 nvgText(args.vg, 0.f, -7.f, std::to_string(hits).c_str(), NULL);
                 nvgText(args.vg, 0.f, 7.f, std::to_string(length).c_str(), NULL);
+                nvgFontSize(args.vg, 12);
+                nvgTextAlign(args.vg, NVG_ALIGN_RIGHT | NVG_ALIGN_BOTTOM);
+                // Fundamental numbers channels 1 - 16 on the display, copy that
+                nvgText(args.vg, b.size.x / 2.f - .5f, b.size.y / 2.f - .5f, std::to_string(module->m_active_channel_id + 1).c_str(), NULL);
 
                 // Scale to [-1, 1]
                 nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
@@ -463,7 +492,7 @@ struct RhythmDisplay : TransparentWidget
                         }
 
                         float radius = off_radius;
-                        if(module->m_channels[module->m_active_channel].isOnBeat(k, length, shift, invert))
+                        if(module->m_active_channel->isOnBeat(k, length, shift, invert))
                         {
                                 radius = on_radius;
                         }
@@ -481,7 +510,7 @@ struct RhythmDisplay : TransparentWidget
                                 nvgFill(args.vg);
                         }
 
-                        if(module->m_channels[module->m_active_channel].m_current_step == k)
+                        if(module->m_active_channel->m_current_step == k)
                         {
                                 nvgBeginPath(args.vg);
                                 nvgCircle(args.vg, 0.f, y_pos, outline_radius);
@@ -513,31 +542,34 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
                 setModule(module);
                 setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene.svg")));
 
-                addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
-                addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-                addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-                addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+                addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
+                addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+                addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+                addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
+		addParam(createParamCentered<CKD6>(mm2px(Vec(53.623, 35.108)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
+		addParam(createParamCentered<CKD6>(mm2px(Vec(53.695, 45.479)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 86.0)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 86.0)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 86.0)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 85.471)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 85.471)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 85.471)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
                 addParam(createParamCentered<CKSS>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
                 addParam(createParamCentered<CKSS>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 29.5)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 44.5)), module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.0)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.0)), module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.0)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-                addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 29.5)), module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 23.15)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 38.15)), module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.088)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.088)), module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.088)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-                RhythmDisplay *r = createWidget<RhythmDisplay>(mm2px(Vec(14.48, 16.5)));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 23.15)), module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+
+                RhythmDisplay *r = createWidget<RhythmDisplay>(mm2px(Vec(14.48, 14.913)));
                 r->module = module;
                 r->box.size = mm2px(Vec(32.0, 32.0));
                 addChild(r);
