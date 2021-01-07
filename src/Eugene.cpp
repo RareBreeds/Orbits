@@ -131,6 +131,8 @@ static unsigned int clampRounded(float value, unsigned int min, unsigned int max
         return clamp(int(std::round(value)), min, max);
 }
 
+static const int max_channels = 16;
+
 struct RareBreeds_Orbits_Eugene : Module
 {
         enum ParamIds
@@ -143,6 +145,8 @@ struct RareBreeds_Orbits_Eugene : Module
                 SHIFT_CV_KNOB_PARAM,
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
+                CHANNEL_NEXT_PARAM,
+                CHANNEL_PREV_PARAM,
                 NUM_PARAMS
         };
         enum InputIds
@@ -166,14 +170,146 @@ struct RareBreeds_Orbits_Eugene : Module
                 NUM_LIGHTS
         };
 
-        dsp::SchmittTrigger clockTrigger;
-        dsp::SchmittTrigger syncTrigger;
-        dsp::SchmittTrigger reverseTrigger;
-        dsp::SchmittTrigger invertTrigger;
-        dsp::PulseGenerator outputGenerator;
-        unsigned int index = 0;
-        uint32_t rhythm;
-        bool apply_sync = false;
+        // The old knob state, if the knob state changes the current channel is updated
+
+        // The channel currently being displayed and controlled by the knobs
+        int m_active_channel = 0;
+        // The number of channels that are active
+        int m_active_channels = 0;
+
+        // Old knob values
+        // TODO: Could stick these into a struct
+        // TODO: Initialise these in the constructor
+        float m_length, m_length_cv;
+        float m_hits, m_hits_cv;
+        float m_shift, m_shift_cv;
+        float m_reverse_cv, m_invert_cv;
+
+        struct Channel
+        {
+                unsigned int m_current_step = 0;
+                int m_channel;
+                uint32_t m_rhythm;
+                dsp::SchmittTrigger m_clock_trigger;
+                dsp::SchmittTrigger m_sync_trigger;
+                dsp::SchmittTrigger m_reverse_trigger;
+                dsp::SchmittTrigger m_invert_trigger;
+                dsp::PulseGenerator m_output_generator;
+                bool m_apply_sync = false;
+                bool m_sensitive = false;
+                // Values for the knobs for this channel
+                float m_length, m_length_cv;
+                float m_hits, m_hits_cv;
+                float m_shift, m_shift_cv;
+                float m_reverse_cv, m_invert_cv;
+                RareBreeds_Orbits_Eugene *m_module = NULL;
+                // TODO: Should reverse and invert switches act across all channels?
+                // TODO: Channel needs a reference to the module for reading parameters
+                Channel()
+                {
+                        m_length = 32.0;
+                        m_hits = 0.5;
+                        m_shift = 0.0;
+                        // TODO: Read all raw values from the knobs
+                        // TODO: Derive length and hits from them and update rhythm
+                        unsigned int length = 32;
+                        unsigned int hits = 16;
+                        m_rhythm = euclideanRhythm(length, hits);
+                }
+
+                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int shift, unsigned int invert)
+                {
+                        return (((rotL(m_rhythm, length, shift) >> beat) & 1) != invert);
+                }
+
+                unsigned int readLength()
+                {
+                        return clampRounded(m_length, 1, max_rhythm_length);
+                }
+
+                unsigned int readHits(unsigned int length)
+                {
+                        return clampRounded(m_hits * length, 0, length);
+                }
+
+                unsigned int readShift(unsigned int length)
+                {
+                        return clampRounded(m_shift, 0, max_rhythm_length - 1) % length;
+                }
+
+                void process(const ProcessArgs &args)
+                {
+                        // TODO: poly CV
+                        auto length = clampRounded(m_length, 1, max_rhythm_length);
+
+                        // Avoid stepping out of bounds
+                        if(m_current_step >= length)
+                        {
+                                m_current_step = 0;
+                        }
+
+                        auto hits = clampRounded(m_hits * length, 0, length);
+
+                        m_rhythm = euclideanRhythm(length, hits);
+
+                        if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
+                        {
+                                m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getVoltage(m_channel));
+                                if(m_sync_trigger.isHigh())
+                                {
+                                        m_apply_sync = true;
+                                }
+                        }
+
+                        if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel &&
+                           m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getVoltage(m_channel)))
+                        {
+                                // TODO: read reverse..somewhere
+                                auto reverse = false;
+                                if(reverse)
+                                {
+                                        if(m_current_step == 0)
+                                        {
+                                                m_current_step = length - 1;
+                                        }
+                                        else
+                                        {
+                                                --m_current_step;
+                                        }
+                                }
+                                else
+                                {
+                                        if(m_current_step == length - 1)
+                                        {
+                                                m_current_step = 0;
+                                        }
+                                        else
+                                        {
+                                                ++m_current_step;
+                                        }
+                                }
+
+                                if(m_apply_sync)
+                                {
+                                        m_apply_sync = false;
+                                        m_current_step = 0;
+                                }
+
+                                auto shift = clampRounded(m_shift, 0, max_rhythm_length - 1) % length;
+
+                                // TODO: invert
+                                auto invert = false;
+                                if(((rotL(m_rhythm, length, shift) >> m_current_step) & 1) != invert)
+                                {
+                                        m_output_generator.trigger(1e-3f * 100);
+                                }
+                        }
+
+                        m_module->outputs[BEAT_OUTPUT].setVoltage(m_output_generator.process(args.sampleTime) ? 10.f : 0.f, m_channel);
+                }
+        };
+
+        Channel m_channels[max_channels];
 
         RareBreeds_Orbits_Eugene()
         {
@@ -187,141 +323,68 @@ struct RareBreeds_Orbits_Eugene : Module
                 configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
                 configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
 
-                // Ensure the default rhythm exists before drawing
-                unsigned int length = readLength();
-                rhythm = euclideanRhythm(length, readHits(length));
-        }
-
-        bool isOnBeat(unsigned int index, unsigned int length, unsigned int shift, bool invert)
-        {
-                uint32_t rotated = rotL(rhythm, length, shift);
-                return ((rotated >> index) & 1) != invert;
-        }
-
-        float readAttenuation(enum InputIds cv_input, enum ParamIds cv_knob)
-        {
-                if(inputs[cv_input].isConnected())
+                for(auto i = 0; i < max_channels; ++i)
                 {
-                        // bipolar +-5V input
-                        float input = inputs[cv_input].getVoltage();
-                        float normalized_input = input / 5.f;
-                        float attenuation = params[cv_knob].getValue();
-                        return attenuation * normalized_input;
+                        m_channels[i].m_module = this;
+                        m_channels[i].m_channel = i;
                 }
 
-                return 0.0f;
+                setActiveChannel(0);
         }
 
-        unsigned int readLength(void)
+        void setActiveChannel(unsigned int channel)
         {
-                float value = params[LENGTH_KNOB_PARAM].getValue();
-                value += readAttenuation(LENGTH_CV_INPUT, LENGTH_CV_KNOB_PARAM) * (max_rhythm_length - 1);
-                return clampRounded(value, 1, max_rhythm_length);
-        }
-
-        unsigned int readHits(unsigned int length)
-        {
-                float value = params[HITS_KNOB_PARAM].getValue();
-                value += readAttenuation(HITS_CV_INPUT, HITS_CV_KNOB_PARAM);
-                float hits_float = value * length;
-                return clampRounded(hits_float, 0, length);
-        }
-
-        unsigned int readShift(unsigned int length)
-        {
-                float value = params[SHIFT_KNOB_PARAM].getValue();
-                value += readAttenuation(SHIFT_CV_INPUT, SHIFT_CV_KNOB_PARAM) * (max_rhythm_length - 1);
-                return clampRounded(value, 0, max_rhythm_length - 1) % length;
-        }
-
-        bool readSwitchWithCv(enum InputIds input, enum ParamIds param, dsp::SchmittTrigger &trigger)
-        {
-                if(inputs[input].isConnected())
-                {
-                        trigger.process(inputs[input].getVoltage());
-                        return trigger.isHigh();
-                }
-                else
-                {
-                        return std::round(params[param].getValue());
-                }
-        }
-
-        bool readReverse(void)
-        {
-                return readSwitchWithCv(REVERSE_CV_INPUT, REVERSE_KNOB_PARAM, reverseTrigger);
-        }
-
-        bool readInvert(void)
-        {
-                return readSwitchWithCv(INVERT_CV_INPUT, INVERT_KNOB_PARAM, invertTrigger);
-        }
-
-        void advanceIndex(unsigned int length, bool reverse)
-        {
-                if(reverse)
-                {
-                        if(index == 0)
-                        {
-                                index = length - 1;
-                        }
-                        else
-                        {
-                                --index;
-                        }
-                }
-                else
-                {
-                        if(index == length - 1)
-                        {
-                                index = 0;
-                        }
-                        else
-                        {
-                                ++index;
-                        }
-                }
+                m_channels[channel].m_sensitive = true;
+                m_active_channel = channel;
         }
 
         void process(const ProcessArgs &args) override
         {
-                unsigned int length = readLength();
+                // TODO: Check the channel next/prev buttons for presses and update active channel
+                // TODO: If a knob has changed position (at all) since the last call
+                // then tell the current channel about the new value (channel.updateBlah) (after checking prev/next buttons)
+                // TODO: Loop over all channels processing them
+                // TODO: Number of channels is based on the number of channels provided by the clock
+                //       Or should this be by any of the inputs? What if a poly sync is connected but mono clock?
+                //       A: Just clock maybe, seems simpler and not sure there's a real case for the other combos.
+                //       Could select the poly input from a menu like bogaudio does
+                // TODO: How are mono channels extended to channels if it's in poly mode...Same as Rack? Pad with 0's rather than applying across all channels?
+                
+                // How may channels are we processing?
+                // Get this from the number of channels from the clock input
+                m_active_channels = inputs[CLOCK_INPUT].getChannels();
+                outputs[BEAT_OUTPUT].setChannels(m_active_channels);
+                // Update the active channel if its out of range of the active channels
+                // Relies on clamp returning 'a' if 'b' < 'a'
+                setActiveChannel(clamp(m_active_channel, 0, m_active_channels - 1));
 
-                // wrap the index to the new length
-                // to avoid accessing the rhythm out of bounds
-                if(index >= length)
+                // If any of the knobs have changes since the last round update the active channel
+                float length = params[LENGTH_KNOB_PARAM].getValue();
+                if(length != m_length)
                 {
-                        index = 0;
+                        m_channels[m_active_channel].m_length = length;
+                        m_length = length;
                 }
 
-                rhythm = euclideanRhythm(length, readHits(length));
-
-                if(inputs[SYNC_INPUT].isConnected())
+                float hits = params[HITS_KNOB_PARAM].getValue();
+                if(hits != m_hits)
                 {
-                        syncTrigger.process(inputs[SYNC_INPUT].getVoltage());
-                        if(syncTrigger.isHigh())
-                        {
-                                apply_sync = true;
-                        }
+                        m_channels[m_active_channel].m_hits = hits;
+                        m_hits = hits;
                 }
 
-                if(inputs[CLOCK_INPUT].isConnected() && clockTrigger.process(inputs[CLOCK_INPUT].getVoltage()))
+                float shift = params[SHIFT_KNOB_PARAM].getValue();
+                if(shift != m_shift)
                 {
-                        advanceIndex(length, readReverse());
-
-                        if(apply_sync)
-                        {
-                                apply_sync = false;
-                                index = 0;
-                        }
-
-                        if(isOnBeat(index, length, readShift(length), readInvert()))
-                        {
-                                outputGenerator.trigger(1e-3f);
-                        }
+                        m_channels[m_active_channel].m_shift = shift;
+                        m_shift = shift;
                 }
+                // TODO: CV knobs
 
-                outputs[BEAT_OUTPUT].setVoltage(outputGenerator.process(args.sampleTime) ? 10.f : 0.f);
+                for(auto i = 0; i < m_active_channels; ++i)
+                {
+                        m_channels[i].process(args);
+                }
         }
 };
 
@@ -342,9 +405,9 @@ struct RhythmDisplay : TransparentWidget
                         return;
                 }
 
-                const auto length = module->readLength();
-                const auto hits = module->readHits(length);
-                const auto shift = module->readShift(length);
+                const auto length = module->m_channels[module->m_active_channel].readLength();
+                const auto hits = module->m_channels[module->m_active_channel].readHits(length);
+                const auto shift = module->m_channels[module->m_active_channel].readShift(length);
 
                 nvgStrokeColor(args.vg, color::WHITE);
                 nvgSave(args.vg);
@@ -390,7 +453,7 @@ struct RhythmDisplay : TransparentWidget
                 // Add a border of half a circle so we don't draw over the edge
                 nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
-                const bool invert = module->readInvert();
+                const bool invert = false; // TODO: module->readInvert();
                 for(unsigned int k = 0; k < length; ++k)
                 {
                         float y_pos = 1.f;
@@ -400,7 +463,7 @@ struct RhythmDisplay : TransparentWidget
                         }
 
                         float radius = off_radius;
-                        if(module->isOnBeat(k, length, shift, invert))
+                        if(module->m_channels[module->m_active_channel].isOnBeat(k, length, shift, invert))
                         {
                                 radius = on_radius;
                         }
@@ -418,7 +481,7 @@ struct RhythmDisplay : TransparentWidget
                                 nvgFill(args.vg);
                         }
 
-                        if(module->index == k)
+                        if(module->m_channels[module->m_active_channel].m_current_step == k)
                         {
                                 nvgBeginPath(args.vg);
                                 nvgCircle(args.vg, 0.f, y_pos, outline_radius);
@@ -453,43 +516,26 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
                 addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
                 addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
                 addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-                addChild(createWidget<ScrewSilver>(
-                        Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+                addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-                addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module,
-                                                                  RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-                addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module,
-                                                                  RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-                addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module,
-                                                                  RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 86.0)), module,
-                                                             RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 86.0)), module,
-                                                             RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 86.0)), module,
-                                                             RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-                addParam(createParamCentered<CKSS>(mm2px(Vec(10.48, 112.0)), module,
-                                                   RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-                addParam(createParamCentered<CKSS>(mm2px(Vec(50.48, 112.0)), module,
-                                                   RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+                addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+                addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+                addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 86.0)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 86.0)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 86.0)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+                addParam(createParamCentered<CKSS>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+                addParam(createParamCentered<CKSS>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 29.5)), module,
-                                                         RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 44.5)), module,
-                                                         RareBreeds_Orbits_Eugene::SYNC_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.0)), module,
-                                                         RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.0)), module,
-                                                         RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.0)), module,
-                                                         RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module,
-                                                         RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module,
-                                                         RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 29.5)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 44.5)), module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.0)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.0)), module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.0)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-                addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 29.5)), module,
-                                                           RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+                addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 29.5)), module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
                 RhythmDisplay *r = createWidget<RhythmDisplay>(mm2px(Vec(14.48, 16.5)));
                 r->module = module;

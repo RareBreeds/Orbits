@@ -13,7 +13,8 @@
       "name": "Eugene",
       "description": "Euclidean Rhythm Generator",
       "tags": [
-        "Clock modulator"
+        "Clock modulator",
+        "Polyphonic"
       ],
       "keywords": "euclidean rhythm beat pattern"
     }
