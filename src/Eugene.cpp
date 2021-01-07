@@ -547,8 +547,8 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
                 addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
                 addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<CKD6>(mm2px(Vec(53.623, 35.108)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
-		addParam(createParamCentered<CKD6>(mm2px(Vec(53.695, 45.479)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
+		addParam(createParamCentered<CKD6>(mm2px(Vec(24.845, 51.49)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
+		addParam(createParamCentered<CKD6>(mm2px(Vec(36.866, 51.737)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
