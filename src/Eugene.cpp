@@ -207,8 +207,12 @@ struct RareBreeds_Orbits_Eugene : Module
                 Channel()
                 {
                         m_length = 32.0;
+                        m_length_cv = 0.0;
                         m_hits = 0.5;
+                        m_hits_cv = 0.0;
                         m_shift = 0.0;
+                        m_shift_cv = 0.0;
+
                         // TODO: Read all raw values from the knobs
                         // TODO: Derive length and hits from them and update rhythm
                         unsigned int length = 32;
@@ -223,23 +227,28 @@ struct RareBreeds_Orbits_Eugene : Module
 
                 unsigned int readLength()
                 {
-                        return clampRounded(m_length, 1, max_rhythm_length);
+                        auto cv = m_module->inputs[LENGTH_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+                        auto f_length = m_length + m_length_cv * cv  * (max_rhythm_length - 1);
+                        return clampRounded(f_length, 1, max_rhythm_length);
                 }
 
                 unsigned int readHits(unsigned int length)
                 {
-                        return clampRounded(m_hits * length, 0, length);
+                        auto cv = m_module->inputs[HITS_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+                        auto f_hits = m_hits + m_hits_cv * cv;
+                        return clampRounded(f_hits * length, 0, length);
                 }
 
                 unsigned int readShift(unsigned int length)
                 {
-                        return clampRounded(m_shift, 0, max_rhythm_length - 1) % length;
+                        auto cv = m_module->inputs[SHIFT_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+                        auto f_shift = m_shift + m_shift_cv * cv  * (max_rhythm_length - 1);
+                        return clampRounded(f_shift, 0, max_rhythm_length - 1) % length;
                 }
 
                 void process(const ProcessArgs &args)
                 {
-                        // TODO: poly CV
-                        auto length = clampRounded(m_length, 1, max_rhythm_length);
+                        auto length = readLength();
 
                         // Avoid stepping out of bounds
                         if(m_current_step >= length)
@@ -247,13 +256,13 @@ struct RareBreeds_Orbits_Eugene : Module
                                 m_current_step = 0;
                         }
 
-                        auto hits = clampRounded(m_hits * length, 0, length);
+                        auto hits = readHits(length);
 
                         m_rhythm = euclideanRhythm(length, hits);
 
                         if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
                         {
-                                m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getVoltage(m_channel));
+                                m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getPolyVoltage(m_channel));
                                 if(m_sync_trigger.isHigh())
                                 {
                                         m_apply_sync = true;
@@ -261,7 +270,7 @@ struct RareBreeds_Orbits_Eugene : Module
                         }
 
                         if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel &&
-                           m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getVoltage(m_channel)))
+                           m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
                         {
                                 // TODO: read reverse..somewhere
                                 auto reverse = false;
@@ -294,7 +303,7 @@ struct RareBreeds_Orbits_Eugene : Module
                                         m_current_step = 0;
                                 }
 
-                                auto shift = clampRounded(m_shift, 0, max_rhythm_length - 1) % length;
+                                auto shift = readShift(length);
 
                                 // TODO: invert
                                 auto invert = false;
@@ -391,11 +400,25 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_length = length;
                 }
 
+                float length_cv = params[LENGTH_CV_KNOB_PARAM].getValue();
+                if(length_cv != m_length_cv)
+                {
+                        m_active_channel->m_length_cv = length_cv;
+                        m_length_cv = length_cv;
+                }
+
                 float hits = params[HITS_KNOB_PARAM].getValue();
                 if(hits != m_hits)
                 {
                         m_active_channel->m_hits = hits;
                         m_hits = hits;
+                }
+
+                float hits_cv = params[HITS_CV_KNOB_PARAM].getValue();
+                if(hits_cv != m_hits_cv)
+                {
+                        m_active_channel->m_hits_cv = hits_cv;
+                        m_hits_cv = hits_cv;
                 }
 
                 float shift = params[SHIFT_KNOB_PARAM].getValue();
@@ -404,7 +427,13 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_active_channel->m_shift = shift;
                         m_shift = shift;
                 }
-                // TODO: CV knobs
+
+                float shift_cv = params[SHIFT_CV_KNOB_PARAM].getValue();
+                if(shift_cv != m_shift_cv)
+                {
+                        m_active_channel->m_shift_cv = shift_cv;
+                        m_shift_cv = shift_cv;
+                }
 
                 for(auto i = 0; i < m_active_channels; ++i)
                 {
