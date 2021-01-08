@@ -170,8 +170,6 @@ struct RareBreeds_Orbits_Eugene : Module
                 NUM_LIGHTS
         };
 
-        // The old knob state, if the knob state changes the current channel is updated
-
         // The channel currently being displayed and controlled by the knobs
         int m_active_channel_id = 0;
         // The number of channels that are active
@@ -181,7 +179,6 @@ struct RareBreeds_Orbits_Eugene : Module
         float m_length, m_length_cv;
         float m_hits, m_hits_cv;
         float m_shift, m_shift_cv;
-        float m_reverse_cv, m_invert_cv;
 
         struct Channel
         {
@@ -198,7 +195,6 @@ struct RareBreeds_Orbits_Eugene : Module
                 float m_hits, m_hits_cv;
                 float m_shift, m_shift_cv;
                 bool m_reverse, m_invert;
-                float m_reverse_cv, m_invert_cv;
                 RareBreeds_Orbits_Eugene *m_module;
 
                 void init(RareBreeds_Orbits_Eugene *module, int channel)
@@ -224,14 +220,40 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_reverse = !m_reverse;
                 }
 
+                bool readReverse(void)
+                {
+                        if(m_module->inputs[REVERSE_CV_INPUT].isConnected())
+                        {
+                                m_reverse_trigger.process(m_module->inputs[REVERSE_CV_INPUT].getPolyVoltage(m_channel));
+                                return m_reverse_trigger.isHigh() != m_reverse;
+                        }
+                        else
+                        {
+                                return m_reverse;
+                        }
+                }
+
                 void toggleInvert(void)
                 {
                         m_invert = !m_invert;
                 }
 
-                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int shift)
+                bool readInvert(void)
                 {
-                        return (((rotL(m_rhythm, length, shift) >> beat) & 1) != m_invert);
+                        if(m_module->inputs[INVERT_CV_INPUT].isConnected())
+                        {
+                                m_invert_trigger.process(m_module->inputs[INVERT_CV_INPUT].getPolyVoltage(m_channel));
+                                return m_invert_trigger.isHigh() != m_invert;
+                        }
+                        else
+                        {
+                                return m_invert;
+                        }
+                }
+
+                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int shift, bool invert)
+                {
+                        return (((rotL(m_rhythm, length, shift) >> beat) & 1) != invert);
                 }
 
                 unsigned int readLength()
@@ -281,7 +303,7 @@ struct RareBreeds_Orbits_Eugene : Module
                         if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel &&
                            m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
                         {
-                                if(m_reverse)
+                                if(readReverse())
                                 {
                                         if(m_current_step == 0)
                                         {
@@ -311,8 +333,8 @@ struct RareBreeds_Orbits_Eugene : Module
                                 }
 
                                 auto shift = readShift(length);
-
-                                if(((rotL(m_rhythm, length, shift) >> m_current_step) & 1) != m_invert)
+                                auto invert = readInvert();
+                                if(isOnBeat(m_current_step, length, shift, invert))
                                 {
                                         m_output_generator.trigger(1e-3f);
                                 }
@@ -473,6 +495,7 @@ struct RhythmDisplay : TransparentWidget
                 const auto length = module->m_active_channel->readLength();
                 const auto hits = module->m_active_channel->readHits(length);
                 const auto shift = module->m_active_channel->readShift(length);
+                const auto invert = module->m_active_channel->readInvert();
 
                 nvgStrokeColor(args.vg, color::WHITE);
                 nvgSave(args.vg);
@@ -532,7 +555,7 @@ struct RhythmDisplay : TransparentWidget
                         }
 
                         float radius = off_radius;
-                        if(module->m_active_channel->isOnBeat(k, length, shift))
+                        if(module->m_active_channel->isOnBeat(k, length, shift, invert))
                         {
                                 radius = on_radius;
                         }
@@ -541,7 +564,7 @@ struct RhythmDisplay : TransparentWidget
                         nvgRotate(args.vg, 2.f * k * M_PI / length);
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, radius);
-                        if(module->m_active_channel->m_invert)
+                        if(invert)
                         {
                                 nvgStroke(args.vg);
                         }
