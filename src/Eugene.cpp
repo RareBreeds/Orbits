@@ -172,8 +172,6 @@ struct RareBreeds_Orbits_Eugene : Module
 
         // The channel currently being displayed and controlled by the knobs
         int m_active_channel_id = 0;
-        // The number of channels that are active
-        int m_active_channels = 0;
 
         // Old knob values
         float m_length, m_length_cv;
@@ -340,7 +338,22 @@ struct RareBreeds_Orbits_Eugene : Module
                                 }
                         }
 
-                        m_module->outputs[BEAT_OUTPUT].setVoltage(m_output_generator.process(args.sampleTime) ? 10.f : 0.f, m_channel);
+                        float out = m_output_generator.process(args.sampleTime) ? 10.f : 0.f;
+                        m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
+                }
+
+                json_t *dataToJson()
+                {
+                        json_t *root = json_object();
+                        json_object_set_new(root, "length", json_real(m_length));
+                        json_object_set_new(root, "length_cv", json_real(m_length_cv));
+                        json_object_set_new(root, "hits", json_real(m_hits));
+                        json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
+                        json_object_set_new(root, "shift", json_real(m_shift));
+                        json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
+                        json_object_set_new(root, "reverse", json_boolean(m_reverse));
+                        json_object_set_new(root, "invert", json_boolean(m_invert));
+                        return root;
                 }
         };
 
@@ -383,16 +396,16 @@ struct RareBreeds_Orbits_Eugene : Module
 
         void process(const ProcessArgs &args) override
         {
-                m_active_channels = inputs[CLOCK_INPUT].getChannels();
-                outputs[BEAT_OUTPUT].setChannels(m_active_channels);
+                auto active_channels = inputs[CLOCK_INPUT].getChannels();
+                outputs[BEAT_OUTPUT].setChannels(active_channels);
 
                 // Update the active channel if its out of range of the active channels
                 // Relies on clamp returning 'a' if 'b' < 'a'
-                m_active_channel_id = clamp(m_active_channel_id, 0, m_active_channels - 1);
+                m_active_channel_id = clamp(m_active_channel_id, 0, active_channels - 1);
 
                 if(channel_next_trigger.process(std::round(params[CHANNEL_NEXT_PARAM].getValue())))
                 {
-                        if(m_active_channel_id == m_active_channels - 1)
+                        if(m_active_channel_id == active_channels - 1)
                         {
                                 m_active_channel_id = 0;
                         }
@@ -406,7 +419,7 @@ struct RareBreeds_Orbits_Eugene : Module
                 {
                         if(m_active_channel_id ==  0)
                         {
-                                m_active_channel_id = m_active_channels - 1;
+                                m_active_channel_id = active_channels - 1;
                         }
                         else
                         {
@@ -468,10 +481,38 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_active_channel->toggleInvert();
                 }
 
-                for(auto i = 0; i < m_active_channels; ++i)
+                for(auto i = 0; i < active_channels; ++i)
                 {
                         m_channels[i].process(args);
                 }
+        }
+
+        json_t *dataToJson() override
+        {
+                json_t *root = json_object();
+
+                json_object_set_new(root, "length", json_real(m_length));
+                json_object_set_new(root, "length_cv", json_real(m_length_cv));
+                json_object_set_new(root, "hits", json_real(m_hits));
+                json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
+                json_object_set_new(root, "shift", json_real(m_shift));
+                json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
+
+                json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
+
+                json_t *channels = json_array();
+                for(auto i = 0; i < max_channels; ++i)
+                {
+                        json_array_append_new(channels, m_channels[i].dataToJson());
+                }
+
+		json_object_set_new(root, "channels", channels);
+
+		return root;
+	}
+
+        void dataFromJson(json_t *root) override
+        {
         }
 };
 
