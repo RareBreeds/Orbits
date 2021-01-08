@@ -178,8 +178,6 @@ struct RareBreeds_Orbits_Eugene : Module
         int m_active_channels = 0;
 
         // Old knob values
-        // TODO: Could stick these into a struct
-        // TODO: Initialise these in the constructor
         float m_length, m_length_cv;
         float m_hits, m_hits_cv;
         float m_shift, m_shift_cv;
@@ -196,33 +194,44 @@ struct RareBreeds_Orbits_Eugene : Module
                 dsp::SchmittTrigger m_invert_trigger;
                 dsp::PulseGenerator m_output_generator;
                 bool m_apply_sync = false;
-                // Values for the knobs for this channel
                 float m_length, m_length_cv;
                 float m_hits, m_hits_cv;
                 float m_shift, m_shift_cv;
+                bool m_reverse, m_invert;
                 float m_reverse_cv, m_invert_cv;
-                RareBreeds_Orbits_Eugene *m_module = NULL;
-                // TODO: Should reverse and invert switches act across all channels?
-                // TODO: Channel needs a reference to the module for reading parameters
-                Channel()
-                {
-                        m_length = 32.0;
-                        m_length_cv = 0.0;
-                        m_hits = 0.5;
-                        m_hits_cv = 0.0;
-                        m_shift = 0.0;
-                        m_shift_cv = 0.0;
+                RareBreeds_Orbits_Eugene *m_module;
 
-                        // TODO: Read all raw values from the knobs
-                        // TODO: Derive length and hits from them and update rhythm
-                        unsigned int length = 32;
-                        unsigned int hits = 16;
+                void init(RareBreeds_Orbits_Eugene *module, int channel)
+                {
+                        m_module = module;
+                        m_channel = channel;
+                        m_length = m_module->params[LENGTH_KNOB_PARAM].getValue();
+                        m_length_cv = m_module->params[LENGTH_CV_KNOB_PARAM].getValue();
+                        m_hits = m_module->params[HITS_KNOB_PARAM].getValue();
+                        m_hits_cv = m_module->params[HITS_CV_KNOB_PARAM].getValue();
+                        m_shift = m_module->params[SHIFT_KNOB_PARAM].getValue();
+                        m_shift_cv = m_module->params[SHIFT_CV_KNOB_PARAM].getValue();
+                        m_reverse = false;
+                        m_invert = false;
+
+                        auto length = readLength();
+                        auto hits = readHits(length);
                         m_rhythm = euclideanRhythm(length, hits);
                 }
 
-                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int shift, unsigned int invert)
+                void toggleReverse(void)
                 {
-                        return (((rotL(m_rhythm, length, shift) >> beat) & 1) != invert);
+                        m_reverse = !m_reverse;
+                }
+
+                void toggleInvert(void)
+                {
+                        m_invert = !m_invert;
+                }
+
+                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int shift)
+                {
+                        return (((rotL(m_rhythm, length, shift) >> beat) & 1) != m_invert);
                 }
 
                 unsigned int readLength()
@@ -272,9 +281,7 @@ struct RareBreeds_Orbits_Eugene : Module
                         if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel &&
                            m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
                         {
-                                // TODO: read reverse..somewhere
-                                auto reverse = false;
-                                if(reverse)
+                                if(m_reverse)
                                 {
                                         if(m_current_step == 0)
                                         {
@@ -305,9 +312,7 @@ struct RareBreeds_Orbits_Eugene : Module
 
                                 auto shift = readShift(length);
 
-                                // TODO: invert
-                                auto invert = false;
-                                if(((rotL(m_rhythm, length, shift) >> m_current_step) & 1) != invert)
+                                if(((rotL(m_rhythm, length, shift) >> m_current_step) & 1) != m_invert)
                                 {
                                         m_output_generator.trigger(1e-3f);
                                 }
@@ -321,6 +326,8 @@ struct RareBreeds_Orbits_Eugene : Module
         Channel *m_active_channel;
         dsp::BooleanTrigger channel_next_trigger;
         dsp::BooleanTrigger channel_prev_trigger;
+        dsp::BooleanTrigger reverse_trigger;
+        dsp::BooleanTrigger invert_trigger;
 
         RareBreeds_Orbits_Eugene()
         {
@@ -338,30 +345,25 @@ struct RareBreeds_Orbits_Eugene : Module
 
                 for(auto i = 0; i < max_channels; ++i)
                 {
-                        m_channels[i].m_module = this;
-                        m_channels[i].m_channel = i;
+                        m_channels[i].init(this, i);
                 }
 
                 m_active_channel_id = 0;
                 m_active_channel = &m_channels[m_active_channel_id];
+
+                m_length = params[LENGTH_KNOB_PARAM].getValue();
+                m_length_cv = params[LENGTH_CV_KNOB_PARAM].getValue();
+                m_hits = params[HITS_KNOB_PARAM].getValue();
+                m_hits_cv = params[HITS_CV_KNOB_PARAM].getValue();
+                m_shift = params[SHIFT_KNOB_PARAM].getValue();
+                m_shift_cv = params[SHIFT_CV_KNOB_PARAM].getValue();
         }
 
         void process(const ProcessArgs &args) override
         {
-                // TODO: Check the channel next/prev buttons for presses and update active channel
-                // TODO: If a knob has changed position (at all) since the last call
-                // then tell the current channel about the new value (channel.updateBlah) (after checking prev/next buttons)
-                // TODO: Loop over all channels processing them
-                // TODO: Number of channels is based on the number of channels provided by the clock
-                //       Or should this be by any of the inputs? What if a poly sync is connected but mono clock?
-                //       A: Just clock maybe, seems simpler and not sure there's a real case for the other combos.
-                //       Could select the poly input from a menu like bogaudio does
-                // TODO: How are mono channels extended to channels if it's in poly mode...Same as Rack? Pad with 0's rather than applying across all channels?
-                
-                // How may channels are we processing?
-                // Get this from the number of channels from the clock input
                 m_active_channels = inputs[CLOCK_INPUT].getChannels();
                 outputs[BEAT_OUTPUT].setChannels(m_active_channels);
+
                 // Update the active channel if its out of range of the active channels
                 // Relies on clamp returning 'a' if 'b' < 'a'
                 m_active_channel_id = clamp(m_active_channel_id, 0, m_active_channels - 1);
@@ -392,7 +394,6 @@ struct RareBreeds_Orbits_Eugene : Module
 
                 m_active_channel = &m_channels[m_active_channel_id];
 
-                // If any of the knobs have changes since the last round update the active channel
                 float length = params[LENGTH_KNOB_PARAM].getValue();
                 if(length != m_length)
                 {
@@ -433,6 +434,16 @@ struct RareBreeds_Orbits_Eugene : Module
                 {
                         m_active_channel->m_shift_cv = shift_cv;
                         m_shift_cv = shift_cv;
+                }
+
+                if(reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue())))
+                {
+                        m_active_channel->toggleReverse();
+                }
+
+                if(invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue())))
+                {
+                        m_active_channel->toggleInvert();
                 }
 
                 for(auto i = 0; i < m_active_channels; ++i)
@@ -482,7 +493,8 @@ struct RhythmDisplay : TransparentWidget
                 nvgFontSize(args.vg, 12);
                 nvgTextAlign(args.vg, NVG_ALIGN_RIGHT | NVG_ALIGN_BOTTOM);
                 // Fundamental numbers channels 1 - 16 on the display, copy that
-                nvgText(args.vg, b.size.x / 2.f - .5f, b.size.y / 2.f - .5f, std::to_string(module->m_active_channel_id + 1).c_str(), NULL);
+                nvgText(args.vg, b.size.x / 2.f - .5f, b.size.y / 2.f - .5f,
+                        std::to_string(module->m_active_channel_id + 1).c_str(), NULL);
 
                 // Scale to [-1, 1]
                 nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
@@ -511,7 +523,6 @@ struct RhythmDisplay : TransparentWidget
                 // Add a border of half a circle so we don't draw over the edge
                 nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
-                const bool invert = false; // TODO: module->readInvert();
                 for(unsigned int k = 0; k < length; ++k)
                 {
                         float y_pos = 1.f;
@@ -521,7 +532,7 @@ struct RhythmDisplay : TransparentWidget
                         }
 
                         float radius = off_radius;
-                        if(module->m_active_channel->isOnBeat(k, length, shift, invert))
+                        if(module->m_active_channel->isOnBeat(k, length, shift))
                         {
                                 radius = on_radius;
                         }
@@ -530,7 +541,7 @@ struct RhythmDisplay : TransparentWidget
                         nvgRotate(args.vg, 2.f * k * M_PI / length);
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, radius);
-                        if(invert)
+                        if(module->m_active_channel->m_invert)
                         {
                                 nvgStroke(args.vg);
                         }
@@ -584,8 +595,8 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 85.471)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 85.471)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 85.471)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-                addParam(createParamCentered<CKSS>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-                addParam(createParamCentered<CKSS>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+                addParam(createParamCentered<CKD6>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+                addParam(createParamCentered<CKD6>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
 
 		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 23.15)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
