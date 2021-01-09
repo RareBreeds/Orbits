@@ -1,6 +1,7 @@
 // TODO: Symbol showing rhythm direction
 // TODO: Better SVG for buttons
 // TODO: Refactor
+// TODO: Optimise, always processing all 16 channels seems expensive
 // TODO: Option for randomise / reset to apply to current channel only (?)
 // TODO: Display number of active channels (?)
 // TODO: A way of seeing all rhythms on the display at the same time (?)
@@ -187,7 +188,6 @@ struct RareBreeds_Orbits_Eugene : Module
         {
                 unsigned int m_current_step = 0;
                 int m_channel;
-                uint32_t m_rhythm;
                 dsp::SchmittTrigger m_clock_trigger;
                 dsp::SchmittTrigger m_sync_trigger;
                 dsp::SchmittTrigger m_reverse_trigger;
@@ -212,10 +212,6 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_shift_cv = m_module->params[SHIFT_CV_KNOB_PARAM].getValue();
                         m_reverse = false;
                         m_invert = false;
-
-                        auto length = readLength();
-                        auto hits = readHits(length);
-                        m_rhythm = euclideanRhythm(length, hits);
                 }
 
                 void toggleReverse(void)
@@ -254,9 +250,10 @@ struct RareBreeds_Orbits_Eugene : Module
                         }
                 }
 
-                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int shift, bool invert)
+                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int hits, unsigned int shift, bool invert)
                 {
-                        return (((rotL(m_rhythm, length, shift) >> beat) & 1) != invert);
+                        uint32_t rhythm = euclideanRhythm(length, hits);
+                        return (((rotL(rhythm, length, shift) >> beat) & 1) != invert);
                 }
 
                 unsigned int readLength()
@@ -289,10 +286,6 @@ struct RareBreeds_Orbits_Eugene : Module
                         {
                                 m_current_step = 0;
                         }
-
-                        auto hits = readHits(length);
-
-                        m_rhythm = euclideanRhythm(length, hits);
 
                         if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
                         {
@@ -335,9 +328,10 @@ struct RareBreeds_Orbits_Eugene : Module
                                         m_current_step = 0;
                                 }
 
+                                auto hits = readHits(length);
                                 auto shift = readShift(length);
                                 auto invert = readInvert();
-                                if(isOnBeat(m_current_step, length, shift, invert))
+                                if(isOnBeat(m_current_step, length, hits, shift, invert))
                                 {
                                         m_output_generator.trigger(1e-3f);
                                 }
@@ -410,20 +404,18 @@ struct RareBreeds_Orbits_Eugene : Module
                         {
                                 m_invert = json_boolean_value(invert);
                         }
-
-                        auto len = readLength();
-                        auto hit = readHits(len);
-                        m_rhythm = euclideanRhythm(len, hit);
                 }
 
                 void onRandomize()
                 {
+                        m_length = random::uniform() * (max_rhythm_length - 1) + 1;
+                        m_length_cv = random::uniform();
+                        m_hits = random::uniform();
+                        m_hits_cv = random::uniform();
+                        m_shift = random::uniform();
+                        m_shift_cv = random::uniform();
                         m_reverse = (random::uniform() < 0.5f);
                         m_invert = (random::uniform() < 0.5f);
-
-                        auto len = readLength();
-                        auto hit = readHits(len);
-                        m_rhythm = euclideanRhythm(len, hit);
                 }
         };
 
@@ -641,6 +633,16 @@ struct RareBreeds_Orbits_Eugene : Module
                 {
                         m_channels[i].onRandomize();
                 }
+
+                // Parameters have already been randomised by VCV rack
+                // But then the active channel controlled by those parameters has been randomised again
+                // Update the parameters so they reflect the active channels randomised parameters
+                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
+                params[LENGTH_CV_KNOB_PARAM].setValue(m_active_channel->m_length_cv);
+                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
+                params[HITS_CV_KNOB_PARAM].setValue(m_active_channel->m_hits_cv);
+                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
+                params[SHIFT_CV_KNOB_PARAM].setValue(m_active_channel->m_shift_cv);
         }
 
         void onReset() override
@@ -742,7 +744,7 @@ struct RhythmDisplay : TransparentWidget
                         }
 
                         float radius = off_radius;
-                        if(module->m_active_channel->isOnBeat(k, length, shift, invert))
+                        if(module->m_active_channel->isOnBeat(k, length, hits, shift, invert))
                         {
                                 radius = on_radius;
                         }
