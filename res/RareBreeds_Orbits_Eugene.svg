@@ -457,14 +457,14 @@
        style="display:inline;opacity:0.94;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.175092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-3-3-7"
        cx="36.865807"
-       cy="51.737438"
+       cy="51.136395"
        r="4"
        inkscape:label="channel_next" />
     <circle
        style="display:inline;opacity:0.94;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.175092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-3-3-7-3"
        cx="24.844856"
-       cy="51.489746"
+       cy="50.888702"
        r="4"
        inkscape:label="channel_prev" />
   </g>

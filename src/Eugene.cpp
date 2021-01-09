@@ -685,6 +685,7 @@ struct RhythmDisplay : TransparentWidget
                 const auto hits = module->m_active_channel->readHits(length);
                 const auto shift = module->m_active_channel->readShift(length);
                 const auto invert = module->m_active_channel->readInvert();
+                const auto reverse = module->m_active_channel->readReverse();
 
                 nvgStrokeColor(args.vg, color::WHITE);
                 nvgSave(args.vg);
@@ -702,6 +703,8 @@ struct RhythmDisplay : TransparentWidget
                 nvgFillColor(args.vg, color::WHITE);
                 nvgText(args.vg, 0.f, -7.f, std::to_string(hits).c_str(), NULL);
                 nvgText(args.vg, 0.f, 7.f, std::to_string(length).c_str(), NULL);
+
+                // Draw current channel in the bottom right
                 nvgFontSize(args.vg, 12);
                 nvgTextAlign(args.vg, NVG_ALIGN_RIGHT | NVG_ALIGN_BOTTOM);
                 // Fundamental numbers channels 1 - 16 on the display, copy that
@@ -714,6 +717,23 @@ struct RhythmDisplay : TransparentWidget
                 // Flip x and y so we start at the top and positive angle
                 // increments go clockwise
                 nvgScale(args.vg, -1.f, -1.f);
+
+                // Triangle showing direction
+                nvgBeginPath(args.vg);
+                if(reverse)
+                {
+                        nvgMoveTo(args.vg, 0.23f, -0.2f);
+                        nvgLineTo(args.vg, 0.3f, 0.f);
+                        nvgLineTo(args.vg, 0.23f, 0.2f);
+                }
+                else
+                {
+                        nvgMoveTo(args.vg, -0.23f, 0.2f);
+                        nvgLineTo(args.vg, -0.3f, -0.f);
+                        nvgLineTo(args.vg, -0.23f, -0.2f);
+                }
+                nvgFill(args.vg);
+                nvgClosePath(args.vg);
 
                 // set the on beat radius so 8 can fix on the screen
                 const auto on_radius = 1.f / 8.f;
@@ -729,31 +749,28 @@ struct RhythmDisplay : TransparentWidget
                 const auto inner_ring_scale = 0.75f;
 
                 // Width of the line when drawing circles
-                const auto circle_stroke_width = 0.03f;
+                const auto circle_stroke_width = 0.02f;
                 nvgStrokeWidth(args.vg, circle_stroke_width);
 
                 // Add a border of half a circle so we don't draw over the edge
                 nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
-                for(unsigned int k = 0; k < length; ++k)
+                for(auto k = 0u; k < length; ++k)
                 {
-                        float y_pos = 1.f;
-                        if(length > 16 and k % 2)
+                        auto y_pos = 1.f;
+                        if(length > 16 && k % 2)
                         {
                                 y_pos = inner_ring_scale;
                         }
 
-                        float radius = off_radius;
-                        if(module->m_active_channel->isOnBeat(k, length, hits, shift, invert))
-                        {
-                                radius = on_radius;
-                        }
+                        auto on_beat = module->m_active_channel->isOnBeat(k, length, hits, shift, invert);
+                        auto radius = on_beat ? on_radius : off_radius;
 
                         nvgSave(args.vg);
                         nvgRotate(args.vg, 2.f * k * M_PI / length);
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, radius);
-                        if(invert)
+                        if(on_beat && invert)
                         {
                                 nvgStroke(args.vg);
                         }
@@ -787,6 +804,28 @@ struct RhythmDisplay : TransparentWidget
         }
 };
 
+struct TBL : app::SvgSwitch
+{
+        TBL()
+        {
+                momentary = true;
+                shadow->opacity = 0.0;
+                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBL_0.svg")));
+                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBL_1.svg")));
+        }
+};
+
+struct TBR : app::SvgSwitch
+{
+        TBR()
+        {
+                momentary = true;
+                shadow->opacity = 0.0;
+                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBR_0.svg")));
+                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBR_1.svg")));
+        }
+};
+
 struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 {
         RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module)
@@ -799,8 +838,8 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
                 addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
                 addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-                addParam(createParamCentered<CKD6>(mm2px(Vec(24.845, 51.49)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
-                addParam(createParamCentered<CKD6>(mm2px(Vec(36.866, 51.737)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
+                addParam(createParamCentered<TBL>(mm2px(Vec(24.845, 50.888702)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
+                addParam(createParamCentered<TBR>(mm2px(Vec(36.866, 51.136395)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
