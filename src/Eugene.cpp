@@ -1,6 +1,6 @@
-// TODO: Symbol showing rhythm direction
-// TODO: Better SVG for buttons
 // TODO: Refactor
+// TODO: Add some presets to the distributable?
+// TODO: Example templates?
 // TODO: Optimise, always processing all 16 channels seems expensive
 // TODO: Option for randomise / reset to apply to current channel only (?)
 // TODO: Display number of active channels (?)
@@ -143,8 +143,7 @@ struct RareBreeds_Orbits_Eugene : Module
 {
         enum ParamIds
         {
-                CHANNEL_NEXT_PARAM,
-                CHANNEL_PREV_PARAM,
+                CHANNEL_KNOB_PARAM,
                 LENGTH_KNOB_PARAM,
                 HITS_KNOB_PARAM,
                 SHIFT_KNOB_PARAM,
@@ -421,16 +420,13 @@ struct RareBreeds_Orbits_Eugene : Module
 
         Channel m_channels[max_channels];
         Channel *m_active_channel;
-        dsp::BooleanTrigger channel_next_trigger;
-        dsp::BooleanTrigger channel_prev_trigger;
         dsp::BooleanTrigger reverse_trigger;
         dsp::BooleanTrigger invert_trigger;
 
         RareBreeds_Orbits_Eugene()
         {
                 config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-                configParam(CHANNEL_NEXT_PARAM, 0.f, 1.f, 0.f, "Next Channel");
-                configParam(CHANNEL_PREV_PARAM, 0.f, 1.f, 0.f, "Previous Channel");
+                configParam(CHANNEL_KNOB_PARAM, 0.f, 15.f, 0.f, "Channel", "", 0.f, 1.f, 1.f);
                 configParam(LENGTH_KNOB_PARAM, 1.f, max_rhythm_length, max_rhythm_length, "Length");
                 configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
                 configParam(SHIFT_KNOB_PARAM, 0.f, max_rhythm_length - 1, 0.f, "Shift");
@@ -440,6 +436,11 @@ struct RareBreeds_Orbits_Eugene : Module
                 configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
                 configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
 
+                reset();
+        }
+
+        void reset()
+        {
                 m_active_channel_id = 0;
                 m_active_channel = &m_channels[m_active_channel_id];
 
@@ -461,30 +462,7 @@ struct RareBreeds_Orbits_Eugene : Module
                 auto active_channels = inputs[CLOCK_INPUT].getChannels();
                 outputs[BEAT_OUTPUT].setChannels(active_channels);
 
-                if(channel_next_trigger.process(std::round(params[CHANNEL_NEXT_PARAM].getValue())))
-                {
-                        if(m_active_channel_id == max_channels - 1)
-                        {
-                                m_active_channel_id = 0;
-                        }
-                        else
-                        {
-                                ++m_active_channel_id;
-                        }
-                }
-
-                if(channel_prev_trigger.process(std::round(params[CHANNEL_PREV_PARAM].getValue())))
-                {
-                        if(m_active_channel_id ==  0)
-                        {
-                                m_active_channel_id = max_channels - 1;
-                        }
-                        else
-                        {
-                                --m_active_channel_id;
-                        }
-                }
-
+                m_active_channel_id = std::round(params[CHANNEL_KNOB_PARAM].getValue());
                 m_active_channel = &m_channels[m_active_channel_id];
 
                 float length = params[LENGTH_KNOB_PARAM].getValue();
@@ -647,20 +625,7 @@ struct RareBreeds_Orbits_Eugene : Module
 
         void onReset() override
         {
-                m_active_channel_id = 0;
-                m_active_channel = &m_channels[m_active_channel_id];
-
-                m_length = params[LENGTH_KNOB_PARAM].getValue();
-                m_length_cv = params[LENGTH_CV_KNOB_PARAM].getValue();
-                m_hits = params[HITS_KNOB_PARAM].getValue();
-                m_hits_cv = params[HITS_CV_KNOB_PARAM].getValue();
-                m_shift = params[SHIFT_KNOB_PARAM].getValue();
-                m_shift_cv = params[SHIFT_CV_KNOB_PARAM].getValue();
-
-                for(auto i = 0; i < max_channels; ++i)
-                {
-                        m_channels[i].init(this, i);
-                }
+                reset();
         }
 };
 
@@ -804,28 +769,6 @@ struct RhythmDisplay : TransparentWidget
         }
 };
 
-struct TBL : app::SvgSwitch
-{
-        TBL()
-        {
-                momentary = true;
-                shadow->opacity = 0.0;
-                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBL_0.svg")));
-                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBL_1.svg")));
-        }
-};
-
-struct TBR : app::SvgSwitch
-{
-        TBR()
-        {
-                momentary = true;
-                shadow->opacity = 0.0;
-                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBR_0.svg")));
-                addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/TBR_1.svg")));
-        }
-};
-
 struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 {
         RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module)
@@ -838,8 +781,7 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
                 addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
                 addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-                addParam(createParamCentered<TBL>(mm2px(Vec(24.845, 50.888702)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
-                addParam(createParamCentered<TBR>(mm2px(Vec(36.866, 51.136395)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(53.72, 38.15)), module, RareBreeds_Orbits_Eugene::CHANNEL_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
