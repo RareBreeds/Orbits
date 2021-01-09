@@ -1,10 +1,3 @@
-// TODO: Refactor
-// TODO: Add some presets to the distributable?
-// TODO: Example templates?
-// TODO: Optimise, always processing all 16 channels seems expensive
-// TODO: Option for randomise / reset to apply to current channel only (?)
-// TODO: Display number of active channels (?)
-// TODO: A way of seeing all rhythms on the display at the same time (?)
 #include <cstdint>
 #include <string>
 
