@@ -410,6 +410,12 @@ struct RareBreeds_Orbits_Eugene : Module
                         auto hit = readHits(len);
                         m_rhythm = euclideanRhythm(len, hit);
                 }
+
+                void onRandomize()
+                {
+                        m_reverse = (random::uniform() < 0.5f);
+                        m_invert = (random::uniform() < 0.5f);
+                }
         };
 
         Channel m_channels[max_channels];
@@ -622,6 +628,13 @@ struct RareBreeds_Orbits_Eugene : Module
                                 }
                         }
                 }
+        }
+
+        void onRandomize() override
+        {
+                // Only apply randomisation to the current channel
+                // avoids ruining beats you may want to keep on other channels
+                m_active_channel->onRandomize();
         }
 };
 
