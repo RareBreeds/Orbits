@@ -137,8 +137,8 @@ struct RareBreeds_Orbits_Eugene : Module
 {
         enum ParamIds
         {
-		CHANNEL_NEXT_PARAM,
-		CHANNEL_PREV_PARAM,
+                CHANNEL_NEXT_PARAM,
+                CHANNEL_PREV_PARAM,
                 LENGTH_KNOB_PARAM,
                 HITS_KNOB_PARAM,
                 SHIFT_KNOB_PARAM,
@@ -355,6 +355,61 @@ struct RareBreeds_Orbits_Eugene : Module
                         json_object_set_new(root, "invert", json_boolean(m_invert));
                         return root;
                 }
+
+                void dataFromJson(json_t *root)
+                {
+                        json_t* length = json_object_get(root, "length");
+                        if(length)
+                        {
+                                m_length = json_real_value(length);
+                        }
+
+                        json_t* length_cv = json_object_get(root, "length_cv");
+                        if(length_cv)
+                        {
+                                m_length_cv = json_real_value(length_cv);
+                        }
+
+                        json_t* hits = json_object_get(root, "hits");
+                        if(hits)
+                        {
+                                m_hits = json_real_value(hits);
+                        }
+
+                        json_t* hits_cv = json_object_get(root, "hits_cv");
+                        if(hits_cv)
+                        {
+                                m_hits_cv = json_real_value(hits_cv);
+                        }
+
+                        json_t* shift = json_object_get(root, "shift");
+                        if(shift)
+                        {
+                                m_shift = json_real_value(shift);
+                        }
+
+                        json_t* shift_cv = json_object_get(root, "shift_cv");
+                        if(shift_cv)
+                        {
+                                m_shift_cv = json_real_value(shift_cv);
+                        }
+
+                        json_t* reverse = json_object_get(root, "reverse");
+                        if(reverse)
+                        {
+                                m_reverse = json_boolean_value(reverse);
+                        }
+
+                        json_t* invert = json_object_get(root, "invert");
+                        if(invert)
+                        {
+                                m_invert = json_boolean_value(invert);
+                        }
+
+                        auto len = readLength();
+                        auto hit = readHits(len);
+                        m_rhythm = euclideanRhythm(len, hit);
+                }
         };
 
         Channel m_channels[max_channels];
@@ -367,8 +422,8 @@ struct RareBreeds_Orbits_Eugene : Module
         RareBreeds_Orbits_Eugene()
         {
                 config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		configParam(CHANNEL_NEXT_PARAM, 0.f, 1.f, 0.f, "Next Channel");
-		configParam(CHANNEL_PREV_PARAM, 0.f, 1.f, 0.f, "Previous Channel");
+                configParam(CHANNEL_NEXT_PARAM, 0.f, 1.f, 0.f, "Next Channel");
+                configParam(CHANNEL_PREV_PARAM, 0.f, 1.f, 0.f, "Previous Channel");
                 configParam(LENGTH_KNOB_PARAM, 1.f, max_rhythm_length, max_rhythm_length, "Length");
                 configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
                 configParam(SHIFT_KNOB_PARAM, 0.f, max_rhythm_length - 1, 0.f, "Shift");
@@ -425,7 +480,7 @@ struct RareBreeds_Orbits_Eugene : Module
                         {
                                 --m_active_channel_id;
                         }
-                }    
+                }
 
                 m_active_channel = &m_channels[m_active_channel_id];
 
@@ -506,13 +561,67 @@ struct RareBreeds_Orbits_Eugene : Module
                         json_array_append_new(channels, m_channels[i].dataToJson());
                 }
 
-		json_object_set_new(root, "channels", channels);
+                json_object_set_new(root, "channels", channels);
 
-		return root;
-	}
+                return root;
+        }
 
         void dataFromJson(json_t *root) override
         {
+                json_t* length = json_object_get(root, "length");
+                if(length)
+                {
+                       m_length = json_real_value(length);
+                }
+
+                json_t* length_cv = json_object_get(root, "length_cv");
+                if(length_cv)
+                {
+                        m_length_cv = json_real_value(length_cv);
+                }
+
+                json_t* hits = json_object_get(root, "hits");
+                if(hits)
+                {
+                        m_hits = json_real_value(hits);
+                }
+
+                json_t* hits_cv = json_object_get(root, "hits_cv");
+                if(hits_cv)
+                {
+                        m_hits_cv = json_real_value(hits_cv);
+                }
+
+                json_t* shift = json_object_get(root, "shift");
+                if(shift)
+                {
+                        m_shift = json_real_value(shift);
+                }
+
+                json_t* shift_cv = json_object_get(root, "shift_cv");
+                if(shift_cv)
+                {
+                        m_shift_cv = json_real_value(shift_cv);
+                }
+
+                json_t* active_channel_id = json_object_get(root, "active_channel_id");
+                if(active_channel_id)
+                {
+                        m_active_channel_id = json_integer_value(active_channel_id);
+                }
+
+                json_t *channels = json_object_get(root, "channels");
+                if(channels)
+                {
+                        for(auto i = 0; i < max_channels; ++i)
+                        {
+                                json_t *channel = json_array_get(channels, i);
+                                if(channel)
+                                {
+                                        m_channels[i].dataFromJson(channel);
+                                }
+                        }
+                }
         }
 };
 
@@ -651,27 +760,27 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
                 addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
                 addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<CKD6>(mm2px(Vec(24.845, 51.49)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
-		addParam(createParamCentered<CKD6>(mm2px(Vec(36.866, 51.737)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
+                addParam(createParamCentered<CKD6>(mm2px(Vec(24.845, 51.49)), module, RareBreeds_Orbits_Eugene::CHANNEL_PREV_PARAM));
+                addParam(createParamCentered<CKD6>(mm2px(Vec(36.866, 51.737)), module, RareBreeds_Orbits_Eugene::CHANNEL_NEXT_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
                 addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 85.471)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 85.471)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 85.471)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 85.471)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 85.471)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+                addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 85.471)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
                 addParam(createParamCentered<CKD6>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
                 addParam(createParamCentered<CKD6>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 23.15)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 38.15)), module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.088)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.088)), module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.088)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 23.15)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 38.15)), module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.088)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.088)), module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.088)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+                addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 23.15)), module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+                addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 23.15)), module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
                 RhythmDisplay *r = createWidget<RhythmDisplay>(mm2px(Vec(14.48, 14.913)));
                 r->module = module;
