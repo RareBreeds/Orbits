@@ -1,3 +1,9 @@
+// TODO: Symbol showing rhythm direction
+// TODO: Better SVG for buttons
+// TODO: Refactor
+// TODO: Option for randomise / reset to apply to current channel only (?)
+// TODO: Display number of active channels (?)
+// TODO: A way of seeing all rhythms on the display at the same time (?)
 #include <cstdint>
 #include <string>
 
@@ -7,7 +13,8 @@
 
 #include "plugin.hpp"
 
-const auto max_rhythm_length = 32;
+static const auto max_rhythm_length = 32;
+static const auto max_channels = 16;
 
 // When the number of hits is 0 or 1 the rhythm is always 0x0 or 0x1
 // respectively, no need to store them in the look up table.
@@ -130,8 +137,6 @@ static unsigned int clampRounded(float value, unsigned int min, unsigned int max
 {
         return clamp(int(std::round(value)), min, max);
 }
-
-static const int max_channels = 16;
 
 struct RareBreeds_Orbits_Eugene : Module
 {
@@ -415,6 +420,10 @@ struct RareBreeds_Orbits_Eugene : Module
                 {
                         m_reverse = (random::uniform() < 0.5f);
                         m_invert = (random::uniform() < 0.5f);
+
+                        auto len = readLength();
+                        auto hit = readHits(len);
+                        m_rhythm = euclideanRhythm(len, hit);
                 }
         };
 
@@ -439,11 +448,6 @@ struct RareBreeds_Orbits_Eugene : Module
                 configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
                 configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
 
-                for(auto i = 0; i < max_channels; ++i)
-                {
-                        m_channels[i].init(this, i);
-                }
-
                 m_active_channel_id = 0;
                 m_active_channel = &m_channels[m_active_channel_id];
 
@@ -453,6 +457,11 @@ struct RareBreeds_Orbits_Eugene : Module
                 m_hits_cv = params[HITS_CV_KNOB_PARAM].getValue();
                 m_shift = params[SHIFT_KNOB_PARAM].getValue();
                 m_shift_cv = params[SHIFT_CV_KNOB_PARAM].getValue();
+
+                for(auto i = 0; i < max_channels; ++i)
+                {
+                        m_channels[i].init(this, i);
+                }
         }
 
         void process(const ProcessArgs &args) override
@@ -460,13 +469,9 @@ struct RareBreeds_Orbits_Eugene : Module
                 auto active_channels = inputs[CLOCK_INPUT].getChannels();
                 outputs[BEAT_OUTPUT].setChannels(active_channels);
 
-                // Update the active channel if its out of range of the active channels
-                // Relies on clamp returning 'a' if 'b' < 'a'
-                m_active_channel_id = clamp(m_active_channel_id, 0, active_channels - 1);
-
                 if(channel_next_trigger.process(std::round(params[CHANNEL_NEXT_PARAM].getValue())))
                 {
-                        if(m_active_channel_id == active_channels - 1)
+                        if(m_active_channel_id == max_channels - 1)
                         {
                                 m_active_channel_id = 0;
                         }
@@ -480,7 +485,7 @@ struct RareBreeds_Orbits_Eugene : Module
                 {
                         if(m_active_channel_id ==  0)
                         {
-                                m_active_channel_id = active_channels - 1;
+                                m_active_channel_id = max_channels - 1;
                         }
                         else
                         {
@@ -542,7 +547,7 @@ struct RareBreeds_Orbits_Eugene : Module
                         m_active_channel->toggleInvert();
                 }
 
-                for(auto i = 0; i < active_channels; ++i)
+                for(auto i = 0; i < max_channels; ++i)
                 {
                         m_channels[i].process(args);
                 }
@@ -632,9 +637,28 @@ struct RareBreeds_Orbits_Eugene : Module
 
         void onRandomize() override
         {
-                // Only apply randomisation to the current channel
-                // avoids ruining beats you may want to keep on other channels
-                m_active_channel->onRandomize();
+                for(auto i = 0; i < max_channels; ++i)
+                {
+                        m_channels[i].onRandomize();
+                }
+        }
+
+        void onReset() override
+        {
+                m_active_channel_id = 0;
+                m_active_channel = &m_channels[m_active_channel_id];
+
+                m_length = params[LENGTH_KNOB_PARAM].getValue();
+                m_length_cv = params[LENGTH_CV_KNOB_PARAM].getValue();
+                m_hits = params[HITS_KNOB_PARAM].getValue();
+                m_hits_cv = params[HITS_CV_KNOB_PARAM].getValue();
+                m_shift = params[SHIFT_KNOB_PARAM].getValue();
+                m_shift_cv = params[SHIFT_CV_KNOB_PARAM].getValue();
+
+                for(auto i = 0; i < max_channels; ++i)
+                {
+                        m_channels[i].init(this, i);
+                }
         }
 };
 
