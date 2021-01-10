@@ -65,7 +65,7 @@ def _necklacesOfLengthAndDensity(n, d, k=2):
         a[d] = n
         for j in range(n - d + 1, (n - 1) // d, -1):
             a[1] = j
-            for i in range(1, 2):
+            for i in range(1, k):
                 b[1] = i
                 yield from gen(1, 1)
 
@@ -316,6 +316,10 @@ class Rhythm:
         return iv
 
     @property
+    def inter_onset_vector_range(self):
+        return max(self.inter_onset_vector) - min(self.inter_onset_vector)
+
+    @property
     def adjacent_inter_onset_vector(self):
         vec = []
         first_on = -1
@@ -334,6 +338,10 @@ class Rhythm:
         assert self.density == 0 or sum(vec) == len(self), "Incorrectly generated adjacent inter-onset vector"
 
         return vec
+
+    @property
+    def adjacent_inter_onset_vector_range(self):
+        return max(self.adjacent_inter_onset_vector) - min(self.adjacent_inter_onset_vector)
 
     @property
     def period(self):
