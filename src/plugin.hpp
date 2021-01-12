@@ -9,3 +9,4 @@ extern Plugin *pluginInstance;
 
 // Declare each Model, defined in each module source file
 extern Model *modelRareBreeds_Orbits_Eugene;
+extern Model *modelRareBreeds_Orbits_Polygene;
