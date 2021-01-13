@@ -132,6 +132,33 @@ static unsigned int clampRounded(float value, unsigned int min, unsigned int max
         return clamp(int(std::round(value)), min, max);
 }
 
+static void json_load_real(json_t *root, const char *param, float *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = json_real_value(obj);
+        }
+}
+
+static void json_load_bool(json_t *root, const char *param, bool *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = json_boolean_value(obj);
+        }
+}
+
+static void json_load_integer(json_t *root, const char *param, int *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = json_integer_value(obj);
+        }
+}
+
 struct RareBreeds_Orbits_Polygene : Module
 {
         enum ParamIds
@@ -329,7 +356,7 @@ struct RareBreeds_Orbits_Polygene : Module
                                 }
                         }
 
-                        float out = m_output_generator.process(args.sampleTime) ? 10.f : 0.f;
+                        auto out = m_output_generator.process(args.sampleTime) ? 10.f : 0.f;
                         m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
                 }
 
@@ -349,53 +376,14 @@ struct RareBreeds_Orbits_Polygene : Module
 
                 void dataFromJson(json_t *root)
                 {
-                        json_t* length = json_object_get(root, "length");
-                        if(length)
-                        {
-                                m_length = json_real_value(length);
-                        }
-
-                        json_t* length_cv = json_object_get(root, "length_cv");
-                        if(length_cv)
-                        {
-                                m_length_cv = json_real_value(length_cv);
-                        }
-
-                        json_t* hits = json_object_get(root, "hits");
-                        if(hits)
-                        {
-                                m_hits = json_real_value(hits);
-                        }
-
-                        json_t* hits_cv = json_object_get(root, "hits_cv");
-                        if(hits_cv)
-                        {
-                                m_hits_cv = json_real_value(hits_cv);
-                        }
-
-                        json_t* shift = json_object_get(root, "shift");
-                        if(shift)
-                        {
-                                m_shift = json_real_value(shift);
-                        }
-
-                        json_t* shift_cv = json_object_get(root, "shift_cv");
-                        if(shift_cv)
-                        {
-                                m_shift_cv = json_real_value(shift_cv);
-                        }
-
-                        json_t* reverse = json_object_get(root, "reverse");
-                        if(reverse)
-                        {
-                                m_reverse = json_boolean_value(reverse);
-                        }
-
-                        json_t* invert = json_object_get(root, "invert");
-                        if(invert)
-                        {
-                                m_invert = json_boolean_value(invert);
-                        }
+                        json_load_real(root, "length", &m_length);
+                        json_load_real(root, "length_cv", &m_length_cv);
+                        json_load_real(root, "hits", &m_hits);
+                        json_load_real(root, "hits_cv", &m_hits_cv);
+                        json_load_real(root, "shift", &m_shift);
+                        json_load_real(root, "shift_cv", &m_shift_cv);
+                        json_load_bool(root, "reverse", &m_reverse);
+                        json_load_bool(root, "invert", &m_invert);
                 }
 
                 void onRandomize()
@@ -526,7 +514,6 @@ struct RareBreeds_Orbits_Polygene : Module
                 json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
                 json_object_set_new(root, "shift", json_real(m_shift));
                 json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
-
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
                 json_t *channels = json_array();
@@ -542,48 +529,13 @@ struct RareBreeds_Orbits_Polygene : Module
 
         void dataFromJson(json_t *root) override
         {
-                json_t* length = json_object_get(root, "length");
-                if(length)
-                {
-                       m_length = json_real_value(length);
-                }
-
-                json_t* length_cv = json_object_get(root, "length_cv");
-                if(length_cv)
-                {
-                        m_length_cv = json_real_value(length_cv);
-                }
-
-                json_t* hits = json_object_get(root, "hits");
-                if(hits)
-                {
-                        m_hits = json_real_value(hits);
-                }
-
-                json_t* hits_cv = json_object_get(root, "hits_cv");
-                if(hits_cv)
-                {
-                        m_hits_cv = json_real_value(hits_cv);
-                }
-
-                json_t* shift = json_object_get(root, "shift");
-                if(shift)
-                {
-                        m_shift = json_real_value(shift);
-                }
-
-                json_t* shift_cv = json_object_get(root, "shift_cv");
-                if(shift_cv)
-                {
-                        m_shift_cv = json_real_value(shift_cv);
-                }
-
-                json_t* active_channel_id = json_object_get(root, "active_channel_id");
-                if(active_channel_id)
-                {
-                        m_active_channel_id = json_integer_value(active_channel_id);
-                }
-
+                json_load_real(root, "length", &m_length);
+                json_load_real(root, "length_cv", &m_length_cv);
+                json_load_real(root, "hits", &m_hits);
+                json_load_real(root, "hits_cv", &m_hits_cv);
+                json_load_real(root, "shift", &m_shift);
+                json_load_real(root, "shift_cv", &m_shift_cv);
+                json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
                 {
@@ -784,7 +736,6 @@ struct RareBreeds_Orbits_PolygeneWidget : ModuleWidget
                 addParam(createParamCentered<CKD6>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
                 addParam(createParamCentered<CKD6>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
 
-
                 addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 23.15)), module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
                 addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 38.15)), module, RareBreeds_Orbits_Polygene::SYNC_INPUT));
                 addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.088)), module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
@@ -802,5 +753,4 @@ struct RareBreeds_Orbits_PolygeneWidget : ModuleWidget
         }
 };
 
-Model *modelRareBreeds_Orbits_Polygene =
-        createModel<RareBreeds_Orbits_Polygene, RareBreeds_Orbits_PolygeneWidget>("RareBreeds_Orbits_Polygene");
+Model *modelRareBreeds_Orbits_Polygene = createModel<RareBreeds_Orbits_Polygene, RareBreeds_Orbits_PolygeneWidget>("RareBreeds_Orbits_Polygene");
