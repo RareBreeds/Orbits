@@ -444,39 +444,40 @@ struct EugeneRhythmDisplay : TransparentWidget {
 	}
 };
 
-struct PanelOption
+struct Theme
 {
 	const char *m_name;
 	const char *m_panel_path;
+	const char *m_knob_large_path;
 };
 
-static const PanelOption panel_options[] =
+static const Theme themes[] =
 {
-	{"Dark", "res/RareBreeds_Orbits_Eugene.svg"},
-	{"Light", "res/RareBreeds_Orbits_Eugene_Light.svg"}
+	{"Dark", "res/RareBreeds_Orbits_Eugene.svg", "res/RareBreeds_Orbits_Eugene_knob_large.svg"},
+	{"Light", "res/RareBreeds_Orbits_Eugene_Light.svg", "res/RareBreeds_Orbits_Eugene_knob_small.svg"}
 };
 
 struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 {
-	int m_panel_choice = 0;
-	struct PanelChoiceItem : MenuItem
+	int m_theme = 0;
+	struct ThemeChoiceItem : MenuItem
 	{
 		RareBreeds_Orbits_EugeneWidget *m_widget;
 		int m_id;
 		const char *m_panel_path;
 
-		PanelChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const PanelOption *panel)
+		ThemeChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const Theme *theme)
 		{
 			m_widget = widget;
 			m_id = id;
-			text = panel->m_name;
-			m_panel_path = panel->m_panel_path;
-			rightText = CHECKMARK(widget->m_panel_choice == id);
+			text = theme->m_name;
+			m_panel_path = theme->m_panel_path;
+			rightText = CHECKMARK(widget->m_theme == id);
 		}
 
 		void onAction(const event::Action& e) override
 		{
-			m_widget->m_panel_choice = m_id;
+			m_widget->m_theme = m_id;
 			m_widget->setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, m_panel_path)));
 		}
 	};
@@ -549,12 +550,12 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	void appendContextMenu(Menu* menu) override
 	{
 		menu->addChild(new MenuSeparator);
-		MenuLabel *panel_colour_label = new MenuLabel;
-		panel_colour_label->text = "Panel Colour";
-		menu->addChild(panel_colour_label);
-		for(auto i = 0llu; i < sizeof(panel_options) / sizeof(panel_options[0]); ++i)
+		MenuLabel *theme_label = new MenuLabel;
+		theme_label->text = "Theme";
+		menu->addChild(theme_label);
+		for(auto i = 0llu; i < sizeof(themes) / sizeof(themes[0]); ++i)
 		{
-			menu->addChild(new PanelChoiceItem(this, i, &panel_options[i]));
+			menu->addChild(new ThemeChoiceItem(this, i, &themes[i]));
 		}
 	}
 };
