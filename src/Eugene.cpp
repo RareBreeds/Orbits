@@ -87,6 +87,7 @@ static const Vec shift_cv_pos = mm2px(Vec(45.03, 94.68));
 static const Vec length_cv_knob_pos = mm2px(Vec(15.93, 82.77));
 static const Vec hits_cv_knob_pos = mm2px(Vec(30.48, 82.77));
 static const Vec shift_cv_knob_pos = mm2px(Vec(45.03, 82.77));
+static const Vec display_pos = mm2px(Vec(14.48, 15.63));
 static const Vec channel_knob_pos = mm2px(Vec(52.97, 40.44));
 
 struct RareBreeds_Orbits_Eugene : Module {
@@ -539,7 +540,7 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 
 		addOutput(createOutputCentered<EugenePort>(beat_pos, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
-		EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(mm2px(Vec(14.48, 15.63)));
+		EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(display_pos);
 		r->module = module;
 		r->box.size = mm2px(Vec(32.0, 32.0));
 		addChild(r);
