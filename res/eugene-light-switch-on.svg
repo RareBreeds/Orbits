@@ -7,13 +7,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="2.9765739mm"
-   height="2.9765739mm"
-   viewBox="0 0 2.9765739 2.9765739"
+   width="4.9475255mm"
+   height="8.4027786mm"
+   viewBox="0 0 4.9475254 8.4027788"
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="eugene-screw.svg">
+   sodipodi:docname="eugene-light-switch-on.svg">
   <defs
      id="defs289">
     <mask
@@ -34,15 +34,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="20.181255"
-     inkscape:cx="7.8132376"
-     inkscape:cy="13.113959"
+     inkscape:zoom="17.16483"
+     inkscape:cx="13.918848"
+     inkscape:cy="15.575675"
      inkscape:document-units="mm"
-     inkscape:current-layer="g79"
+     inkscape:current-layer="layer1-5"
      inkscape:document-rotation="0"
      showgrid="true"
      inkscape:snap-bbox="true"
-     inkscape:snap-nodes="true"
+     inkscape:snap-nodes="false"
      inkscape:snap-object-midpoints="true"
      inkscape:snap-center="true"
      inkscape:snap-text-baseline="true"
@@ -52,12 +52,22 @@
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:snap-global="false">
+     inkscape:snap-grids="true"
+     inkscape:snap-to-guides="true"
+     inkscape:snap-others="false"
+     inkscape:snap-bbox-edge-midpoints="false"
+     inkscape:bbox-paths="true"
+     inkscape:snap-bbox-midpoints="false"
+     inkscape:snap-global="true"
+     inkscape:bbox-nodes="true">
     <inkscape:grid
        type="xygrid"
        id="grid309"
-       originx="10.154119"
-       originy="7.9687472" />
+       originx="-0.012832247"
+       originy="4.7500001"
+       units="mm"
+       spacingx="0.25"
+       spacingy="0.25" />
   </sodipodi:namedview>
   <metadata
      id="metadata292">
@@ -75,42 +85,29 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-89.845881,-92.031252)">
-    <circle
-       style="display:inline;opacity:1;fill:#b3b3b3;stroke-width:0.00393774"
-       id="path31"
-       cx="91.334167"
-       cy="93.519539"
-       r="1.488287"
-       inkscape:transform-center-x="0.46374918"
-       inkscape:transform-center-y="-0.13046032" />
+     transform="translate(-87.972221,-81.774832)">
     <g
-       id="g79"
-       transform="matrix(0.01183865,0.01183865,-0.01183865,0.01183865,91.207609,91.19082)"
-       style="display:inline;opacity:1"
-       inkscape:transform-center-x="0.5903077"
-       inkscape:transform-center-y="-0.091449244">
+       inkscape:label="Layer 1"
+       id="layer1-5"
+       transform="matrix(-0.03584035,0,0,-0.03584035,91.543423,90.867488)"
+       style="display:inline;opacity:1">
       <rect
-         style="fill:#666666;stroke-width:0.325394"
-         id="rect33"
-         width="23.283333"
-         height="116.41668"
-         x="93.04142"
-         y="35.773129" />
-      <rect
-         style="fill:#666666;stroke-width:0.325393"
-         id="rect33-4"
-         width="23.283333"
-         height="116.41668"
-         x="-105.62313"
-         y="46.474743"
-         transform="rotate(-90)" />
-      <circle
-         style="fill:#666666;stroke-width:0.264583"
-         id="path50"
-         cx="104.72813"
-         cy="94.434807"
-         r="26.458332" />
+         style="display:inline;opacity:1;fill:#00e3ef;fill-opacity:1;stroke-width:0.440653;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect1373-9"
+         width="138.04344"
+         height="234.45023"
+         x="-99.641953"
+         y="-253.69885"
+         ry="68.718163"
+         transform="scale(-1)" />
+      <ellipse
+         style="display:inline;opacity:1;fill:#ffffff;fill-opacity:1;stroke-width:0.530799;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path1377-0"
+         cx="-30.620241"
+         cy="-87.966743"
+         rx="63.736286"
+         ry="63.455975"
+         transform="scale(-1)" />
     </g>
   </g>
 </svg>

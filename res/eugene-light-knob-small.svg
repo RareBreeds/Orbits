@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="11.28193mm"
+   height="11.28193mm"
+   viewBox="0 0 11.28193 11.28193"
+   version="1.1"
+   id="svg295"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="eugene-light-knob-small.svg">
+  <defs
+     id="defs289" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="15.132062"
+     inkscape:cx="22.875034"
+     inkscape:cy="23.253133"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-nodes="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-center="true"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-page="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid309"
+       originx="-2.069795"
+       originy="-8.0693549" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata292">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-102.06979,-108.06935)">
+    <circle
+       style="fill:#1a1a1a;stroke-width:0.014925"
+       id="path313-5"
+       cx="107.71075"
+       cy="113.71031"
+       r="5.640965" />
+    <circle
+       style="fill:#00e3ef;fill-opacity:1;stroke-width:0.0131605;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path313-9-5"
+       cx="107.71075"
+       cy="113.71031"
+       r="4.9662447" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke-width:0.0121074;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path313-9-6-54"
+       cx="107.71075"
+       cy="113.71031"
+       r="4.5688348" />
+    <circle
+       style="fill:#ececec;fill-opacity:1;stroke-width:0.0106751;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path313-9-6-5-8"
+       cx="107.71075"
+       cy="113.71031"
+       r="4.0283599" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:0.0242152;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1211-0"
+       width="0.58861184"
+       height="4.0297647"
+       x="107.42065"
+       y="109.38205"
+       ry="0.27400896" />
+  </g>
+</svg>
