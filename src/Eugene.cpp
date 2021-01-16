@@ -71,6 +71,24 @@ static std::bitset<max_rhythm_length> euclideanRhythm(unsigned int number_of_hit
 	return left_pattern;
 }
 
+static const Vec length_knob_pos = mm2px(Vec(10.64, 64.92));
+static const Vec hits_knob_pos = mm2px(Vec(30.48, 64.92));
+static const Vec reverse_knob_pos = mm2px(Vec(9.31, 110.55));
+static const Vec invert_knob_pos = mm2px(Vec(51.63, 110.55));
+static const Vec length_cv_pos = mm2px(Vec(15.93, 94.68));
+static const Vec hits_cv_pos = mm2px(Vec(30.48, 94.68));
+static const Vec reverse_cv_pos = mm2px(Vec(21.22, 110.55));
+static const Vec invert_cv_pos = mm2px(Vec(39.74, 110.55));
+static const Vec beat_pos = mm2px(Vec(52.97, 23.24));
+static const Vec clock_pos = mm2px(Vec(7.99, 23.24));
+static const Vec sync_pos = mm2px(Vec(7.99, 40.44));
+static const Vec shift_knob_pos = mm2px(Vec(49.00, 64.92));
+static const Vec shift_cv_pos = mm2px(Vec(45.03, 94.68));
+static const Vec length_cv_knob_pos = mm2px(Vec(15.93, 82.77));
+static const Vec hits_cv_knob_pos = mm2px(Vec(30.48, 82.77));
+static const Vec shift_cv_knob_pos = mm2px(Vec(45.03, 82.77));
+static const Vec channel_knob_pos = mm2px(Vec(52.97, 40.44));
+
 struct RareBreeds_Orbits_Eugene : Module {
 	enum ParamIds {
 		LENGTH_KNOB_PARAM,
@@ -425,39 +443,118 @@ struct EugeneRhythmDisplay : TransparentWidget {
 	}
 };
 
-struct RareBreeds_Orbits_EugeneWidget : ModuleWidget {
+struct PanelOption
+{
+	const char *m_name;
+	const char *m_panel_path;
+};
+
+static const PanelOption panel_options[] =
+{
+	{"Dark", "res/RareBreeds_Orbits_Eugene.svg"},
+	{"Light", "res/RareBreeds_Orbits_Eugene_Light.svg"}
+};
+
+struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
+{
+	int m_panel_choice = 0;
+	struct PanelChoiceItem : MenuItem
+	{
+		RareBreeds_Orbits_EugeneWidget *m_widget;
+		int m_id;
+		const char *m_panel_path;
+
+		PanelChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const PanelOption *panel)
+		{
+			m_widget = widget;
+			m_id = id;
+			text = panel->m_name;
+			m_panel_path = panel->m_panel_path;
+			rightText = CHECKMARK(widget->m_panel_choice == id);
+		}
+
+		void onAction(const event::Action& e) override
+		{
+			m_widget->m_panel_choice = m_id;
+			m_widget->setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, m_panel_path)));
+		}
+	};
+
+	struct EugeneKnobLarge : RoundKnob {
+		EugeneKnobLarge() {
+			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene_knob_large.svg")));
+		}
+	};
+
+	struct EugeneKnobSmall : RoundKnob {
+		EugeneKnobSmall() {
+			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene_knob_small.svg")));
+		}
+	};
+
+	struct EugeneScrew : app::SvgScrew {
+		EugeneScrew() {
+			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene_screw.svg")));
+		}
+	};
+
+	struct EugeneSwitch : app::SvgSwitch {
+		EugeneSwitch() {
+			addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene_switch_off.svg")));
+			addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene_switch_on.svg")));
+		}
+	};
+
+	struct EugenePort : app::SvgPort {
+		EugenePort() {
+			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene_input.svg")));
+		}
+	};
+
 	RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) {
 		setModule(module);
 		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Eugene.svg")));
 
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+		addChild(createWidgetCentered<EugeneScrew>(Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+		addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+		addChild(createWidgetCentered<EugeneScrew>(Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-		addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(10.48, 67.0)), module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-		addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(30.48, 67.0)), module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-		addParam(createParamCentered<RoundLargeBlackKnob>(mm2px(Vec(50.48, 67.0)), module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(15.48, 86.0)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(30.48, 86.0)), module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(45.48, 86.0)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-		addParam(createParamCentered<CKSS>(mm2px(Vec(10.48, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-		addParam(createParamCentered<CKSS>(mm2px(Vec(50.48, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobLarge>(length_knob_pos, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobLarge>(hits_knob_pos, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobLarge>(shift_knob_pos, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobSmall>(length_cv_knob_pos, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobSmall>(hits_cv_knob_pos, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobSmall>(shift_cv_knob_pos, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+		addParam(createParamCentered<EugeneSwitch>(reverse_knob_pos, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+		addParam(createParamCentered<EugeneSwitch>(invert_knob_pos, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 29.5)), module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.24, 44.5)), module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.48, 100.0)), module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 100.0)), module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(45.48, 100.0)), module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.813, 112.0)), module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(clock_pos, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+		addInput(createInputCentered<EugenePort>(sync_pos, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+		addInput(createInputCentered<EugenePort>(length_cv_pos, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(hits_cv_pos, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(shift_cv_pos, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(reverse_cv_pos, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(invert_cv_pos, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 29.5)), module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+		addOutput(createOutputCentered<EugenePort>(beat_pos, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
-		EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(mm2px(Vec(14.48, 16.5)));
+		EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(mm2px(Vec(14.48, 15.63)));
 		r->module = module;
 		r->box.size = mm2px(Vec(32.0, 32.0));
 		addChild(r);
+	}
+
+	void appendContextMenu(Menu* menu) override
+	{
+		menu->addChild(new MenuSeparator);
+		MenuLabel *panel_colour_label = new MenuLabel;
+		panel_colour_label->text = "Panel Colour";
+		menu->addChild(panel_colour_label);
+		for(auto i = 0llu; i < sizeof(panel_options) / sizeof(panel_options[0]); ++i)
+		{
+			menu->addChild(new PanelChoiceItem(this, i, &panel_options[i]));
+		}
 	}
 };
 
