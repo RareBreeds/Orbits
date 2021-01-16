@@ -445,27 +445,6 @@ struct EugeneRhythmDisplay : TransparentWidget {
 
 struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 {
-	int m_theme = 0;
-
-	struct ThemeChoiceItem : MenuItem
-	{
-		RareBreeds_Orbits_EugeneWidget *m_widget;
-		int m_id;
-
-		ThemeChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const char *name)
-		{
-			m_widget = widget;
-			m_id = id;
-			text = name;
-			rightText = CHECKMARK(widget->m_theme == id);
-		}
-
-		void onAction(const event::Action& e) override
-		{
-			m_widget->loadTheme(m_id);
-		}
-	};
-
 	struct EugeneKnobLarge : RoundKnob
 	{
 		EugeneKnobLarge()
@@ -570,6 +549,27 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 		r->box.size = mm2px(Vec(32.0, 32.0));
 		addChild(r);
 	}
+
+	int m_theme = 0;
+
+	struct ThemeChoiceItem : MenuItem
+	{
+		RareBreeds_Orbits_EugeneWidget *m_widget;
+		int m_id;
+
+		ThemeChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const char *name)
+		{
+			m_widget = widget;
+			m_id = id;
+			text = name;
+			rightText = CHECKMARK(widget->m_theme == id);
+		}
+
+		void onAction(const event::Action& e) override
+		{
+			m_widget->loadTheme(m_id);
+		}
+	};
 
 	void appendContextMenu(Menu* menu) override
 	{
