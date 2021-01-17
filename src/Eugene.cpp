@@ -71,25 +71,6 @@ static std::bitset<max_rhythm_length> euclideanRhythm(unsigned int number_of_hit
 	return left_pattern;
 }
 
-static const Vec length_knob_pos = mm2px(Vec(10.64, 64.92));
-static const Vec hits_knob_pos = mm2px(Vec(30.48, 64.92));
-static const Vec reverse_knob_pos = mm2px(Vec(9.31, 111.61));
-static const Vec invert_knob_pos = mm2px(Vec(51.63, 111.61));
-static const Vec length_cv_pos = mm2px(Vec(14.34, 97.32));
-static const Vec hits_cv_pos = mm2px(Vec(30.48, 97.32));
-static const Vec reverse_cv_pos = mm2px(Vec(21.22, 111.61));
-static const Vec invert_cv_pos = mm2px(Vec(39.74, 111.61));
-static const Vec beat_pos = mm2px(Vec(52.97, 23.24));
-static const Vec clock_pos = mm2px(Vec(7.99, 23.24));
-static const Vec sync_pos = mm2px(Vec(7.99, 40.44));
-static const Vec shift_knob_pos = mm2px(Vec(49.00, 64.92));
-static const Vec shift_cv_pos = mm2px(Vec(46.62, 97.32));
-static const Vec length_cv_knob_pos = mm2px(Vec(14.34, 83.30));
-static const Vec hits_cv_knob_pos = mm2px(Vec(30.48, 83.30));
-static const Vec shift_cv_knob_pos = mm2px(Vec(46.62, 83.30));
-static const Vec display_pos = mm2px(Vec(14.48, 15.63));
-
-
 struct RareBreeds_Orbits_Eugene : Module {
 	enum ParamIds {
 		LENGTH_KNOB_PARAM,
@@ -517,9 +498,9 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 		}
 	};
 
-	RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) {
+	RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module)
+	{
 		setModule(module);
-		// TODO: Find component positions from the svg
 
 		setPanel(APP->window->loadSvg(config.m_themes[config.m_default].panel));
 
@@ -528,26 +509,26 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 		addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 		addChild(createWidgetCentered<EugeneScrew>(Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-		addParam(createParamCentered<EugeneKnobLarge>(length_knob_pos, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-		addParam(createParamCentered<EugeneKnobLarge>(hits_knob_pos, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-		addParam(createParamCentered<EugeneKnobLarge>(shift_knob_pos, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-		addParam(createParamCentered<EugeneKnobSmall>(length_cv_knob_pos, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-		addParam(createParamCentered<EugeneKnobSmall>(hits_cv_knob_pos, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-		addParam(createParamCentered<EugeneKnobSmall>(shift_cv_knob_pos, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-		addParam(createParamCentered<EugeneSwitch>(reverse_knob_pos, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-		addParam(createParamCentered<EugeneSwitch>(invert_knob_pos, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobLarge>(config.length_knob, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobLarge>(config.hits_knob, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobLarge>(config.shift_knob, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobSmall>(config.length_cv_knob, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobSmall>(config.hits_cv_knob, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+		addParam(createParamCentered<EugeneKnobSmall>(config.shift_cv_knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+		addParam(createParamCentered<EugeneSwitch>(config.reverse_knob, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+		addParam(createParamCentered<EugeneSwitch>(config.invert_knob, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
-		addInput(createInputCentered<EugenePort>(clock_pos, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-		addInput(createInputCentered<EugenePort>(sync_pos, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-		addInput(createInputCentered<EugenePort>(length_cv_pos, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-		addInput(createInputCentered<EugenePort>(hits_cv_pos, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-		addInput(createInputCentered<EugenePort>(shift_cv_pos, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-		addInput(createInputCentered<EugenePort>(reverse_cv_pos, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-		addInput(createInputCentered<EugenePort>(invert_cv_pos, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(config.clock, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+		addInput(createInputCentered<EugenePort>(config.sync, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+		addInput(createInputCentered<EugenePort>(config.length_cv, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(config.hits_cv, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(config.shift_cv, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(config.reverse_cv, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+		addInput(createInputCentered<EugenePort>(config.invert_cv, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-		addOutput(createOutputCentered<EugenePort>(beat_pos, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+		addOutput(createOutputCentered<EugenePort>(config.beat, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
-		EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(display_pos);
+		EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(config.display);
 		r->module = module;
 		r->box.size = mm2px(Vec(32.0, 32.0));
 		addChild(r);

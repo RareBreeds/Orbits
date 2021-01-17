@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "plugin.hpp"
 
 
@@ -7,6 +9,7 @@ Config config;
 void init(Plugin *p) {
 	pluginInstance = p;
 	config.fromJson(asset::plugin(pluginInstance, "res/eugene-layout.json"));
+	config.loadComponentPositions();
 
 	// Add modules here
 	p->addModel(modelRareBreeds_Orbits_Eugene);
@@ -35,6 +38,114 @@ void Theme::fromJson(json_t *root)
 	INFO("port:%s", port.c_str());
 	screw = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "screw")));
 	INFO("screw:%s", screw.c_str());
+}
+
+// TODO: If we can't find the component positions use some sensible defaults
+// TODO: Error handling
+// TODO: Avoid code duplication
+void Config::loadComponentPositions(void)
+{
+	std::ifstream ifs(m_themes[m_default].panel);
+	std::string content((std::istreambuf_iterator<char>(ifs)),
+						(std::istreambuf_iterator<char>()));
+
+	// Find all component positions from the svg
+	size_t search = content.find("inkscape:label=\"components\"");
+
+	for(auto i = 0; i < 17; ++i)
+	{
+		search = content.find("<", search);
+
+		search = content.find("x=", search);
+		size_t float_start = search + 3;
+		size_t float_end = content.find("\"", float_start);
+		float x = std::stof(content.substr(float_start, float_end - float_start));
+		INFO("X %f", x);
+
+		search = content.find("y=", float_end);
+		float_start = search + 3;
+		float_end = content.find("\"", float_start);
+		float y = std::stof(content.substr(float_start, float_end - float_start));
+		INFO("Y %f", y);
+
+		search = content.find("inkscape:label=", float_end);
+		size_t name_start = search + 16;
+		size_t name_end = content.find("\"", name_start);
+		std::string name = content.substr(name_start, name_end - name_start);
+		INFO("NAME %s", name.c_str());
+
+		Vec pos = mm2px(Vec(x, y));
+		if(name == "length_knob")
+		{
+			length_knob = pos;
+		}
+		else if(name == "hits_knob")
+		{
+			hits_knob = pos;
+		}
+		else if(name == "reverse_knob")
+		{
+			reverse_knob = pos;
+		}
+		else if(name == "invert_knob")
+		{
+			invert_knob = pos;
+		}
+		else if(name == "length_cv")
+		{
+			length_cv = pos;
+		}
+		else if(name == "hits_cv")
+		{
+			hits_cv = pos;
+		}
+		else if(name == "reverse_cv")
+		{
+			reverse_cv = pos;
+		}
+		else if(name == "invert_cv")
+		{
+			invert_cv = pos;
+		}
+		else if(name == "beat")
+		{
+			beat = pos;
+		}
+		else if(name == "clock")
+		{
+			clock = pos;
+		}
+		else if(name == "sync")
+		{
+			sync = pos;
+		}
+		else if(name == "shift_knob")
+		{
+			shift_knob = pos;
+		}
+		else if(name == "shift_cv")
+		{
+			shift_cv = pos;
+		}
+		else if(name == "length_cv_knob")
+		{
+			length_cv_knob = pos;
+		}
+		else if(name == "hits_cv_knob")
+		{
+			hits_cv_knob = pos;
+		}
+		else if(name == "shift_cv_knob")
+		{
+			shift_cv_knob = pos;
+		}
+		else if(name == "display")
+		{
+			display = pos;
+		}
+
+		search = name_end;
+	}
 }
 
 void Config::fromJson(std::string path)
