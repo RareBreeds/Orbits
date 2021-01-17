@@ -36,6 +36,12 @@ struct EugeneScrew : app::SvgScrew
     {
         setSvg(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].screw));
     }
+
+    void loadTheme(int theme)
+    {
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].screw));
+        fb->dirty = true;
+    }
 };
 
 struct EugeneSwitch : app::SvgSwitch
@@ -282,6 +288,44 @@ void RareBreeds_Orbits_EugeneWidget::loadTheme(int theme)
 {
     m_theme = theme;
 
+    for(auto child : children)
+    {
+        EugeneSwitch *swi = dynamic_cast<EugeneSwitch *>(child);
+        if(swi)
+        {
+            swi->loadTheme(theme);
+            continue;
+        }
+
+        EugeneKnobLarge *knob_large = dynamic_cast<EugeneKnobLarge *>(child);
+        if(knob_large)
+        {
+            knob_large->loadTheme(theme);
+            continue;
+        }
+
+        EugeneKnobSmall *knob_small = dynamic_cast<EugeneKnobSmall *>(child);
+        if(knob_small)
+        {
+            knob_small->loadTheme(theme);
+            continue;
+        }
+
+        EugenePort *port = dynamic_cast<EugenePort *>(child);
+        if(port)
+        {
+            port->loadTheme(theme);
+            continue;
+        }
+
+        EugeneScrew *screw = dynamic_cast<EugeneScrew *>(child);
+        if(screw)
+        {
+            screw->loadTheme(theme);
+            continue;
+        }
+    }
+
     // TODO: Save and load theme in json
     for(auto param : params)
     {
@@ -304,24 +348,6 @@ void RareBreeds_Orbits_EugeneWidget::loadTheme(int theme)
         {
             knob_small->loadTheme(theme);
             continue;
-        }
-    }
-
-    for(auto input : inputs)
-    {
-        EugenePort *port = dynamic_cast<EugenePort *>(input);
-        if(port)
-        {
-            port->loadTheme(theme);
-        }
-    }
-
-    for(auto output : outputs)
-    {
-        EugenePort *port = dynamic_cast<EugenePort *>(output);
-        if(port)
-        {
-            port->loadTheme(theme);
         }
     }
 
