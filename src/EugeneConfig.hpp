@@ -11,7 +11,7 @@ struct EugeneTheme
 	std::string screw;
 	std::string port;
 
-	void fromJson(json_t *root);
+	bool fromJson(json_t *root);
 };
 
 struct EugeneConfig
@@ -37,9 +37,9 @@ struct EugeneConfig
 	Vec shift_cv_knob;
 	Vec display;
 
-	void init();
-	void fromJson(std::string path);
-	void loadComponentPositions();
+	bool init();
+	bool fromJson(std::string path);
+	bool loadComponentPositions();
 };
 
 extern EugeneConfig eugene_config;

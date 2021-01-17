@@ -5,35 +5,79 @@
 
 EugeneConfig eugene_config;
 
-// TODO: Error handling, bad json can make it crash in horrible to debug ways
-void EugeneTheme::fromJson(json_t *root)
+bool EugeneTheme::fromJson(json_t *root)
 {
-	name = json_string_value(json_object_get(root, "name"));
-	INFO("name:%s", name.c_str());
-	panel = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "panel")));
-	INFO("panel:%s", panel.c_str());
-	knob_large = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "knob_large")));
-	INFO("knob_large:%s", knob_large.c_str());
-	knob_small = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "knob_small")));
-	INFO("knob_small:%s", knob_small.c_str());
-	switch_on = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "switch_on")));
-	INFO("switch_on:%s", switch_on.c_str());
-	switch_off = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "switch_off")));
-	INFO("switch_off:%s", switch_off.c_str());
-	port = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "port")));
-	INFO("port:%s", port.c_str());
-	screw = asset::plugin(pluginInstance, std::string("res/") + json_string_value(json_object_get(root, "screw")));
-	INFO("screw:%s", screw.c_str());
+	json_t *obj;
+
+	obj = json_object_get(root, "name");
+	if(!obj) return false;
+
+	const char *str = json_string_value(obj);
+	if(!str) return false;
+	name = str;
+
+	obj = json_object_get(root, "panel");
+	if(!obj) return false;
+
+	str = json_string_value(obj);
+	if(!str) return false;
+	std::string path = std::string("res/") + str;
+	panel = asset::plugin(pluginInstance, path);
+
+	obj = json_object_get(root, "knob_large");
+	if(!obj) return false;
+	str = json_string_value(obj);
+	if(!str) return false;
+	path = std::string("res/") + str;
+	knob_large = asset::plugin(pluginInstance, path);
+
+	obj = json_object_get(root, "knob_small");
+	if(!obj) return false;
+	str = json_string_value(obj);
+	if(!str) return false;
+	path = std::string("res/") + str;
+	knob_small = asset::plugin(pluginInstance, path);
+
+	obj = json_object_get(root, "switch_on");
+	if(!obj) return false;
+	str = json_string_value(obj);
+	path = std::string("res/") + str;
+	switch_on = asset::plugin(pluginInstance, path);
+
+	obj = json_object_get(root, "switch_off");
+	if(!obj) return false;
+	str = json_string_value(obj);
+	if(!str) return false;
+	path = std::string("res/") + str;
+	switch_off = asset::plugin(pluginInstance, path);
+
+	obj = json_object_get(root, "port");
+	if(!obj) return false;
+	str = json_string_value(obj);
+	if(!str) return false;
+	path = std::string("res/") + str;
+	port = asset::plugin(pluginInstance, path);
+
+	obj = json_object_get(root, "screw");
+	if(!obj) return false;
+	str = json_string_value(obj);
+	if(!str) return false;
+	path = std::string("res/") + str;
+	screw = asset::plugin(pluginInstance, path);
+
+	return true;
 }
 
-void EugeneConfig::init()
+bool EugeneConfig::init()
 {
-	fromJson(asset::plugin(pluginInstance, "res/eugene-layout.json"));
-	loadComponentPositions();
+	bool result = fromJson(asset::plugin(pluginInstance, "res/eugene-layout.json"));
+	if(!result) return false;
+
+	return loadComponentPositions();
 }
 
 // TODO: If we can't find the component positions use some sensible defaults
-void EugeneConfig::loadComponentPositions()
+bool EugeneConfig::loadComponentPositions()
 {
 	std::ifstream ifs(m_themes[m_default].panel);
 	std::string content((std::istreambuf_iterator<char>(ifs)),
@@ -43,10 +87,10 @@ void EugeneConfig::loadComponentPositions()
 	size_t search = content.find("inkscape:label=\"components\"");
 	if(search == std::string::npos)
 	{
-		return;
+		return false;
 	}
 
-	for(auto i = 0; i < 17; ++i)
+	while(true)
 	{
 		search = content.find("<", search);
 		if(search == std::string::npos)
@@ -171,54 +215,63 @@ void EugeneConfig::loadComponentPositions()
 
 		search = name_end;
 	}
+
+	return true;
 }
 
-void EugeneConfig::fromJson(std::string path)
+bool EugeneConfig::fromJson(std::string path)
 {
 	json_t *root;
 	json_error_t error;
 	root = json_load_file(path.c_str(), 0, &error);
-	if(root)
+	if(!root) return false;
+
+	json_t *themes = json_object_get(root, "themes");
+	if(!themes)
 	{
-		json_t *themes = json_object_get(root, "themes");
-		if(themes)
-		{
-			size_t index;
-			json_t *value;
-			json_array_foreach(themes, index, value)
-			{
-				EugeneTheme theme;
-				theme.fromJson(value);
-				m_themes.push_back(theme);
-			}
+		json_decref(root);
+		return false;
+	}
 
-			// Default to the first theme if no default theme is provided
-			// Or if it doesn't reference a theme in the themes array
-			m_default = 0;
-			json_t *def = json_object_get(root, "default");
-			if(def)
-			{
-				const char *default_name = json_string_value(def);
-				for(size_t i = 0; i < m_themes.size(); ++i)
-				{
-					if(m_themes[i].name == default_name)
-					{
-						m_default = i;
-						break;
-					}
-				}
-			}
-		}
-		else
-		{
-			// TODO: No themes array
-		}
+	size_t index;
+	json_t *value;
+	json_array_foreach(themes, index, value)
+	{
+		EugeneTheme theme;
+		theme.fromJson(value);
+		m_themes.push_back(theme);
+	}
 
+	json_t *def = json_object_get(root, "default");
+	if(!def)
+	{
+		json_decref(root);
+		return false;
+	}
+
+	const char *default_name = json_string_value(def);
+	if(!default_name)
+	{
 		json_decref(root);
 	}
-	else
+
+	size_t i;
+	for(i = 0; i < m_themes.size(); ++i)
 	{
-		// TODO: Unable to find Eugene config file
-		// Use default assets?
+		if(m_themes[i].name == default_name)
+		{
+			m_default = i;
+			break;
+		}
 	}
+
+	if(i == m_themes.size())
+	{
+		json_decref(root);
+		return false;
+	}
+
+	json_decref(root);
+
+	return true;
 }
