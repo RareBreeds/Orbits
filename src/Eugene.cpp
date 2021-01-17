@@ -71,6 +71,8 @@ static std::bitset<max_rhythm_length> euclideanRhythm(unsigned int number_of_hit
 	return left_pattern;
 }
 
+struct RareBreeds_Orbits_EugeneWidget;
+
 struct RareBreeds_Orbits_Eugene : Module {
 	enum ParamIds {
 		LENGTH_KNOB_PARAM,
@@ -113,6 +115,7 @@ struct RareBreeds_Orbits_Eugene : Module {
 	unsigned int oldShift = max_rhythm_length + 1;
 	bool oldReverse = false;
 	bool oldInvert = false;
+	RareBreeds_Orbits_EugeneWidget *widget = NULL;
 
 	RareBreeds_Orbits_Eugene() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -312,6 +315,9 @@ struct RareBreeds_Orbits_Eugene : Module {
 		updateRhythm();
 		updateOutput(args);
 	}
+
+	json_t *dataToJson() override;
+	void dataFromJson(json_t *root) override;
 };
 
 struct EugeneRhythmDisplay : TransparentWidget {
@@ -502,6 +508,12 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		setModule(module);
 
+		// Module may be NULL if this is the module selection screen
+		if(module)
+		{
+			module->widget = this;
+		}
+
 		setPanel(APP->window->loadSvg(config.m_themes[config.m_default].panel));
 
 		addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
@@ -568,6 +580,18 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 		}
 	}
 
+	void loadTheme(const char *theme)
+	{
+		for(size_t i = 0; i < config.m_themes.size(); ++i)
+		{
+			if(config.m_themes[i].name == theme)
+			{
+				loadTheme(i);
+				break;
+			}
+		}
+	}
+
 	void loadTheme(int theme)
 	{
 		m_theme = theme;
@@ -617,6 +641,61 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 
 		setPanel(APP->window->loadSvg(config.m_themes[theme].panel));
 	}
+
+	json_t *dataToJson()
+	{
+		json_t *root = json_object();
+		if(root)
+		{
+			json_t *theme = json_string(config.m_themes[m_theme].name.c_str());
+			if(theme)
+			{
+				json_object_set_new(root, "theme", theme);
+			}
+		}
+		return root;
+	}
+
+	void dataFromJson(json_t *root)
+	{
+		if(root)
+		{
+			json_t *obj = json_object_get(root, "theme");
+			if(obj)
+			{
+				loadTheme(json_string_value(obj));
+			}
+		}
+	}
 };
+
+json_t *RareBreeds_Orbits_Eugene::dataToJson()
+{
+	json_t *root = json_object();
+	if(widget)
+	{
+		json_t *w = widget->dataToJson();
+		if(w)
+		{
+			json_object_set_new(root, "widget", w);
+		}
+	}
+	return root;
+}
+
+void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
+{
+	if(root)
+	{
+		if(widget)
+		{
+			json_t *obj = json_object_get(root, "widget");
+			if(obj)
+			{
+				widget->dataFromJson(obj);
+			}
+		}
+	}
+}
 
 Model *modelRareBreeds_Orbits_Eugene = createModel<RareBreeds_Orbits_Eugene, RareBreeds_Orbits_EugeneWidget>("RareBreeds_Orbits_Eugene");

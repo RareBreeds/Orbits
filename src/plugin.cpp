@@ -55,24 +55,20 @@ void Config::loadComponentPositions(void)
 	for(auto i = 0; i < 17; ++i)
 	{
 		search = content.find("<", search);
-
 		search = content.find("x=", search);
 		size_t float_start = search + 3;
 		size_t float_end = content.find("\"", float_start);
 		float x = std::stof(content.substr(float_start, float_end - float_start));
-		INFO("X %f", x);
 
 		search = content.find("y=", float_end);
 		float_start = search + 3;
 		float_end = content.find("\"", float_start);
 		float y = std::stof(content.substr(float_start, float_end - float_start));
-		INFO("Y %f", y);
 
 		search = content.find("inkscape:label=", float_end);
 		size_t name_start = search + 16;
 		size_t name_end = content.find("\"", name_start);
 		std::string name = content.substr(name_start, name_end - name_start);
-		INFO("NAME %s", name.c_str());
 
 		Vec pos = mm2px(Vec(x, y));
 		if(name == "length_knob")
@@ -153,7 +149,8 @@ void Config::fromJson(std::string path)
 	json_t *root;
 	json_error_t error;
 	root = json_load_file(path.c_str(), 0, &error);
-	if (!root) {
+	if (!root)
+	{
 		// TODO: Handle errors, the whole of rack crashes if this crashes
 	}
 
@@ -167,8 +164,7 @@ void Config::fromJson(std::string path)
 		m_themes.push_back(theme);
 	}
 
-	const char *default_name = json_string_value(json_object_get(root, "default_theme"));
-	INFO("default_theme:%s", default_name);
+	const char *default_name = json_string_value(json_object_get(root, "default"));
 	for(size_t i = 0; i < m_themes.size(); ++i)
 	{
 		if(m_themes[i].name == default_name)
