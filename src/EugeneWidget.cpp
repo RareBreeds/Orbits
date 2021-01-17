@@ -1,16 +1,17 @@
 #include "EugeneWidget.hpp"
 #include "EugeneModule.hpp"
+#include "EugeneConfig.hpp"
 
 struct EugeneKnobLarge : RoundKnob
 {
     EugeneKnobLarge()
     {
-        setSvg(APP->window->loadSvg(config.m_themes[config.m_default].knob_large));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].knob_large));
     }
 
     void loadTheme(int theme)
     {
-        setSvg(APP->window->loadSvg(config.m_themes[theme].knob_large));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].knob_large));
         fb->dirty = true;
     }
 };
@@ -19,12 +20,12 @@ struct EugeneKnobSmall : RoundKnob
 {
     EugeneKnobSmall()
     {
-        setSvg(APP->window->loadSvg(config.m_themes[config.m_default].knob_small));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].knob_small));
     }
 
     void loadTheme(int theme)
     {
-        setSvg(APP->window->loadSvg(config.m_themes[theme].knob_small));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].knob_small));
         fb->dirty = true;
     }
 };
@@ -33,7 +34,7 @@ struct EugeneScrew : app::SvgScrew
 {
     EugeneScrew()
     {
-        setSvg(APP->window->loadSvg(config.m_themes[config.m_default].screw));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].screw));
     }
 };
 
@@ -41,15 +42,15 @@ struct EugeneSwitch : app::SvgSwitch
 {
     EugeneSwitch()
     {
-        addFrame(APP->window->loadSvg(config.m_themes[config.m_default].switch_off));
-        addFrame(APP->window->loadSvg(config.m_themes[config.m_default].switch_on));
+        addFrame(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].switch_off));
+        addFrame(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].switch_on));
         shadow->opacity = 0.0;
     }
 
     void loadTheme(int theme)
     {
-        frames[0] = APP->window->loadSvg(config.m_themes[theme].switch_off);
-        frames[1] = APP->window->loadSvg(config.m_themes[theme].switch_on);
+        frames[0] = APP->window->loadSvg(eugene_config.m_themes[theme].switch_off);
+        frames[1] = APP->window->loadSvg(eugene_config.m_themes[theme].switch_on);
 
         event::Change change;
         onChange(change);
@@ -61,13 +62,13 @@ struct EugenePort : app::SvgPort
 {
     EugenePort()
     {
-        setSvg(APP->window->loadSvg(config.m_themes[config.m_default].port));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].port));
         shadow->opacity = 0.07;
     }
 
     void loadTheme(int theme)
     {
-        setSvg(APP->window->loadSvg(config.m_themes[theme].port));
+        setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].port));
         fb->dirty = true;
     }
 };
@@ -220,33 +221,33 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         module->widget = this;
     }
 
-    setPanel(APP->window->loadSvg(config.m_themes[config.m_default].panel));
+    setPanel(APP->window->loadSvg(eugene_config.m_themes[eugene_config.m_default].panel));
 
     addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
     addChild(createWidgetCentered<EugeneScrew>(Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
     addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
     addChild(createWidgetCentered<EugeneScrew>(Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-    addParam(createParamCentered<EugeneKnobLarge>(config.length_knob, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-    addParam(createParamCentered<EugeneKnobLarge>(config.hits_knob, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-    addParam(createParamCentered<EugeneKnobLarge>(config.shift_knob, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-    addParam(createParamCentered<EugeneKnobSmall>(config.length_cv_knob, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-    addParam(createParamCentered<EugeneKnobSmall>(config.hits_cv_knob, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-    addParam(createParamCentered<EugeneKnobSmall>(config.shift_cv_knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-    addParam(createParamCentered<EugeneSwitch>(config.reverse_knob, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-    addParam(createParamCentered<EugeneSwitch>(config.invert_knob, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+    addParam(createParamCentered<EugeneKnobLarge>(eugene_config.length_knob, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+    addParam(createParamCentered<EugeneKnobLarge>(eugene_config.hits_knob, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+    addParam(createParamCentered<EugeneKnobLarge>(eugene_config.shift_knob, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+    addParam(createParamCentered<EugeneKnobSmall>(eugene_config.length_cv_knob, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+    addParam(createParamCentered<EugeneKnobSmall>(eugene_config.hits_cv_knob, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+    addParam(createParamCentered<EugeneKnobSmall>(eugene_config.shift_cv_knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+    addParam(createParamCentered<EugeneSwitch>(eugene_config.reverse_knob, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+    addParam(createParamCentered<EugeneSwitch>(eugene_config.invert_knob, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
-    addInput(createInputCentered<EugenePort>(config.clock, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-    addInput(createInputCentered<EugenePort>(config.sync, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-    addInput(createInputCentered<EugenePort>(config.length_cv, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-    addInput(createInputCentered<EugenePort>(config.hits_cv, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-    addInput(createInputCentered<EugenePort>(config.shift_cv, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-    addInput(createInputCentered<EugenePort>(config.reverse_cv, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-    addInput(createInputCentered<EugenePort>(config.invert_cv, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.clock, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.sync, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.length_cv, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.hits_cv, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.shift_cv, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.reverse_cv, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+    addInput(createInputCentered<EugenePort>(eugene_config.invert_cv, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-    addOutput(createOutputCentered<EugenePort>(config.beat, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+    addOutput(createOutputCentered<EugenePort>(eugene_config.beat, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
-    EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(config.display);
+    EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(eugene_config.display);
     r->module = module;
     r->box.size = mm2px(Vec(32.0, 32.0));
     addChild(r);
@@ -259,17 +260,17 @@ void RareBreeds_Orbits_EugeneWidget::appendContextMenu(Menu* menu)
     theme_label->text = "Theme";
     menu->addChild(theme_label);
 
-    for(size_t i = 0; i < config.m_themes.size(); ++i)
+    for(size_t i = 0; i < eugene_config.m_themes.size(); ++i)
     {
-        menu->addChild(new ThemeChoiceItem(this, i, config.m_themes[i].name.c_str()));
+        menu->addChild(new ThemeChoiceItem(this, i, eugene_config.m_themes[i].name.c_str()));
     }
 }
 
 void RareBreeds_Orbits_EugeneWidget::loadTheme(const char *theme)
 {
-    for(size_t i = 0; i < config.m_themes.size(); ++i)
+    for(size_t i = 0; i < eugene_config.m_themes.size(); ++i)
     {
-        if(config.m_themes[i].name == theme)
+        if(eugene_config.m_themes[i].name == theme)
         {
             loadTheme(i);
             break;
@@ -324,7 +325,7 @@ void RareBreeds_Orbits_EugeneWidget::loadTheme(int theme)
         }
     }
 
-    setPanel(APP->window->loadSvg(config.m_themes[theme].panel));
+    setPanel(APP->window->loadSvg(eugene_config.m_themes[theme].panel));
 }
 
 json_t *RareBreeds_Orbits_EugeneWidget::dataToJson()
@@ -332,7 +333,7 @@ json_t *RareBreeds_Orbits_EugeneWidget::dataToJson()
     json_t *root = json_object();
     if(root)
     {
-        json_t *theme = json_string(config.m_themes[m_theme].name.c_str());
+        json_t *theme = json_string(eugene_config.m_themes[m_theme].name.c_str());
         if(theme)
         {
             json_object_set_new(root, "theme", theme);

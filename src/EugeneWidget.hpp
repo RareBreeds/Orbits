@@ -1,5 +1,4 @@
-#ifndef EUGENE_WIDGET_HPP_
-#define EUGENE_WIDGET_HPP_
+#pragma once
 
 #include "plugin.hpp"
 
@@ -16,5 +15,3 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	json_t *dataToJson();
 	void dataFromJson(json_t *root);
 };
-
-#endif // EUGENE_WIDGET_HPP_

@@ -1,5 +1,4 @@
-#ifndef EUGENE_MODULE_HPP_
-#define EUGENE_MODULE_HPP_
+#pragma once
 
 #include <bitset>
 #include "plugin.hpp"
@@ -72,4 +71,3 @@ struct RareBreeds_Orbits_Eugene : Module
 	json_t *dataToJson() override;
 	void dataFromJson(json_t *root) override;
 };
-#endif // EUGENE_MODULE_HPP_
