@@ -89,6 +89,7 @@ static const Vec hits_cv_knob_pos = mm2px(Vec(30.48, 83.30));
 static const Vec shift_cv_knob_pos = mm2px(Vec(46.62, 83.30));
 static const Vec display_pos = mm2px(Vec(14.48, 15.63));
 
+
 struct RareBreeds_Orbits_Eugene : Module {
 	enum ParamIds {
 		LENGTH_KNOB_PARAM,
@@ -449,12 +450,12 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		EugeneKnobLarge()
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-knob-large.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[config.m_default].knob_large));
 		}
 
-		void loadTheme(std::string theme)
+		void loadTheme(int theme)
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-" + theme + "-knob-large.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[theme].knob_large));
 			fb->dirty = true;
 		}
 	};
@@ -463,12 +464,12 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		EugeneKnobSmall()
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-knob-small.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[config.m_default].knob_small));
 		}
 
-		void loadTheme(std::string theme)
+		void loadTheme(int theme)
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-" + theme + "-knob-small.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[theme].knob_small));
 			fb->dirty = true;
 		}
 	};
@@ -477,7 +478,7 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		EugeneScrew()
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-screw.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[config.m_default].screw));
 		}
 	};
 
@@ -485,15 +486,15 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		EugeneSwitch()
 		{
-			addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-switch-off.svg")));
-			addFrame(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-switch-on.svg")));
+			addFrame(APP->window->loadSvg(config.m_themes[config.m_default].switch_off));
+			addFrame(APP->window->loadSvg(config.m_themes[config.m_default].switch_on));
 			shadow->opacity = 0.0;
 		}
 
-		void loadTheme(std::string theme)
+		void loadTheme(int theme)
 		{
-			frames[0] = APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-" + theme + "-switch-off.svg"));
-			frames[1] = APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-" + theme + "-switch-on.svg"));
+			frames[0] = APP->window->loadSvg(config.m_themes[theme].switch_off);
+			frames[1] = APP->window->loadSvg(config.m_themes[theme].switch_on);
 
 			event::Change change;
 			onChange(change);
@@ -505,20 +506,22 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		EugenePort()
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-port.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[config.m_default].port));
 			shadow->opacity = 0.07;
 		}
 
-		void loadTheme(std::string theme)
+		void loadTheme(int theme)
 		{
-			setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-" + theme + "-port.svg")));
+			setSvg(APP->window->loadSvg(config.m_themes[theme].port));
 			fb->dirty = true;
 		}
 	};
 
 	RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) {
 		setModule(module);
-		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-panel.svg")));
+		// TODO: Find component positions from the svg
+
+		setPanel(APP->window->loadSvg(config.m_themes[config.m_default].panel));
 
 		addChild(createWidgetCentered<EugeneScrew>(Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
 		addChild(createWidgetCentered<EugeneScrew>(Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
@@ -578,10 +581,9 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 		theme_label->text = "Theme";
 		menu->addChild(theme_label);
 
-		static const char *themes[] = {"Dark", "Light"};
-		for(auto i = 0llu; i < sizeof(themes) / sizeof(themes[0]); ++i)
+		for(size_t i = 0; i < config.m_themes.size(); ++i)
 		{
-			menu->addChild(new ThemeChoiceItem(this, i, themes[i]));
+			menu->addChild(new ThemeChoiceItem(this, i, config.m_themes[i].name.c_str()));
 		}
 	}
 
@@ -589,29 +591,27 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 	{
 		m_theme = theme;
 
-		std::string stheme = theme ? "light" : "dark";
-
 		// TODO: Save and load theme in json
 		for(auto param : params)
 		{
 			EugeneSwitch *swi = dynamic_cast<EugeneSwitch *>(param);
 			if(swi)
 			{
-				swi->loadTheme(stheme);
+				swi->loadTheme(theme);
 				continue;
 			}
 
 			EugeneKnobLarge *knob_large = dynamic_cast<EugeneKnobLarge *>(param);
 			if(knob_large)
 			{
-				knob_large->loadTheme(stheme);
+				knob_large->loadTheme(theme);
 				continue;
 			}
 
 			EugeneKnobSmall *knob_small = dynamic_cast<EugeneKnobSmall *>(param);
 			if(knob_small)
 			{
-				knob_small->loadTheme(stheme);
+				knob_small->loadTheme(theme);
 				continue;
 			}
 		}
@@ -621,7 +621,7 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 			EugenePort *port = dynamic_cast<EugenePort *>(input);
 			if(port)
 			{
-				port->loadTheme(stheme);
+				port->loadTheme(theme);
 			}
 		}
 
@@ -630,11 +630,11 @@ struct RareBreeds_Orbits_EugeneWidget : ModuleWidget
 			EugenePort *port = dynamic_cast<EugenePort *>(output);
 			if(port)
 			{
-				port->loadTheme(stheme);
+				port->loadTheme(theme);
 			}
 		}
 
-		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-" + stheme + "-panel.svg")));
+		setPanel(APP->window->loadSvg(config.m_themes[theme].panel));
 	}
 };
 

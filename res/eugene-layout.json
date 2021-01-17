@@ -1,0 +1,25 @@
+{
+    "themes" : [
+        {
+            "name" : "Dark",
+            "panel" : "eugene-dark-panel.svg",
+            "knob_large" : "eugene-dark-knob-large.svg",
+            "knob_small" : "eugene-dark-knob-small.svg",
+            "switch_on" : "eugene-dark-switch-on.svg",
+            "switch_off" : "eugene-dark-switch-off.svg",
+            "port" : "eugene-dark-port.svg",
+            "screw" : "eugene-screw.svg"
+        },
+        {
+            "name" : "Light",
+            "panel" : "eugene-light-panel.svg",
+            "knob_large" : "eugene-light-knob-large.svg",
+            "knob_small" : "eugene-light-knob-small.svg",
+            "switch_on" : "eugene-light-switch-on.svg",
+            "switch_off" : "eugene-light-switch-off.svg",
+            "port" : "eugene-light-port.svg",
+            "screw" : "eugene-screw.svg"
+        }
+    ],
+    "default_theme" : "Dark"
+}
