@@ -10,6 +10,7 @@ struct EugeneTheme
 	std::string switch_off;
 	std::string screw;
 	std::string port;
+
 	void fromJson(json_t *root);
 };
 
@@ -36,8 +37,9 @@ struct EugeneConfig
 	Vec shift_cv_knob;
 	Vec display;
 
+	void init();
 	void fromJson(std::string path);
-	void loadComponentPositions(void);
+	void loadComponentPositions();
 };
 
 extern EugeneConfig eugene_config;

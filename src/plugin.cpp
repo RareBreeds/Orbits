@@ -15,6 +15,5 @@ void init(Plugin *p)
 
 	// Any other plugin initialization may go here.
 	// As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.
-	eugene_config.fromJson(asset::plugin(pluginInstance, "res/eugene-layout.json"));
-	eugene_config.loadComponentPositions();
+	eugene_config.init();
 }

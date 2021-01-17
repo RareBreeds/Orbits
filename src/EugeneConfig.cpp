@@ -26,8 +26,14 @@ void EugeneTheme::fromJson(json_t *root)
 	INFO("screw:%s", screw.c_str());
 }
 
+void EugeneConfig::init()
+{
+	fromJson(asset::plugin(pluginInstance, "res/eugene-layout.json"));
+	loadComponentPositions();
+}
+
 // TODO: If we can't find the component positions use some sensible defaults
-void EugeneConfig::loadComponentPositions(void)
+void EugeneConfig::loadComponentPositions()
 {
 	std::ifstream ifs(m_themes[m_default].panel);
 	std::string content((std::istreambuf_iterator<char>(ifs)),
