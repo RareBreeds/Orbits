@@ -326,31 +326,6 @@ void RareBreeds_Orbits_EugeneWidget::loadTheme(int theme)
         }
     }
 
-    // TODO: Save and load theme in json
-    for(auto param : params)
-    {
-        EugeneSwitch *swi = dynamic_cast<EugeneSwitch *>(param);
-        if(swi)
-        {
-            swi->loadTheme(theme);
-            continue;
-        }
-
-        EugeneKnobLarge *knob_large = dynamic_cast<EugeneKnobLarge *>(param);
-        if(knob_large)
-        {
-            knob_large->loadTheme(theme);
-            continue;
-        }
-
-        EugeneKnobSmall *knob_small = dynamic_cast<EugeneKnobSmall *>(param);
-        if(knob_small)
-        {
-            knob_small->loadTheme(theme);
-            continue;
-        }
-    }
-
     setPanel(APP->window->loadSvg(eugene_config.m_themes[theme].panel));
 }
 
