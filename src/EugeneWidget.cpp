@@ -103,29 +103,60 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
     const auto length = module->readLength();
     const auto hits = module->readHits(length);
     const auto shift = module->readShift(length);
+    const auto inverted_display = false;
+    const auto background_color = inverted_display ? color::WHITE : color::BLACK;
+    const auto foreground_color = inverted_display ? color::BLACK : color::WHITE;
 
-    nvgStrokeColor(args.vg, color::WHITE);
     nvgSave(args.vg);
 
     const Rect b = Rect(Vec(0, 0), box.size);
     nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
 
+    // Only the background is drawn in the background colour
+    nvgStrokeColor(args.vg, background_color);
+    nvgFillColor(args.vg, background_color);
+    nvgBeginPath(args.vg);
+    nvgRoundedRect(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y, 5.f);
+    nvgFill(args.vg);
+
+    // Everything drawn after here is in the foreground colour
+    nvgStrokeColor(args.vg, foreground_color);
+    nvgFillColor(args.vg, foreground_color);
+
     // Translate so (0, 0) is the center of the screen
     nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
 
     // Draw length text center bottom and hits text center top
+    nvgBeginPath(args.vg);
     nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgFontSize(args.vg, 20);
     nvgFontFaceId(args.vg, font->handle);
-    nvgFillColor(args.vg, color::WHITE);
     nvgText(args.vg, 0.f, -7.f, std::to_string(hits).c_str(), NULL);
     nvgText(args.vg, 0.f, 7.f, std::to_string(length).c_str(), NULL);
+    //nvgFill(args.vg);
 
     // Scale to [-1, 1]
     nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
 
     // Flip x and y so we start at the top and positive angle increments go clockwise
     nvgScale(args.vg, -1.f, -1.f);
+
+    // Triangle showing direction
+    const bool reverse = module->readReverse();
+    //nvgBeginPath(args.vg);
+    if(reverse)
+    {
+            nvgMoveTo(args.vg, 0.23f, -0.2f);
+            nvgLineTo(args.vg, 0.3f, 0.f);
+            nvgLineTo(args.vg, 0.23f, 0.2f);
+    }
+    else
+    {
+            nvgMoveTo(args.vg, -0.23f, 0.2f);
+            nvgLineTo(args.vg, -0.3f, -0.f);
+            nvgLineTo(args.vg, -0.23f, -0.2f);
+    }
+    nvgFill(args.vg);
 
     // set the on beat radius so 8 can fix on the screen
     const auto on_radius = 1.f / 8.f;
@@ -146,6 +177,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
     // Add a border of half a circle so we don't draw over the edge
     nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
+    // TODO: probably faster to draw all filled objects first then all outlined as a separate path
     const bool invert = module->readInvert();
     for(unsigned int k = 0; k < length; ++k)
     {
@@ -174,6 +206,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
             nvgFill(args.vg);
         }
 
+        // Current beat marker
         if(module->index == k)
         {
             nvgBeginPath(args.vg);
@@ -181,6 +214,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
             nvgStroke(args.vg);
         }
 
+        // shift pointer
         if(shift == k)
         {
             nvgBeginPath(args.vg);

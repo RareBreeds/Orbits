@@ -1,78 +1,15 @@
 #include "EugeneModule.hpp"
 #include "EugeneWidget.hpp"
+#include "Euclidean.hpp"
 
-static std::bitset<max_rhythm_length> euclideanRhythm(unsigned int number_of_hits, unsigned int length_of_sequence)
-{
-	assert(number_of_hits <= length_of_sequence);
-
-	if(0 == number_of_hits)
-	{
-		return std::bitset<max_rhythm_length>();
-	}
-
-	if(number_of_hits == length_of_sequence)
-	{
-		return ~std::bitset<max_rhythm_length>();
-	}
-
-	auto left_blocks = number_of_hits;
-	std::bitset<max_rhythm_length> left_pattern;
-	left_pattern[0] = true;
-	unsigned int left_pattern_length = 1;
-
-	auto right_blocks = length_of_sequence - left_blocks;
-	std::bitset<max_rhythm_length> right_pattern;
-	right_pattern[0] = false;
-	unsigned int right_pattern_length = 1;
-
-	while(right_blocks)
-	{
-		unsigned int remainder_blocks;
-		std::bitset<max_rhythm_length> remainder_pattern;
-		unsigned int remainder_pattern_length;
-
-		if(left_blocks > right_blocks)
-		{
-			remainder_blocks = left_blocks - right_blocks;
-			remainder_pattern = left_pattern;
-			remainder_pattern_length = left_pattern_length;
-			left_blocks = right_blocks;
-		}
-		else
-		{
-			remainder_blocks = right_blocks - left_blocks;
-			remainder_pattern = right_pattern;
-			remainder_pattern_length = right_pattern_length;
-		}
-		for(unsigned int i = 0; i < right_pattern_length; ++i)
-		{
-			left_pattern[left_pattern_length] = right_pattern[i];
-			++left_pattern_length;
-		}
-		right_blocks = remainder_blocks;
-		right_pattern = remainder_pattern;
-		right_pattern_length = remainder_pattern_length;
-	}
-
-	for(unsigned int i = 1; i < left_blocks; ++i)
-	{
-		for(unsigned int j = 0; j < left_pattern_length; ++j)
-		{
-			left_pattern[left_pattern_length * i + j] = left_pattern[j];
-		}
-	}
-
-	assert(left_pattern_length * left_blocks == length_of_sequence);
-	assert(left_pattern.count() == number_of_hits);
-	return left_pattern;
-}
-
+// TODO: Maximum length shouldn't be defined by what the Euclidean module can support
+// should be separate and Euclidean needs to support the max of all modules, or templated.
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
     config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-    configParam(LENGTH_KNOB_PARAM, 1.f, max_rhythm_length, max_rhythm_length, "Length");
+    configParam(LENGTH_KNOB_PARAM, 1.f, euclidean::max_length, euclidean::max_length, "Length");
     configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
-    configParam(SHIFT_KNOB_PARAM, 0.f, max_rhythm_length - 1, 0.f, "Shift");
+    configParam(SHIFT_KNOB_PARAM, 0.f, euclidean::max_length - 1, 0.f, "Shift");
     configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV");
     configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV");
     configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
@@ -92,10 +29,10 @@ unsigned int RareBreeds_Orbits_Eugene::readLength()
         float input = inputs[LENGTH_CV_INPUT].getVoltage();
         float normalized_input = input / 5.f;
         float attenuation = params[LENGTH_CV_KNOB_PARAM].getValue();
-        value += attenuation * normalized_input * (max_rhythm_length-1);
+        value += attenuation * normalized_input * (euclidean::max_length-1);
     }
 
-    return clamp(int(std::round(value)), 1, max_rhythm_length);
+    return clamp(int(std::round(value)), 1, euclidean::max_length);
 }
 
 unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
@@ -123,10 +60,10 @@ unsigned int RareBreeds_Orbits_Eugene::readShift(unsigned int length)
         float input = inputs[SHIFT_CV_INPUT].getVoltage();
         float normalized_input = input / 5.f;
         float attenuation = params[SHIFT_CV_KNOB_PARAM].getValue();
-        value += attenuation * normalized_input * (max_rhythm_length-1);
+        value += attenuation * normalized_input * (euclidean::max_length-1);
     }
 
-    return clamp(int(std::round(value)), 0, max_rhythm_length - 1) % length;
+    return clamp(int(std::round(value)), 0, euclidean::max_length - 1) % length;
 }
 
 bool RareBreeds_Orbits_Eugene::readReverse()
@@ -201,7 +138,7 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
 
 void RareBreeds_Orbits_Eugene::updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift, bool invert)
 {
-    rhythm = euclideanRhythm(hits, length);
+    rhythm = euclidean::rhythm(length, hits);
 
     auto tmp = rhythm;
     for(unsigned int i = 0; i < length; ++i)

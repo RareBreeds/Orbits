@@ -76,7 +76,6 @@ bool EugeneConfig::init()
 	return loadComponentPositions();
 }
 
-// TODO: If we can't find the component positions use some sensible defaults
 bool EugeneConfig::loadComponentPositions()
 {
 	std::ifstream ifs(m_themes[m_default].panel);
@@ -90,6 +89,7 @@ bool EugeneConfig::loadComponentPositions()
 		return false;
 	}
 
+	// TODO: Should validate that all the positions have been found.
 	while(true)
 	{
 		search = content.find("<", search);

@@ -1,11 +1,9 @@
 #pragma once
 
-#include <bitset>
 #include "plugin.hpp"
+#include "Euclidean.hpp"
 
 struct RareBreeds_Orbits_EugeneWidget;
-
-static const auto max_rhythm_length = 32;
 
 struct RareBreeds_Orbits_Eugene : Module
 {
@@ -48,10 +46,10 @@ struct RareBreeds_Orbits_Eugene : Module
 	dsp::SchmittTrigger invertTrigger;
 	dsp::PulseGenerator outputGenerator;
 	unsigned int index = 0;
-	std::bitset<max_rhythm_length> rhythm;
-	unsigned int oldLength = max_rhythm_length + 1;
-	unsigned int oldHits = max_rhythm_length + 1;
-	unsigned int oldShift = max_rhythm_length + 1;
+	euclidean::Rhythm rhythm;
+	unsigned int oldLength = euclidean::max_length + 1;
+	unsigned int oldHits = euclidean::max_length + 1;
+	unsigned int oldShift = euclidean::max_length + 1;
 	bool oldReverse = false;
 	bool oldInvert = false;
 	RareBreeds_Orbits_EugeneWidget *widget = NULL;
