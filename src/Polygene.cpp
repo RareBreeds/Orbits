@@ -150,10 +150,9 @@ struct RareBreeds_Orbits_Polygene : Module
                         }
                 }
 
-                bool isOnBeat(unsigned int beat, unsigned int length, unsigned int hits, unsigned int shift, bool invert)
+                bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int beat, bool invert)
                 {
-                        euclidean::Rhythm rhythm = euclidean::rhythm(length, hits);
-                        return euclidean::rotate(rhythm, length, shift)[beat] != invert;
+                        return euclidean::beat(length, hits, shift, beat) != invert;
                 }
 
                 unsigned int readLength()
@@ -231,7 +230,7 @@ struct RareBreeds_Orbits_Polygene : Module
                                 auto hits = readHits(length);
                                 auto shift = readShift(length);
                                 auto invert = readInvert();
-                                if(isOnBeat(m_current_step, length, hits, shift, invert))
+                                if(isOnBeat(length, hits, shift, m_current_step, invert))
                                 {
                                         m_output_generator.trigger(1e-3f);
                                 }
@@ -554,7 +553,7 @@ struct PolygeneRhythmDisplay : TransparentWidget
                                 y_pos = inner_ring_scale;
                         }
 
-                        auto on_beat = module->m_active_channel->isOnBeat(k, length, hits, shift, invert);
+                        auto on_beat = module->m_active_channel->isOnBeat(length, hits, shift, k, invert);
                         auto radius = on_beat ? on_radius : off_radius;
 
                         nvgSave(args.vg);

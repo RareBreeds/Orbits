@@ -129,8 +129,6 @@ static uint32_t sumTo(unsigned int n)
         return n * (n + 1) / 2;
 }
 
-
-
 static unsigned int euclideanRhythmIndex(unsigned int length, unsigned int on_beats_m2, unsigned int first_entry_length)
 {
         unsigned int first_entry_elements = first_entry_length - 2;
@@ -189,9 +187,19 @@ Rhythm rhythm(unsigned int length, unsigned int on_beats)
         }
 }
 
+Rhythm rhythm(uint32_t length, uint32_t on_beats, uint32_t shift)
+{
+    return rotate(rhythm(length, on_beats), length, shift);
+}
+
 Rhythm rotate(Rhythm val, uint32_t size, uint32_t amount)
 {
         return (val << amount | val >> (size - amount));
+}
+
+bool beat(uint32_t length, uint32_t on_beats, uint32_t shift, uint32_t num)
+{
+    return rhythm(length, on_beats, shift)[num];
 }
 
 } // namespace euclidean
