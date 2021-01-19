@@ -2,38 +2,44 @@
 
 struct EugeneTheme
 {
-	std::string name;
+	enum EugeneThemeComponents
+	{
+		panel,
 
-	std::string panel;
+		screw_top_left,
+		screw_top_right,
+		screw_bottom_left,
+		screw_bottom_right,
 
-	std::string screw_top_left;
-	std::string screw_top_right;
-	std::string screw_bottom_left;
-	std::string screw_bottom_right;
+		clock_port,
+		sync_port,
+		beat_port,
 
-	std::string clock_port;
-	std::string sync_port;
-	std::string beat_port;
+		length_knob,
+		length_cv_knob,
+		length_cv_port,
 
-	std::string length_knob;
-	std::string length_cv_knob;
-	std::string length_cv_port;
+		hits_knob,
+		hits_cv_knob,
+		hits_cv_port,
 
-	std::string hits_knob;
-	std::string hits_cv_knob;
-	std::string hits_cv_port;
+		shift_knob,
+		shift_cv_knob,
+		shift_cv_port,
 
-	std::string shift_knob;
-	std::string shift_cv_knob;
-	std::string shift_cv_port;
+		reverse_switch_on,
+		reverse_switch_off,
+		reverse_cv_port,
 
-	std::string reverse_switch_on;
-	std::string reverse_switch_off;
-	std::string reverse_cv_port;
+		invert_switch_on,
+		invert_switch_off,
+		invert_cv_port,
 
-	std::string invert_switch_on;
-	std::string invert_switch_off;
-	std::string invert_cv_port;
+		num_components
+	};
+
+	std::string m_name;
+	std::string m_components[num_components];
 
 	bool fromJson(json_t *root);
 };

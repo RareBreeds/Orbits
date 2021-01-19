@@ -12,19 +12,18 @@ EugeneConfig eugene_config;
 	str = json_string_value(obj); \
 	if(!str) return false; \
 	std::string path = std::string("res/") + str; \
-	_name = asset::plugin(pluginInstance, path); \
+	m_components[_name] = asset::plugin(pluginInstance, path); \
 } while(0)
 
 bool EugeneTheme::fromJson(json_t *root)
 {
 	json_t *obj;
 
-	// TODO: Shares most of the code but doesn't have the 'res' path prefix
 	obj = json_object_get(root, "name");
 	if(!obj) return false;
 	const char *str = json_string_value(obj);
 	if(!str) return false;
-	name = str;
+	m_name = str;
 
 	LOAD_PATH(panel);
 	LOAD_PATH(screw_top_left);
@@ -64,7 +63,7 @@ bool EugeneConfig::init()
 
 bool EugeneConfig::loadComponentPositions()
 {
-	std::ifstream ifs(m_themes[m_default].panel);
+	std::ifstream ifs(m_themes[m_default].m_components[EugeneTheme::panel]);
 	std::string content((std::istreambuf_iterator<char>(ifs)),
 						(std::istreambuf_iterator<char>()));
 
@@ -244,7 +243,7 @@ bool EugeneConfig::fromJson(std::string path)
 	size_t i;
 	for(i = 0; i < m_themes.size(); ++i)
 	{
-		if(m_themes[i].name == default_name)
+		if(m_themes[i].m_name == default_name)
 		{
 			m_default = i;
 			break;
