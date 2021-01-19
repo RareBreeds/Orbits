@@ -44,6 +44,10 @@ struct EugeneTheme
 	bool fromJson(json_t *root);
 };
 
+// TODO: Accessors would simplify the callers code
+// eugene_config.m_themes[theme].m_component[component]
+// eugene_config.getComponent(theme, component)
+// eugene_config.getDefaultComponent(compenent)
 struct EugeneConfig
 {
 	std::vector<EugeneTheme> m_themes;
