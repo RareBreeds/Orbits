@@ -189,7 +189,7 @@ Rhythm rhythm(unsigned int length, unsigned int on_beats)
 
 Rhythm rhythm(uint32_t length, uint32_t on_beats, uint32_t shift)
 {
-    return rotate(rhythm(length, on_beats), length, shift);
+        return rotate(rhythm(length, on_beats), length, shift);
 }
 
 Rhythm rotate(Rhythm val, uint32_t size, uint32_t amount)
@@ -199,7 +199,7 @@ Rhythm rotate(Rhythm val, uint32_t size, uint32_t amount)
 
 bool beat(uint32_t length, uint32_t on_beats, uint32_t shift, uint32_t num)
 {
-    return rhythm(length, on_beats, shift)[num];
+        return rhythm(length, on_beats, shift)[num];
 }
 
 } // namespace euclidean

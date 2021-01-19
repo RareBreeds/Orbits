@@ -5,65 +5,51 @@
 
 EugeneConfig eugene_config;
 
+// TODO: not calculating paths here would save some memory
+#define LOAD_PATH(_name) do {\
+	obj = json_object_get(root, #_name); \
+	if(!obj) return false; \
+	str = json_string_value(obj); \
+	if(!str) return false; \
+	std::string path = std::string("res/") + str; \
+	_name = asset::plugin(pluginInstance, path); \
+} while(0)
+
 bool EugeneTheme::fromJson(json_t *root)
 {
 	json_t *obj;
 
+	// TODO: Shares most of the code but doesn't have the 'res' path prefix
 	obj = json_object_get(root, "name");
 	if(!obj) return false;
-
 	const char *str = json_string_value(obj);
 	if(!str) return false;
 	name = str;
 
-	obj = json_object_get(root, "panel");
-	if(!obj) return false;
-
-	str = json_string_value(obj);
-	if(!str) return false;
-	std::string path = std::string("res/") + str;
-	panel = asset::plugin(pluginInstance, path);
-
-	obj = json_object_get(root, "knob_large");
-	if(!obj) return false;
-	str = json_string_value(obj);
-	if(!str) return false;
-	path = std::string("res/") + str;
-	knob_large = asset::plugin(pluginInstance, path);
-
-	obj = json_object_get(root, "knob_small");
-	if(!obj) return false;
-	str = json_string_value(obj);
-	if(!str) return false;
-	path = std::string("res/") + str;
-	knob_small = asset::plugin(pluginInstance, path);
-
-	obj = json_object_get(root, "switch_on");
-	if(!obj) return false;
-	str = json_string_value(obj);
-	path = std::string("res/") + str;
-	switch_on = asset::plugin(pluginInstance, path);
-
-	obj = json_object_get(root, "switch_off");
-	if(!obj) return false;
-	str = json_string_value(obj);
-	if(!str) return false;
-	path = std::string("res/") + str;
-	switch_off = asset::plugin(pluginInstance, path);
-
-	obj = json_object_get(root, "port");
-	if(!obj) return false;
-	str = json_string_value(obj);
-	if(!str) return false;
-	path = std::string("res/") + str;
-	port = asset::plugin(pluginInstance, path);
-
-	obj = json_object_get(root, "screw");
-	if(!obj) return false;
-	str = json_string_value(obj);
-	if(!str) return false;
-	path = std::string("res/") + str;
-	screw = asset::plugin(pluginInstance, path);
+	LOAD_PATH(panel);
+	LOAD_PATH(screw_top_left);
+	LOAD_PATH(screw_top_right);
+	LOAD_PATH(screw_bottom_left);
+	LOAD_PATH(screw_bottom_right);
+	LOAD_PATH(screw_top_left);
+	LOAD_PATH(clock_port);
+	LOAD_PATH(sync_port);
+	LOAD_PATH(beat_port);
+	LOAD_PATH(length_knob);
+	LOAD_PATH(length_cv_knob);
+	LOAD_PATH(length_cv_port);
+	LOAD_PATH(shift_knob);
+	LOAD_PATH(hits_knob);
+	LOAD_PATH(hits_cv_knob);
+	LOAD_PATH(hits_cv_port);
+	LOAD_PATH(shift_cv_knob);
+	LOAD_PATH(shift_cv_port);
+	LOAD_PATH(reverse_switch_on);
+	LOAD_PATH(reverse_switch_off);
+	LOAD_PATH(reverse_cv_port);
+	LOAD_PATH(invert_switch_on);
+	LOAD_PATH(invert_switch_off);
+	LOAD_PATH(invert_cv_port);
 
 	return true;
 }

@@ -3,13 +3,37 @@
 struct EugeneTheme
 {
 	std::string name;
+
 	std::string panel;
-	std::string knob_large;
-	std::string knob_small;
-	std::string switch_on;
-	std::string switch_off;
-	std::string screw;
-	std::string port;
+
+	std::string screw_top_left;
+	std::string screw_top_right;
+	std::string screw_bottom_left;
+	std::string screw_bottom_right;
+
+	std::string clock_port;
+	std::string sync_port;
+	std::string beat_port;
+
+	std::string length_knob;
+	std::string length_cv_knob;
+	std::string length_cv_port;
+
+	std::string hits_knob;
+	std::string hits_cv_knob;
+	std::string hits_cv_port;
+
+	std::string shift_knob;
+	std::string shift_cv_knob;
+	std::string shift_cv_port;
+
+	std::string reverse_switch_on;
+	std::string reverse_switch_off;
+	std::string reverse_cv_port;
+
+	std::string invert_switch_on;
+	std::string invert_switch_off;
+	std::string invert_cv_port;
 
 	bool fromJson(json_t *root);
 };
