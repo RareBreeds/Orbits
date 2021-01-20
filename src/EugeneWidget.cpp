@@ -310,49 +310,34 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
                 module->widget = this;
         }
 
+        // clang-format off
         setPanel(APP->window->loadSvg(eugene_config.getSvg(EUGENE_COMPONENT_PANEL)));
 
-        // TODO: Screw positions are based on the panel size, could have an svg path and position for all
-        // EugeneTheme::EugeneThemeCompenents
-        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_TOP_LEFT,
-                                    Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_TOP_RIGHT,
-                                    Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_BOTTOM_LEFT, Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2,
-                                                                            RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
-        addChild(createSkinnedScrew(
-                EUGENE_COMPONENT_SCREW_BOTTOM_RIGHT,
-                Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        // TODO: Screw positions are based on the panel size, could have a position for them in eugene_config based on panel size 
+        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_TOP_LEFT, Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_TOP_RIGHT, Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_BOTTOM_LEFT, Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        addChild(createSkinnedScrew(EUGENE_COMPONENT_SCREW_BOTTOM_RIGHT, Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_LENGTH_KNOB, module,
-                                                       RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_HITS_KNOB, module,
-                                                       RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_SHIFT_KNOB, module,
-                                                       RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_LENGTH_CV_KNOB, module,
-                                                       RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_HITS_CV_KNOB, module,
-                                                       RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_SHIFT_CV_KNOB, module,
-                                                       RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedSwitch>(EUGENE_COMPONENT_REVERSE_SWITCH_ON, module,
-                                                         RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-        addParam(createSkinnedParam<EugeneSkinnedSwitch>(EUGENE_COMPONENT_INVERT_SWITCH_ON, module,
-                                                         RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_LENGTH_KNOB, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_HITS_KNOB, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_SHIFT_KNOB, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_LENGTH_CV_KNOB, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_HITS_CV_KNOB, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedKnob>(EUGENE_COMPONENT_SHIFT_CV_KNOB, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedSwitch>(EUGENE_COMPONENT_REVERSE_SWITCH_ON, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+        addParam(createSkinnedParam<EugeneSkinnedSwitch>(EUGENE_COMPONENT_INVERT_SWITCH_ON, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
         addInput(createSkinnedInput(EUGENE_COMPONENT_CLOCK_PORT, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
         addInput(createSkinnedInput(EUGENE_COMPONENT_SYNC_PORT, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-        addInput(
-                createSkinnedInput(EUGENE_COMPONENT_LENGTH_CV_PORT, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+        addInput(createSkinnedInput(EUGENE_COMPONENT_LENGTH_CV_PORT, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
         addInput(createSkinnedInput(EUGENE_COMPONENT_HITS_CV_PORT, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
         addInput(createSkinnedInput(EUGENE_COMPONENT_SHIFT_CV_PORT, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-        addInput(createSkinnedInput(EUGENE_COMPONENT_REVERSE_CV_PORT, module,
-                                    RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-        addInput(
-                createSkinnedInput(EUGENE_COMPONENT_INVERT_CV_PORT, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+        addInput(createSkinnedInput(EUGENE_COMPONENT_REVERSE_CV_PORT, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+        addInput(createSkinnedInput(EUGENE_COMPONENT_INVERT_CV_PORT, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
         addOutput(createSkinnedOutput(EUGENE_COMPONENT_BEAT_PORT, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+        // clang-format on
 
         EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(eugene_config.getPos(EUGENE_COMPONENT_DISPLAY));
         r->module = module;

@@ -1,6 +1,6 @@
+#include <cassert>
 #include <cstdint>
 #include <string>
-#include <cassert>
 
 #include "Euclidean.hpp"
 #include "plugin.hpp"
@@ -150,7 +150,8 @@ struct RareBreeds_Orbits_Polygene : Module
                         }
                 }
 
-                bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int beat, bool invert)
+                bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int beat,
+                              bool invert)
                 {
                         return euclidean::beat(length, hits, shift, beat) != invert;
                 }
@@ -158,7 +159,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 unsigned int readLength()
                 {
                         auto cv = m_module->inputs[LENGTH_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-                        auto f_length = m_length + m_length_cv * cv  * (euclidean::max_length - 1);
+                        auto f_length = m_length + m_length_cv * cv * (euclidean::max_length - 1);
                         return clampRounded(f_length, 1, euclidean::max_length);
                 }
 
@@ -172,7 +173,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 unsigned int readShift(unsigned int length)
                 {
                         auto cv = m_module->inputs[SHIFT_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-                        auto f_shift = m_shift + m_shift_cv * cv  * (euclidean::max_length - 1);
+                        auto f_shift = m_shift + m_shift_cv * cv * (euclidean::max_length - 1);
                         return clampRounded(f_shift, 0, euclidean::max_length - 1) % length;
                 }
 
@@ -599,6 +600,8 @@ struct RareBreeds_Orbits_PolygeneWidget : ModuleWidget
         RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module)
         {
                 setModule(module);
+
+                // clang-format off
                 setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/RareBreeds_Orbits_Polygene.svg")));
 
                 addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
@@ -625,6 +628,7 @@ struct RareBreeds_Orbits_PolygeneWidget : ModuleWidget
                 addInput(createInputCentered<PJ301MPort>(mm2px(Vec(37.147, 112.0)), module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
 
                 addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(53.72, 23.15)), module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
+                // clang-format on
 
                 PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(mm2px(Vec(14.48, 14.913)));
                 r->module = module;
@@ -633,4 +637,5 @@ struct RareBreeds_Orbits_PolygeneWidget : ModuleWidget
         }
 };
 
-Model *modelRareBreeds_Orbits_Polygene = createModel<RareBreeds_Orbits_Polygene, RareBreeds_Orbits_PolygeneWidget>("RareBreeds_Orbits_Polygene");
+Model *modelRareBreeds_Orbits_Polygene =
+        createModel<RareBreeds_Orbits_Polygene, RareBreeds_Orbits_PolygeneWidget>("RareBreeds_Orbits_Polygene");
