@@ -96,7 +96,7 @@ static EugeneComponents componentSvgEnum(std::string str)
         if(str == "invert_cv")
                 return EUGENE_COMPONENT_INVERT_CV_PORT;
         if(str == "display")
-                return EUGENE_COMPONENT_DISPLAY; 
+                return EUGENE_COMPONENT_DISPLAY;
 
         // The remaining components don't have positions in the SVG
         return EUGENE_COMPONENT_COUNT;
@@ -106,7 +106,7 @@ static EugeneComponents componentSvgEnum(std::string str)
 #define LOAD_PATH(_enum)                                                                                               \
         do                                                                                                             \
         {                                                                                                              \
-                obj = json_object_get(root, componentJsonString(_enum));                                                   \
+                obj = json_object_get(root, componentJsonString(_enum));                                               \
                 if(!obj)                                                                                               \
                         return false;                                                                                  \
                 str = json_string_value(obj);                                                                          \
@@ -234,7 +234,7 @@ bool EugeneConfig::loadComponentPositions()
                 EugeneComponents component = componentSvgEnum(name);
                 if(component < EUGENE_COMPONENT_COUNT)
                 {
-                    m_positions[component] = pos;
+                        m_positions[component] = pos;
                 }
 
                 search = name_end;

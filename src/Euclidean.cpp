@@ -2,7 +2,8 @@
 
 #include "Euclidean.hpp"
 
-namespace euclidean {
+namespace euclidean
+{
 
 #if 0
 Rhythm rhythm(unsigned int length_of_sequence, unsigned int number_of_hits)
@@ -72,6 +73,7 @@ Rhythm rhythm(unsigned int length_of_sequence, unsigned int number_of_hits)
 }
 #endif
 
+// clang-format off
 // When the number of hits is 0 or 1 the rhythm is always 0x0 or 0x1
 // respectively, no need to store them in the look up table.
 // When the number of hits is equal to the length we know all beats
@@ -123,6 +125,7 @@ static const uint32_t euclidean_rhythm_u32[] =
         /* 31 */ 0x10001u, 0x200801u, 0x808101u,  0x2082081u, 0x4210841u, 0x8442221u,  0x8888891u,  0x11224491u, 0x12492491u, 0x12524929u, 0x24a52929u, 0x254a94a9u, 0x2a954aa9u, 0x2aaaaaa9u, 0x2aaaaaadu, 0x2ad56aadu, 0x356ad6adu, 0x36b5adadu, 0x5b5b6dadu, 0x5b6db6ddu, 0x5dbb76ddu, 0x6eeeeeddu, 0x6f77bbbdu, 0x77bdef7du, 0x7befbefdu, 0x7efefdfdu, 0x7fbfeffdu, 0x7ffdfffdu, 0x7ffffffdu,
         /* 32 */ 0x10001u, 0x200801u, 0x1010101u, 0x4082081u, 0x8410841u, 0x10884221u, 0x11111111u, 0x22448891u, 0x24912491u, 0x24924929u, 0x29292929u, 0x4a5294a9u, 0x52a952a9u, 0x5552aaa9u, 0x55555555u, 0x555aaaadu, 0x5aad5aadu, 0x6b5ad6adu, 0xadadadadu, 0xb6db6dadu, 0xb6ddb6ddu, 0xbb76eeddu, 0xddddddddu, 0xdeef7bbdu, 0xef7def7du, 0xf7efbefdu, 0xfdfdfdfdu, 0xffbfeffdu, 0xfffdfffdu, 0xfffffffdu
 };
+// clang-format on
 
 static uint32_t sumTo(unsigned int n)
 {
