@@ -1,75 +1,63 @@
 #pragma once
 
+#include "plugin.hpp"
+
+enum EugeneComponents
+{
+    EUGENE_COMPONENT_PANEL,
+
+    EUGENE_COMPONENT_SCREW_TOP_LEFT,
+    EUGENE_COMPONENT_SCREW_TOP_RIGHT,
+    EUGENE_COMPONENT_SCREW_BOTTOM_LEFT,
+    EUGENE_COMPONENT_SCREW_BOTTOM_RIGHT,
+
+    EUGENE_COMPONENT_CLOCK_PORT,
+    EUGENE_COMPONENT_SYNC_PORT,
+    EUGENE_COMPONENT_BEAT_PORT,
+
+    EUGENE_COMPONENT_LENGTH_KNOB,
+    EUGENE_COMPONENT_LENGTH_CV_KNOB,
+    EUGENE_COMPONENT_LENGTH_CV_PORT,
+
+    EUGENE_COMPONENT_HITS_KNOB,
+    EUGENE_COMPONENT_HITS_CV_KNOB,
+    EUGENE_COMPONENT_HITS_CV_PORT,
+
+    EUGENE_COMPONENT_SHIFT_KNOB,
+    EUGENE_COMPONENT_SHIFT_CV_KNOB,
+    EUGENE_COMPONENT_SHIFT_CV_PORT,
+
+    EUGENE_COMPONENT_REVERSE_SWITCH_ON,
+    EUGENE_COMPONENT_REVERSE_SWITCH_OFF,
+    EUGENE_COMPONENT_REVERSE_CV_PORT,
+
+    EUGENE_COMPONENT_INVERT_SWITCH_ON,
+    EUGENE_COMPONENT_INVERT_SWITCH_OFF,
+    EUGENE_COMPONENT_INVERT_CV_PORT,
+
+    EUGENE_COMPONENT_DISPLAY,
+
+    EUGENE_COMPONENT_COUNT
+};
+
 struct EugeneTheme
 {
-	enum EugeneThemeComponents
-	{
-		panel,
-
-		screw_top_left,
-		screw_top_right,
-		screw_bottom_left,
-		screw_bottom_right,
-
-		clock_port,
-		sync_port,
-		beat_port,
-
-		length_knob,
-		length_cv_knob,
-		length_cv_port,
-
-		hits_knob,
-		hits_cv_knob,
-		hits_cv_port,
-
-		shift_knob,
-		shift_cv_knob,
-		shift_cv_port,
-
-		reverse_switch_on,
-		reverse_switch_off,
-		reverse_cv_port,
-
-		invert_switch_on,
-		invert_switch_off,
-		invert_cv_port,
-
-		num_components
-	};
-
 	std::string m_name;
-	std::string m_components[num_components];
+	std::string m_components[EUGENE_COMPONENT_COUNT];
 
 	bool fromJson(json_t *root);
 };
 
 // TODO: Accessors would simplify the callers code
 // eugene_config.m_themes[theme].m_component[component]
-// eugene_config.getComponent(theme, component)
-// eugene_config.getDefaultComponent(compenent)
+// eugene_config.getSvg(theme, component)
+// eugene_config.getDefaultSvg(compenent)
+// eugene_config.getPos(component)
 struct EugeneConfig
 {
+    Vec m_positions[EUGENE_COMPONENT_COUNT];
 	std::vector<EugeneTheme> m_themes;
 	size_t m_default;
-
-	Vec length_knob;
-	Vec hits_knob;
-	Vec reverse_knob;
-	Vec invert_knob;
-	Vec length_cv;
-	Vec hits_cv;
-	Vec reverse_cv;
-	Vec invert_cv;
-	Vec beat;
-	Vec clock;
-	Vec sync;
-	Vec shift_knob;
-	Vec shift_cv;
-	Vec length_cv_knob;
-	Vec hits_cv_knob;
-	Vec shift_cv_knob;
-	Vec display;
 
 	bool init();
 	bool fromJson(std::string path);
