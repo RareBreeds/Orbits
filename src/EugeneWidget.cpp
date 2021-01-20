@@ -20,7 +20,7 @@ struct EugeneSkinnedKnob : RoundKnob, EugeneSkinned
 
         void loadTheme(int theme) override
         {
-                setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].m_components[m_component]));
+                setSvg(APP->window->loadSvg(eugene_config.getSvg(m_component, theme)));
                 fb->dirty = true;
         }
 };
@@ -37,7 +37,7 @@ struct EugeneSkinnedScrew : app::SvgScrew, EugeneSkinned
 
         void loadTheme(int theme) override
         {
-                setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].m_components[m_component]));
+                setSvg(APP->window->loadSvg(eugene_config.getSvg(m_component, theme)));
                 fb->dirty = true;
         }
 };
@@ -50,18 +50,16 @@ struct EugeneSkinnedSwitch : app::SvgSwitch, EugeneSkinned
         {
                 m_component = component;
                 // Relies on the OFF value being one after ON
-                addFrame(APP->window->loadSvg(
-                        eugene_config.m_themes[eugene_config.m_default].m_components[m_component + 1]));
-                addFrame(APP->window->loadSvg(
-                        eugene_config.m_themes[eugene_config.m_default].m_components[m_component]));
+                addFrame(APP->window->loadSvg(eugene_config.getSvg(EugeneComponents(m_component + 1))));
+                addFrame(APP->window->loadSvg(eugene_config.getSvg(m_component)));
                 shadow->opacity = 0.0;
         }
 
         void loadTheme(int theme) override
         {
                 // Relies on the OFF value being one after ON
-                frames[0] = APP->window->loadSvg(eugene_config.m_themes[theme].m_components[m_component + 1]);
-                frames[1] = APP->window->loadSvg(eugene_config.m_themes[theme].m_components[m_component]);
+                frames[0] = APP->window->loadSvg(eugene_config.getSvg(EugeneComponents(m_component + 1), theme));
+                frames[1] = APP->window->loadSvg(eugene_config.getSvg(m_component, theme));
 
                 event::Change change;
                 onChange(change);
@@ -82,7 +80,7 @@ struct EugeneSkinnedPort : app::SvgPort, EugeneSkinned
 
         void loadTheme(int theme) override
         {
-                setSvg(APP->window->loadSvg(eugene_config.m_themes[theme].m_components[m_component]));
+                setSvg(APP->window->loadSvg(eugene_config.getSvg(m_component, theme)));
                 // fb->dirty = true; // Already set by setSvg for SvgPorts
         }
 };
@@ -271,7 +269,7 @@ template <class TParamWidget>
 static TParamWidget *createSkinnedParam(EugeneComponents component, engine::Module *module, int paramId)
 {
         TParamWidget *o = new TParamWidget(component);
-        o->box.pos = eugene_config.m_positions[component].minus(o->box.size.div(2));
+        o->box.pos = eugene_config.getPos(component).minus(o->box.size.div(2));
         if(module)
         {
                 o->paramQuantity = module->paramQuantities[paramId];
@@ -282,7 +280,7 @@ static TParamWidget *createSkinnedParam(EugeneComponents component, engine::Modu
 static EugeneSkinnedPort *createSkinnedPort(EugeneComponents component, engine::Module *module, int portId)
 {
         EugeneSkinnedPort *o = new EugeneSkinnedPort(component);
-        o->box.pos = eugene_config.m_positions[component].minus(o->box.size.div(2));
+        o->box.pos = eugene_config.getPos(component).minus(o->box.size.div(2));
         o->module = module;
         o->portId = portId;
         return o;
@@ -312,8 +310,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
                 module->widget = this;
         }
 
-        setPanel(APP->window->loadSvg(
-                eugene_config.m_themes[eugene_config.m_default].m_components[EUGENE_COMPONENT_PANEL]));
+        setPanel(APP->window->loadSvg(eugene_config.getSvg(EUGENE_COMPONENT_PANEL)));
 
         // TODO: Screw positions are based on the panel size, could have an svg path and position for all
         // EugeneTheme::EugeneThemeCompenents
@@ -357,7 +354,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
 
         addOutput(createSkinnedOutput(EUGENE_COMPONENT_BEAT_PORT, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
 
-        EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(eugene_config.m_positions[EUGENE_COMPONENT_DISPLAY]);
+        EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(eugene_config.getPos(EUGENE_COMPONENT_DISPLAY));
         r->module = module;
         r->box.size = mm2px(Vec(32.0, 32.0));
         addChild(r);
@@ -372,7 +369,7 @@ void RareBreeds_Orbits_EugeneWidget::appendContextMenu(Menu *menu)
 
         for(size_t i = 0; i < eugene_config.m_themes.size(); ++i)
         {
-                menu->addChild(new ThemeChoiceItem(this, i, eugene_config.m_themes[i].m_name.c_str()));
+                menu->addChild(new ThemeChoiceItem(this, i, eugene_config.getThemeName(i).c_str()));
         }
 }
 
@@ -380,7 +377,7 @@ void RareBreeds_Orbits_EugeneWidget::loadTheme(const char *theme)
 {
         for(size_t i = 0; i < eugene_config.m_themes.size(); ++i)
         {
-                if(eugene_config.m_themes[i].m_name == theme)
+                if(eugene_config.getThemeName(i) == theme)
                 {
                         loadTheme(i);
                         break;
@@ -401,7 +398,7 @@ void RareBreeds_Orbits_EugeneWidget::loadTheme(int theme)
                 }
         }
 
-        setPanel(APP->window->loadSvg(eugene_config.m_themes[theme].m_components[EUGENE_COMPONENT_PANEL]));
+        setPanel(APP->window->loadSvg(eugene_config.getSvg(EUGENE_COMPONENT_PANEL, theme)));
 }
 
 json_t *RareBreeds_Orbits_EugeneWidget::dataToJson()
@@ -409,7 +406,7 @@ json_t *RareBreeds_Orbits_EugeneWidget::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_t *theme = json_string(eugene_config.m_themes[m_theme].m_name.c_str());
+                json_t *theme = json_string(eugene_config.getThemeName(m_theme).c_str());
                 if(theme)
                 {
                         json_object_set_new(root, "theme", theme);

@@ -48,11 +48,6 @@ struct EugeneTheme
         bool fromJson(json_t *root);
 };
 
-// TODO: Accessors would simplify the callers code
-// eugene_config.m_themes[theme].m_component[component]
-// eugene_config.getSvg(theme, component)
-// eugene_config.getDefaultSvg(compenent)
-// eugene_config.getPos(component)
 struct EugeneConfig
 {
         Vec m_positions[EUGENE_COMPONENT_COUNT];
@@ -62,6 +57,31 @@ struct EugeneConfig
         bool init();
         bool fromJson(std::string path);
         bool loadComponentPositions();
+
+        std::string getSvg(EugeneComponents component, int theme)
+        {
+                return m_themes[theme].m_components[component];
+        }
+
+        std::string getSvg(EugeneComponents component)
+        {
+                return getSvg(component, m_default);
+        }
+
+        Vec getPos(EugeneComponents component)
+        {
+                return m_positions[component];
+        }
+
+        std::string getThemeName(int theme)
+        {
+                return m_themes[theme].m_name;
+        }
+
+        std::string getThemeName()
+        {
+                return getThemeName(m_default);
+        }
 };
 
 extern EugeneConfig eugene_config;
