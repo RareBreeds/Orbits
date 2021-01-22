@@ -34,7 +34,7 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="13.465149"
+     inkscape:zoom="12.562024"
      inkscape:cx="15.743787"
      inkscape:cy="22.652555"
      inkscape:document-units="mm"
@@ -79,18 +79,18 @@
      id="layer1"
      transform="translate(-15.780937,-15.780937)">
     <circle
-       style="fill:#666666;fill-opacity:0.35772359;stroke-width:0.011077;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#4e4e4e;fill-opacity:1;stroke-width:0.011077;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-3-2"
        cx="19.960936"
        cy="19.960936"
        r="4.1800013" />
     <path
        sodipodi:type="star"
-       style="fill:#f9f9f9;fill-opacity:1;stroke-width:0.0135091;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#f9f9f9;fill-opacity:1;stroke-width:0.114;stroke-miterlimit:4;stroke-dasharray:none;stroke:#7e7e7e;stroke-opacity:1"
        id="path1250-60"
        sodipodi:sides="6"
-       sodipodi:cx="19.960936"
-       sodipodi:cy="19.960936"
+       sodipodi:cx="19.960935"
+       sodipodi:cy="19.960935"
        sodipodi:r1="4.046391"
        sodipodi:r2="3.504277"
        sodipodi:arg1="1.0471976"
@@ -102,22 +102,22 @@
        inkscape:transform-center-y="-1.3258386e-06"
        d="m 21.984131,23.465213 -4.046391,0 -2.023195,-3.504278 2.023195,-3.504277 4.046391,0 2.023196,3.504278 z" />
     <circle
-       style="fill:#333333;fill-opacity:1;stroke-width:0.00829655;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#333333;fill-opacity:1;stroke-width:0.00732618;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-2-22"
        cx="19.960936"
        cy="19.960936"
-       r="3.1307917" />
+       r="2.7646074" />
     <circle
-       style="fill:#ffffff;fill-opacity:1;stroke-width:0.00671808;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:0.00671809;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-2-8-75"
        cx="19.960936"
        cy="19.960936"
        r="2.5351377" />
     <circle
-       style="fill:#1a1a1a;fill-opacity:1;stroke-width:0.00511766;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#1a1a1a;fill-opacity:1;stroke-width:0.0047403;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-2-8-1-8-06"
        cx="19.960936"
        cy="19.960936"
-       r="1.9312118" />
+       r="1.7888069" />
   </g>
 </svg>

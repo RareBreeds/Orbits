@@ -13,7 +13,7 @@
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="eugene-dark-port.svg">
+   sodipodi:docname="eugene-light-port.svg">
   <defs
      id="defs289">
     <mask
@@ -34,13 +34,13 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="13.465149"
+     inkscape:zoom="11.719473"
      inkscape:cx="15.743787"
      inkscape:cy="22.652555"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
-     showgrid="true"
+     showgrid="false"
      inkscape:snap-bbox="true"
      inkscape:snap-nodes="true"
      inkscape:snap-object-midpoints="true"
@@ -54,7 +54,8 @@
      inkscape:window-maximized="1"
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
-     inkscape:snap-grids="false">
+     inkscape:snap-grids="false"
+     inkscape:snap-global="false">
     <inkscape:grid
        type="xygrid"
        id="grid309"
@@ -79,14 +80,14 @@
      id="layer1"
      transform="translate(-15.780937,-15.780937)">
     <circle
-       style="fill:#666666;fill-opacity:0.35772359;stroke-width:0.011077;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#000000;fill-opacity:0.13414635;stroke-width:0.011077;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-3-2"
        cx="19.960936"
        cy="19.960936"
        r="4.1800013" />
     <path
        sodipodi:type="star"
-       style="fill:#f9f9f9;fill-opacity:1;stroke-width:0.0135091;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:0.114;stroke-miterlimit:4;stroke-dasharray:none;stroke:#535353;stroke-opacity:1"
        id="path1250-60"
        sodipodi:sides="6"
        sodipodi:cx="19.960936"
@@ -102,11 +103,11 @@
        inkscape:transform-center-y="-1.3258386e-06"
        d="m 21.984131,23.465213 -4.046391,0 -2.023195,-3.504278 2.023195,-3.504277 4.046391,0 2.023196,3.504278 z" />
     <circle
-       style="fill:#333333;fill-opacity:1;stroke-width:0.00829655;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#333333;fill-opacity:1;stroke-width:0.00732617;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-2-22"
        cx="19.960936"
        cy="19.960936"
-       r="3.1307917" />
+       r="2.7646074" />
     <circle
        style="fill:#ffffff;fill-opacity:1;stroke-width:0.00671808;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-2-8-75"
@@ -114,10 +115,10 @@
        cy="19.960936"
        r="2.5351377" />
     <circle
-       style="fill:#1a1a1a;fill-opacity:1;stroke-width:0.00511766;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#212121;fill-opacity:1;stroke-width:0.00474029;stroke-miterlimit:4;stroke-dasharray:none"
        id="path1227-2-8-1-8-06"
        cx="19.960936"
        cy="19.960936"
-       r="1.9312118" />
+       r="1.7888069" />
   </g>
 </svg>

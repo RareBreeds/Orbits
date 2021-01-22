@@ -4,10 +4,10 @@
             "name" : "Dark",
             "panel" : "eugene-dark-panel.svg",
 
-            "screw_top_left" : "eugene-screw.svg",
-            "screw_top_right" : "eugene-screw.svg",
-            "screw_bottom_left" : "eugene-screw.svg",
-            "screw_bottom_right" : "eugene-screw.svg",
+            "screw_top_left" : "eugene-dark-screw.svg",
+            "screw_top_right" : "eugene-dark-screw.svg",
+            "screw_bottom_left" : "eugene-dark-screw.svg",
+            "screw_bottom_right" : "eugene-dark-screw.svg",
 
             "clock_port" : "eugene-dark-port.svg",
             "sync_port" : "eugene-dark-port.svg",
@@ -25,22 +25,22 @@
             "shift_cv_knob" : "eugene-dark-knob-small.svg",
             "shift_cv_port" : "eugene-dark-port.svg",
 
-            "reverse_switch_on" : "eugene-dark-switch-on.svg",
-            "reverse_switch_off" : "eugene-dark-switch-off.svg",
+            "reverse_switch_on" : "eugene-dark-rev-switch-on.svg",
+            "reverse_switch_off" : "eugene-dark-rev-switch-off.svg",
             "reverse_cv_port" : "eugene-dark-port.svg",
 
-            "invert_switch_on" : "eugene-dark-switch-on.svg",
-            "invert_switch_off" : "eugene-dark-switch-off.svg",
+            "invert_switch_on" : "eugene-dark-inv-switch-on.svg",
+            "invert_switch_off" : "eugene-dark-inv-switch-off.svg",
             "invert_cv_port" : "eugene-dark-port.svg"
         },
         {
             "name" : "Light",
             "panel" : "eugene-light-panel.svg",
 
-            "screw_top_left" : "eugene-screw.svg",
-            "screw_top_right" : "eugene-screw.svg",
-            "screw_bottom_left" : "eugene-screw.svg",
-            "screw_bottom_right" : "eugene-screw.svg",
+            "screw_top_left" : "eugene-light-screw.svg",
+            "screw_top_right" : "eugene-light-screw.svg",
+            "screw_bottom_left" : "eugene-light-screw.svg",
+            "screw_bottom_right" : "eugene-light-screw.svg",
 
             "clock_port" : "eugene-light-port.svg",
             "sync_port" : "eugene-light-port.svg",
@@ -58,12 +58,12 @@
             "shift_cv_knob" : "eugene-light-knob-small.svg",
             "shift_cv_port" : "eugene-light-port.svg",
 
-            "reverse_switch_on" : "eugene-light-switch-on.svg",
-            "reverse_switch_off" : "eugene-light-switch-off.svg",
+            "reverse_switch_on" : "eugene-light-rev-switch-on.svg",
+            "reverse_switch_off" : "eugene-light-rev-switch-off.svg",
             "reverse_cv_port" : "eugene-light-port.svg",
 
-            "invert_switch_on" : "eugene-light-switch-on.svg",
-            "invert_switch_off" : "eugene-light-switch-off.svg",
+            "invert_switch_on" : "eugene-light-inv-switch-on.svg",
+            "invert_switch_off" : "eugene-light-inv-switch-off.svg",
             "invert_cv_port" : "eugene-light-port.svg"
         }
     ],

@@ -13,7 +13,7 @@
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="eugene-knob-large.svg">
+   sodipodi:docname="eugene-dark-knob-large.svg">
   <defs
      id="defs289" />
   <sodipodi:namedview
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.43073229"
-     inkscape:cx="-333.15409"
-     inkscape:cy="11.823984"
+     inkscape:zoom="10.189291"
+     inkscape:cx="30.205909"
+     inkscape:cy="20.92451"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -40,7 +40,8 @@
      inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false">
     <inkscape:grid
        type="xygrid"
        id="grid309"
@@ -64,43 +65,37 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-4.470341,-4.4811511)">
-    <g
-       inkscape:label="Layer 1"
-       id="layer1-7-6-6"
-       transform="matrix(0.07268031,0,0,0.07268031,4.470341,4.4811511)"
-       style="display:inline;opacity:1">
-      <circle
-         style="fill:#1a1a1a;stroke-width:0.264583"
-         id="path313-4-6"
-         cx="100"
-         cy="100"
-         r="100" />
-      <circle
-         style="fill:#c00039;fill-opacity:1;stroke-width:0.233303;stroke-miterlimit:4;stroke-dasharray:none"
-         id="path313-9-1-5"
-         cx="100"
-         cy="100"
-         r="88.038918" />
-      <circle
-         style="fill:#000000;fill-opacity:1;stroke-width:0.214633;stroke-miterlimit:4;stroke-dasharray:none"
-         id="path313-9-6-1-1"
-         cx="100"
-         cy="100"
-         r="80.993851" />
-      <circle
-         style="fill:#ececec;fill-opacity:1;stroke-width:0.189243;stroke-miterlimit:4;stroke-dasharray:none"
-         id="path313-9-6-5-4-1"
-         cx="100"
-         cy="100"
-         r="71.412605" />
-      <rect
-         style="fill:#000000;fill-opacity:1;stroke-width:0.429274;stroke-miterlimit:4;stroke-dasharray:none"
-         id="rect1211-3-8"
-         width="10.434595"
-         height="71.437508"
-         x="94.857071"
-         y="23.27083"
-         ry="4.8574839" />
-    </g>
+    <circle
+       style="fill:#141414;stroke-width:0.01923;fill-opacity:1"
+       id="path313-4-6"
+       cx="11.738372"
+       cy="11.749182"
+       r="7.2680311" />
+    <circle
+       style="fill:#c00039;fill-opacity:1;stroke-width:0.0179105;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path313-9-1-5"
+       cx="11.738372"
+       cy="11.749182"
+       r="6.7586856" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke-width:0.0164476;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path313-9-6-1-1"
+       cx="11.738372"
+       cy="11.749182"
+       r="6.2066493" />
+    <circle
+       style="fill:#ececec;fill-opacity:1;stroke-width:0.0147082;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path313-9-6-5-4-1"
+       cx="11.738372"
+       cy="11.749182"
+       r="5.5502801" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:0.032374;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1211-3-8"
+       width="0.75838959"
+       height="5.5902886"
+       x="11.364582"
+       y="5.7742934"
+       ry="0.38011876" />
   </g>
 </svg>

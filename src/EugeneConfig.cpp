@@ -62,7 +62,6 @@ static const char *componentJsonString(EugeneComponents component)
 
 static EugeneComponents componentSvgEnum(std::string str)
 {
-        INFO("%s", str.c_str());
         if(str == "clock")
                 return EUGENE_COMPONENT_CLOCK_PORT;
         if(str == "sync")
