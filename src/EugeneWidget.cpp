@@ -5,7 +5,7 @@
 // Interface for components with the ability to change skins
 struct EugeneSkinned
 {
-        virtual void loadTheme(int theme);
+        virtual void loadTheme(int theme) = 0;
 };
 
 struct EugeneSkinnedKnob : RoundKnob, EugeneSkinned
