@@ -18,17 +18,6 @@
         "Sequencer"
       ],
       "keywords": "euclidean euclidian rhythm beat pattern"
-    },
-    {
-      "slug": "RareBreeds_Orbits_Polygene",
-      "name": "Polygene",
-      "description": "Polyphonic Euclidean Rhythm Generator",
-      "tags": [
-        "Clock modulator",
-        "Sequencer",
-        "Polyphonic"
-      ],
-      "keywords": "euclidean euclidian rhythm beat pattern"
     }
   ]
 }
