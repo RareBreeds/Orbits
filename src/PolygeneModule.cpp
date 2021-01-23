@@ -90,7 +90,7 @@ bool RareBreeds_Orbits_Polygene::Channel::readInvert(void)
 bool RareBreeds_Orbits_Polygene::Channel::isOnBeat(unsigned int length, unsigned int hits, unsigned int shift,
                                                    unsigned int oddity, unsigned int beat, bool invert)
 {
-        return euclidean::beat(length, hits, shift, beat) != invert;
+        return euclidean::nearEvenRhythmBeat(length, hits, oddity, shift, beat) != invert;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
@@ -114,12 +114,12 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
         return clampRounded(f_shift, 0, euclidean::max_length - 1) % length;
 }
 
-unsigned int RareBreeds_Orbits_Polygene::Channel::readOddity(unsigned int length, unsigned int shift)
+unsigned int RareBreeds_Orbits_Polygene::Channel::readOddity(unsigned int length, unsigned int hits)
 {
-        // TODO: scale the oddity depending on how many rhythms there are
         auto cv = m_module->inputs[ODDITY_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_oddity = m_oddity + m_oddity_cv * cv * (euclidean::max_length - 1);
-        return clampRounded(f_oddity, 0, euclidean::max_length - 1) % length;
+        auto f_oddity = m_oddity + m_oddity_cv * cv;
+        auto count = euclidean::numNearEvenRhythms(length, hits);
+        return clampRounded(f_oddity * (count - 1), 0, count - 1);
 }
 
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
@@ -238,7 +238,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configParam(LENGTH_KNOB_PARAM, 1.f, euclidean::max_length, euclidean::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
         configParam(SHIFT_KNOB_PARAM, 0.f, euclidean::max_length - 1, 0.f, "Shift");
-        configParam(ODDITY_KNOB_PARAM, 0.f, 1.f, 0.5f, "Oddity", "%", 0.f, 100.f);
+        configParam(ODDITY_KNOB_PARAM, 0.f, 1.f, 0.0f, "Oddity", "%", 0.f, 100.f);
         configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV");
         configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV");
         configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");

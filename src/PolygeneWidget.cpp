@@ -109,7 +109,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         const auto length = module->m_active_channel->readLength();
         const auto hits = module->m_active_channel->readHits(length);
         const auto shift = module->m_active_channel->readShift(length);
-        const auto oddity = module->m_active_channel->readOddity(length, shift);
+        const auto oddity = module->m_active_channel->readOddity(length, hits);
         const auto invert = module->m_active_channel->readInvert();
         const auto reverse = module->m_active_channel->readReverse();
 
@@ -243,12 +243,12 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         nvgRestore(args.vg);
 }
 
-struct ThemeChoiceItem : MenuItem
+struct PolygeneThemeChoiceItem : MenuItem
 {
         RareBreeds_Orbits_PolygeneWidget *m_widget;
         int m_id;
 
-        ThemeChoiceItem(RareBreeds_Orbits_PolygeneWidget *widget, int id, const char *name)
+        PolygeneThemeChoiceItem(RareBreeds_Orbits_PolygeneWidget *widget, int id, const char *name)
         {
                 m_widget = widget;
                 m_id = id;
@@ -364,7 +364,7 @@ void RareBreeds_Orbits_PolygeneWidget::appendContextMenu(Menu *menu)
 
         for(size_t i = 0; i < polygene_config.m_themes.size(); ++i)
         {
-                menu->addChild(new ThemeChoiceItem(this, i, polygene_config.getThemeName(i).c_str()));
+                menu->addChild(new PolygeneThemeChoiceItem(this, i, polygene_config.getThemeName(i).c_str()));
         }
 }
 

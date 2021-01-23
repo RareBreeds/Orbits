@@ -238,12 +238,12 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         nvgRestore(args.vg);
 }
 
-struct ThemeChoiceItem : MenuItem
+struct EugeneThemeChoiceItem : MenuItem
 {
         RareBreeds_Orbits_EugeneWidget *m_widget;
         int m_id;
 
-        ThemeChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const char *name)
+        EugeneThemeChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const char *name)
         {
                 m_widget = widget;
                 m_id = id;
@@ -354,7 +354,7 @@ void RareBreeds_Orbits_EugeneWidget::appendContextMenu(Menu *menu)
 
         for(size_t i = 0; i < eugene_config.m_themes.size(); ++i)
         {
-                menu->addChild(new ThemeChoiceItem(this, i, eugene_config.getThemeName(i).c_str()));
+                menu->addChild(new EugeneThemeChoiceItem(this, i, eugene_config.getThemeName(i).c_str()));
         }
 }
 
