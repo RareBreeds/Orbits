@@ -1,0 +1,43 @@
+{
+    "themes" : [
+        {
+            "name" : "Dark",
+            "panel" : "polygene-dark-panel.svg",
+
+            "screw_top_left" : "eugene-dark-screw.svg",
+            "screw_top_right" : "eugene-dark-screw.svg",
+            "screw_bottom_left" : "eugene-dark-screw.svg",
+            "screw_bottom_right" : "eugene-dark-screw.svg",
+
+            "clock_port" : "eugene-dark-port.svg",
+            "sync_port" : "eugene-dark-port.svg",
+            "beat_port" : "eugene-dark-port.svg",
+            "channel_knob" : "eugene-dark-knob-small.svg",
+
+            "length_knob" : "eugene-dark-knob-large.svg",
+            "length_cv_knob" : "eugene-dark-knob-small.svg", 
+            "length_cv_port" : "eugene-dark-port.svg",
+
+            "hits_knob" : "eugene-dark-knob-large.svg",
+            "hits_cv_knob" : "eugene-dark-knob-small.svg",
+            "hits_cv_port" : "eugene-dark-port.svg",
+
+            "shift_knob" : "eugene-dark-knob-large.svg",
+            "shift_cv_knob" : "eugene-dark-knob-small.svg",
+            "shift_cv_port" : "eugene-dark-port.svg",
+
+            "oddity_knob" : "eugene-dark-knob-large.svg",
+            "oddity_cv_knob" : "eugene-dark-knob-small.svg",
+            "oddity_cv_port" : "eugene-dark-port.svg",
+
+            "reverse_switch_on" : "eugene-dark-rev-switch-on.svg",
+            "reverse_switch_off" : "eugene-dark-rev-switch-off.svg",
+            "reverse_cv_port" : "eugene-dark-port.svg",
+
+            "invert_switch_on" : "eugene-dark-inv-switch-on.svg",
+            "invert_switch_off" : "eugene-dark-inv-switch-off.svg",
+            "invert_cv_port" : "eugene-dark-port.svg"
+        }
+    ],
+    "default" : "Dark"
+}
