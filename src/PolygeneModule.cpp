@@ -190,31 +190,37 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 json_t *RareBreeds_Orbits_Polygene::Channel::dataToJson()
 {
         json_t *root = json_object();
-        json_object_set_new(root, "length", json_real(m_length));
-        json_object_set_new(root, "length_cv", json_real(m_length_cv));
-        json_object_set_new(root, "hits", json_real(m_hits));
-        json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
-        json_object_set_new(root, "shift", json_real(m_shift));
-        json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
-        json_object_set_new(root, "oddity", json_real(m_oddity));
-        json_object_set_new(root, "oddity_cv", json_real(m_oddity_cv));
-        json_object_set_new(root, "reverse", json_boolean(m_reverse));
-        json_object_set_new(root, "invert", json_boolean(m_invert));
+        if(root)
+        {
+                json_object_set_new(root, "length", json_real(m_length));
+                json_object_set_new(root, "length_cv", json_real(m_length_cv));
+                json_object_set_new(root, "hits", json_real(m_hits));
+                json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
+                json_object_set_new(root, "shift", json_real(m_shift));
+                json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
+                json_object_set_new(root, "oddity", json_real(m_oddity));
+                json_object_set_new(root, "oddity_cv", json_real(m_oddity_cv));
+                json_object_set_new(root, "reverse", json_boolean(m_reverse));
+                json_object_set_new(root, "invert", json_boolean(m_invert));
+        }
         return root;
 }
 
 void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
 {
-        json_load_real(root, "length", &m_length);
-        json_load_real(root, "length_cv", &m_length_cv);
-        json_load_real(root, "hits", &m_hits);
-        json_load_real(root, "hits_cv", &m_hits_cv);
-        json_load_real(root, "shift", &m_shift);
-        json_load_real(root, "shift_cv", &m_shift_cv);
-        json_load_real(root, "oddity", &m_oddity);
-        json_load_real(root, "oddity_cv", &m_oddity_cv);
-        json_load_bool(root, "reverse", &m_reverse);
-        json_load_bool(root, "invert", &m_invert);
+        if(root)
+        {
+                json_load_real(root, "length", &m_length);
+                json_load_real(root, "length_cv", &m_length_cv);
+                json_load_real(root, "hits", &m_hits);
+                json_load_real(root, "hits_cv", &m_hits_cv);
+                json_load_real(root, "shift", &m_shift);
+                json_load_real(root, "shift_cv", &m_shift_cv);
+                json_load_real(root, "oddity", &m_oddity);
+                json_load_real(root, "oddity_cv", &m_oddity_cv);
+                json_load_bool(root, "reverse", &m_reverse);
+                json_load_bool(root, "invert", &m_invert);
+        }
 }
 
 void RareBreeds_Orbits_Polygene::Channel::onRandomize()
@@ -352,48 +358,78 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 json_t *RareBreeds_Orbits_Polygene::dataToJson()
 {
         json_t *root = json_object();
-
-        json_object_set_new(root, "length", json_real(m_length));
-        json_object_set_new(root, "length_cv", json_real(m_length_cv));
-        json_object_set_new(root, "hits", json_real(m_hits));
-        json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
-        json_object_set_new(root, "shift", json_real(m_shift));
-        json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
-        json_object_set_new(root, "oddity", json_real(m_oddity));
-        json_object_set_new(root, "oddity_cv", json_real(m_oddity_cv));
-        json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
-
-        json_t *channels = json_array();
-        for(auto i = 0u; i < max_channels; ++i)
+        if(root)
         {
-                json_array_append_new(channels, m_channels[i].dataToJson());
-        }
+                json_object_set_new(root, "length", json_real(m_length);
+                json_object_set_new(root, "length_cv", json_real(m_length_cv));
+                json_object_set_new(root, "hits", json_real(m_hits));
+                json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
+                json_object_set_new(root, "shift", json_real(m_shift));
+                json_object_set_new(root, "shift_cv", json_real(m_shift_cv));
+                json_object_set_new(root, "oddity", json_real(m_oddity));
+                json_object_set_new(root, "oddity_cv", json_real(m_oddity_cv));
+                json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
-        json_object_set_new(root, "channels", channels);
+                json_t *channels = json_array();
+                if(channels)
+                {
+                        for(auto i = 0u; i < max_channels; ++i)
+                        {
+                                json_t *channel_json = m_channels[i].dataToJson();
+                                if(channel_json)
+                                {
+                                        json_array_append_new(channels, channel_json);
+                                }
+                        }
+
+                        json_object_set_new(root, "channels", channels);
+                }
+
+                if(widget)
+                {
+                        json_t *w = widget->dataToJson();
+                        if(w)
+                        {
+                                json_object_set_new(root, "widget", w);
+                        }
+                }
+        }
 
         return root;
 }
 
 void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
 {
-        json_load_real(root, "length", &m_length);
-        json_load_real(root, "length_cv", &m_length_cv);
-        json_load_real(root, "hits", &m_hits);
-        json_load_real(root, "hits_cv", &m_hits_cv);
-        json_load_real(root, "shift", &m_shift);
-        json_load_real(root, "shift_cv", &m_shift_cv);
-        json_load_real(root, "oddity", &m_oddity);
-        json_load_real(root, "oddity_cv", &m_oddity_cv);
-        json_load_integer(root, "active_channel_id", &m_active_channel_id);
-        json_t *channels = json_object_get(root, "channels");
-        if(channels)
+        if(root)
         {
-                for(auto i = 0u; i < max_channels; ++i)
+                json_load_real(root, "length", &m_length);
+                json_load_real(root, "length_cv", &m_length_cv);
+                json_load_real(root, "hits", &m_hits);
+                json_load_real(root, "hits_cv", &m_hits_cv);
+                json_load_real(root, "shift", &m_shift);
+                json_load_real(root, "shift_cv", &m_shift_cv);
+                json_load_real(root, "oddity", &m_oddity);
+                json_load_real(root, "oddity_cv", &m_oddity_cv);
+                json_load_integer(root, "active_channel_id", &m_active_channel_id);
+                json_t *channels = json_object_get(root, "channels");
+                if(channels)
                 {
-                        json_t *channel = json_array_get(channels, i);
-                        if(channel)
+                        for(auto i = 0u; i < max_channels; ++i)
                         {
-                                m_channels[i].dataFromJson(channel);
+                                json_t *channel = json_array_get(channels, i);
+                                if(channel)
+                                {
+                                        m_channels[i].dataFromJson(channel);
+                                }
+                        }
+                }
+
+                if(widget)
+                {
+                        json_t *obj = json_object_get(root, "widget");
+                        if(obj)
+                        {
+                                widget->dataFromJson(obj);
                         }
                 }
         }
