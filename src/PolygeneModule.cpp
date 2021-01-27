@@ -51,17 +51,12 @@ void RareBreeds_Orbits_Polygene::Channel::init(RareBreeds_Orbits_Polygene *modul
         m_invert = false;
 }
 
-void RareBreeds_Orbits_Polygene::Channel::toggleReverse(void)
-{
-        m_reverse = !m_reverse;
-}
-
 bool RareBreeds_Orbits_Polygene::Channel::readReverse(void)
 {
         if(m_module->inputs[REVERSE_CV_INPUT].isConnected())
         {
                 m_reverse_trigger.process(m_module->inputs[REVERSE_CV_INPUT].getPolyVoltage(m_channel));
-                return m_reverse_trigger.isHigh() != m_reverse;
+                return m_reverse_trigger.isHigh();
         }
         else
         {
@@ -69,17 +64,12 @@ bool RareBreeds_Orbits_Polygene::Channel::readReverse(void)
         }
 }
 
-void RareBreeds_Orbits_Polygene::Channel::toggleInvert(void)
-{
-        m_invert = !m_invert;
-}
-
 bool RareBreeds_Orbits_Polygene::Channel::readInvert(void)
 {
         if(m_module->inputs[INVERT_CV_INPUT].isConnected())
         {
                 m_invert_trigger.process(m_module->inputs[INVERT_CV_INPUT].getPolyVoltage(m_channel));
-                return m_invert_trigger.isHigh() != m_invert;
+                return m_invert_trigger.isHigh();
         }
         else
         {
@@ -280,8 +270,16 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         auto active_channels = inputs[CLOCK_INPUT].getChannels();
         outputs[BEAT_OUTPUT].setChannels(active_channels);
 
+        auto previous_channel_id = m_active_channel_id;
         m_active_channel_id = std::round(params[CHANNEL_KNOB_PARAM].getValue());
         m_active_channel = &m_channels[m_active_channel_id];
+
+        // Update the SVGs on the reverse and invert buttons when the channel changes
+        if(previous_channel_id != m_active_channel_id)
+        {
+                params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
+                params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+        }
 
         float length = params[LENGTH_KNOB_PARAM].getValue();
         if(length != m_length)
@@ -339,15 +337,11 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 m_oddity_cv = oddity_cv;
         }
 
-        if(reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue())))
-        {
-                m_active_channel->toggleReverse();
-        }
+        reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
+        m_active_channel->m_reverse = reverse_trigger.state;
 
-        if(invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue())))
-        {
-                m_active_channel->toggleInvert();
-        }
+        invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
+        m_active_channel->m_invert = invert_trigger.state;
 
         for(auto i = 0u; i < max_channels; ++i)
         {

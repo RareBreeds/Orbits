@@ -72,9 +72,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 RareBreeds_Orbits_Polygene *m_module;
 
                 void init(RareBreeds_Orbits_Polygene *module, int channel);
-                void toggleReverse(void);
                 bool readReverse(void);
-                void toggleInvert(void);
                 bool readInvert(void);
                 bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int oddity,
                               unsigned int beat, bool invert);

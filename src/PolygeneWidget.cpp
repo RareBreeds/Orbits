@@ -49,7 +49,7 @@ struct PolygeneSkinnedSwitch : app::SvgSwitch, PolygeneSkinned
         PolygeneSkinnedSwitch(PolygeneComponents component)
         {
                 m_component = component;
-                // Relies on the OFF value being one after ON
+                // Relies on the OFF enum being one after ON
                 addFrame(APP->window->loadSvg(polygene_config.getSvg(PolygeneComponents(m_component + 1))));
                 addFrame(APP->window->loadSvg(polygene_config.getSvg(m_component)));
                 shadow->opacity = 0.0;
@@ -57,7 +57,7 @@ struct PolygeneSkinnedSwitch : app::SvgSwitch, PolygeneSkinned
 
         void loadTheme(int theme) override
         {
-                // Relies on the OFF value being one after ON
+                // Relies on the OFF enum being one after ON
                 frames[0] = APP->window->loadSvg(polygene_config.getSvg(PolygeneComponents(m_component + 1), theme));
                 frames[1] = APP->window->loadSvg(polygene_config.getSvg(m_component, theme));
 
