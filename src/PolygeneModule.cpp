@@ -360,7 +360,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_object_set_new(root, "length", json_real(m_length);
+                json_object_set_new(root, "length", json_real(m_length));
                 json_object_set_new(root, "length_cv", json_real(m_length_cv));
                 json_object_set_new(root, "hits", json_real(m_hits));
                 json_object_set_new(root, "hits_cv", json_real(m_hits_cv));
