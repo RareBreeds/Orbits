@@ -400,6 +400,8 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
                 module->widget = this;
         }
 
+        m_theme = polygene_config.getDefaultThemeId();
+
         // clang-format off
         setPanel(APP->window->loadSvg(polygene_config.getSvg(POLYGENE_COMPONENT_PANEL)));
 
@@ -438,7 +440,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         r->module = module;
         r->box.size = polygene_config.getSize(POLYGENE_COMPONENT_DISPLAY);
         addChild(r);
-        loadTheme(polygene_config.getDefaultTheme());
+
 }
 
 void RareBreeds_Orbits_PolygeneWidget::appendContextMenu(Menu *menu)
