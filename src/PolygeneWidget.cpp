@@ -1,8 +1,8 @@
 #include "PolygeneWidget.hpp"
-#include "PolygeneConfig.hpp"
+#include "OrbitsConfig.hpp"
 #include "PolygeneModule.hpp"
 
-PolygeneConfig polygene_config("res/polygene-layout.json");
+OrbitsConfig config("res/polygene-layout.json");
 
 // Interface for components with the ability to change skins
 struct PolygeneSkinned
@@ -17,12 +17,12 @@ struct PolygeneSkinnedKnob : RoundKnob, PolygeneSkinned
         PolygeneSkinnedKnob(std::string component)
         {
                 m_component = component;
-                loadTheme(polygene_config.getDefaultThemeId());
+                loadTheme(config.getDefaultThemeId());
         }
 
         void loadTheme(int theme) override
         {
-                setSvg(APP->window->loadSvg(polygene_config.getSvg(m_component, theme)));
+                setSvg(APP->window->loadSvg(config.getSvg(m_component, theme)));
                 fb->dirty = true;
         }
 };
@@ -34,12 +34,12 @@ struct PolygeneSkinnedScrew : app::SvgScrew, PolygeneSkinned
         PolygeneSkinnedScrew(std::string component)
         {
                 m_component = component;
-                loadTheme(polygene_config.getDefaultThemeId());
+                loadTheme(config.getDefaultThemeId());
         }
 
         void loadTheme(int theme) override
         {
-                setSvg(APP->window->loadSvg(polygene_config.getSvg(m_component, theme)));
+                setSvg(APP->window->loadSvg(config.getSvg(m_component, theme)));
                 fb->dirty = true;
         }
 };
@@ -52,16 +52,16 @@ struct PolygeneSkinnedSwitch : app::SvgSwitch, PolygeneSkinned
         {
                 m_component = component;
                 // Relies on the OFF enum being one after ON
-                addFrame(APP->window->loadSvg(polygene_config.getSvg(m_component + "_off")));
-                addFrame(APP->window->loadSvg(polygene_config.getSvg(m_component + "_on")));
+                addFrame(APP->window->loadSvg(config.getSvg(m_component + "_off")));
+                addFrame(APP->window->loadSvg(config.getSvg(m_component + "_on")));
                 shadow->opacity = 0.0;
         }
 
         void loadTheme(int theme) override
         {
                 // Relies on the OFF enum being one after ON
-                frames[0] = APP->window->loadSvg(polygene_config.getSvg(m_component + "_off", theme));
-                frames[1] = APP->window->loadSvg(polygene_config.getSvg(m_component + "_on", theme));
+                frames[0] = APP->window->loadSvg(config.getSvg(m_component + "_off", theme));
+                frames[1] = APP->window->loadSvg(config.getSvg(m_component + "_on", theme));
 
                 event::Change change;
                 onChange(change);
@@ -76,13 +76,13 @@ struct PolygeneSkinnedPort : app::SvgPort, PolygeneSkinned
         PolygeneSkinnedPort(std::string component)
         {
                 m_component = component;
-                loadTheme(polygene_config.getDefaultThemeId());
+                loadTheme(config.getDefaultThemeId());
                 shadow->opacity = 0.07;
         }
 
         void loadTheme(int theme) override
         {
-                setSvg(APP->window->loadSvg(polygene_config.getSvg(m_component, theme)));
+                setSvg(APP->window->loadSvg(config.getSvg(m_component, theme)));
                 // fb->dirty = true; // Already set by setSvg for SvgPorts
         }
 };
@@ -360,7 +360,7 @@ template <class TParamWidget>
 static TParamWidget *createSkinnedParam(std::string component, engine::Module *module, int paramId)
 {
         TParamWidget *o = new TParamWidget(component);
-        o->box.pos = polygene_config.getPos(component).minus(o->box.size.div(2));
+        o->box.pos = config.getPos(component).minus(o->box.size.div(2));
         if(module)
         {
                 o->paramQuantity = module->paramQuantities[paramId];
@@ -371,7 +371,7 @@ static TParamWidget *createSkinnedParam(std::string component, engine::Module *m
 static PolygeneSkinnedPort *createSkinnedPort(std::string component, engine::Module *module, int portId)
 {
         PolygeneSkinnedPort *o = new PolygeneSkinnedPort(component);
-        o->box.pos = polygene_config.getPos(component).minus(o->box.size.div(2));
+        o->box.pos = config.getPos(component).minus(o->box.size.div(2));
         o->module = module;
         o->portId = portId;
         return o;
@@ -401,12 +401,12 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
                 module->widget = this;
         }
 
-        m_theme = polygene_config.getDefaultThemeId();
+        m_theme = config.getDefaultThemeId();
 
         // clang-format off
-        setPanel(APP->window->loadSvg(polygene_config.getSvg("panel")));
+        setPanel(APP->window->loadSvg(config.getSvg("panel")));
 
-        // TODO: Screw positions are based on the panel size, could have a position for them in polygene_config based on panel size
+        // TODO: Screw positions are based on the panel size, could have a position for them in config based on panel size
         addChild(createSkinnedScrew("screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
         addChild(createSkinnedScrew("screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
         addChild(createSkinnedScrew("screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
@@ -436,9 +436,9 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addOutput(createSkinnedOutput("beat_port", module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
         // clang-format on
 
-        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(polygene_config.getPos("display"));
+        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(config.getPos("display"));
         r->module = module;
-        r->box.size = polygene_config.getSize("display");
+        r->box.size = config.getSize("display");
         addChild(r);
 }
 
@@ -449,17 +449,17 @@ void RareBreeds_Orbits_PolygeneWidget::appendContextMenu(Menu *menu)
         theme_label->text = "Theme";
         menu->addChild(theme_label);
 
-        for(size_t i = 0; i < polygene_config.numThemes(); ++i)
+        for(size_t i = 0; i < config.numThemes(); ++i)
         {
-                menu->addChild(new PolygeneThemeChoiceItem(this, i, polygene_config.getThemeName(i).c_str()));
+                menu->addChild(new PolygeneThemeChoiceItem(this, i, config.getThemeName(i).c_str()));
         }
 }
 
 void RareBreeds_Orbits_PolygeneWidget::loadTheme(const char *theme)
 {
-        for(size_t i = 0; i < polygene_config.numThemes(); ++i)
+        for(size_t i = 0; i < config.numThemes(); ++i)
         {
-                if(polygene_config.getThemeName(i) == theme)
+                if(config.getThemeName(i) == theme)
                 {
                         loadTheme(i);
                         break;
@@ -480,7 +480,7 @@ void RareBreeds_Orbits_PolygeneWidget::loadTheme(int theme)
                 }
         }
 
-        setPanel(APP->window->loadSvg(polygene_config.getSvg("panel", theme)));
+        setPanel(APP->window->loadSvg(config.getSvg("panel", theme)));
 }
 
 json_t *RareBreeds_Orbits_PolygeneWidget::dataToJson()
@@ -488,7 +488,7 @@ json_t *RareBreeds_Orbits_PolygeneWidget::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_t *theme = json_string(polygene_config.getThemeName(m_theme).c_str());
+                json_t *theme = json_string(config.getThemeName(m_theme).c_str());
                 if(theme)
                 {
                         json_object_set_new(root, "theme", theme);

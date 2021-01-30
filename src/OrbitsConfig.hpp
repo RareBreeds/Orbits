@@ -2,9 +2,9 @@
 
 #include "plugin.hpp"
 
-struct PolygeneConfig
+struct OrbitsConfig
 {
-        PolygeneConfig(std::string path);
+        OrbitsConfig(std::string path);
         std::string getSvg(std::string component, int theme);
         std::string getSvg(std::string component);
         Vec getPos(std::string component);
@@ -17,5 +17,3 @@ private:
         std::string m_path;
         float rFindFloatAttribute(std::string &content, std::string attribute, size_t search);        
 };
-
-extern PolygeneConfig polygene_config;

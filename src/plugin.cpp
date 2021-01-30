@@ -1,5 +1,4 @@
 #include "EugeneConfig.hpp"
-#include "PolygeneConfig.hpp"
 #include "plugin.hpp"
 
 Plugin *pluginInstance;

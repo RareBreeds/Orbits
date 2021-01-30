@@ -1,14 +1,14 @@
 #include <fstream>
 
-#include "PolygeneConfig.hpp"
+#include "OrbitsConfig.hpp"
 #include "plugin.hpp"
 
-PolygeneConfig::PolygeneConfig(std::string path)
+OrbitsConfig::OrbitsConfig(std::string path)
 {
     m_path = path;
 }
 
-float PolygeneConfig::rFindFloatAttribute(std::string &content, std::string attribute, size_t search)
+float OrbitsConfig::rFindFloatAttribute(std::string &content, std::string attribute, size_t search)
 {
         search = content.rfind(attribute + "=", search);
         if(search == std::string::npos)
@@ -28,7 +28,7 @@ float PolygeneConfig::rFindFloatAttribute(std::string &content, std::string attr
         return value;
 }
 
-std::string PolygeneConfig::getSvg(std::string component, int theme)
+std::string OrbitsConfig::getSvg(std::string component, int theme)
 {
         json_error_t error;
         std::string path = asset::plugin(pluginInstance, m_path);
@@ -40,12 +40,12 @@ std::string PolygeneConfig::getSvg(std::string component, int theme)
         return asset::plugin(pluginInstance, std::string("res/") + str);
 }
 
-std::string PolygeneConfig::getSvg(std::string component)
+std::string OrbitsConfig::getSvg(std::string component)
 {
         return getSvg(component, getDefaultThemeId());
 }
 
-Vec PolygeneConfig::getPos(std::string component)
+Vec OrbitsConfig::getPos(std::string component)
 {
         std::ifstream ifs(getSvg("panel"));
         std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
@@ -56,7 +56,7 @@ Vec PolygeneConfig::getPos(std::string component)
         return mm2px(Vec(x, y));
 }
 
-Vec PolygeneConfig::getSize(std::string component)
+Vec OrbitsConfig::getSize(std::string component)
 {
         std::ifstream ifs(getSvg("panel"));
         std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
@@ -67,7 +67,7 @@ Vec PolygeneConfig::getSize(std::string component)
         return mm2px(Vec(w, h));
 }
 
-std::string PolygeneConfig::getThemeName(int theme)
+std::string OrbitsConfig::getThemeName(int theme)
 {
         json_error_t error;
         std::string path = asset::plugin(pluginInstance, m_path);
@@ -80,12 +80,12 @@ std::string PolygeneConfig::getThemeName(int theme)
         return theme_name;
 }
 
-std::string PolygeneConfig::getThemeName()
+std::string OrbitsConfig::getThemeName()
 {
         return getThemeName(getDefaultThemeId());
 }
 
-int PolygeneConfig::getDefaultThemeId()
+int OrbitsConfig::getDefaultThemeId()
 {
         int default_theme_id = 0;
         json_error_t error;
@@ -110,7 +110,7 @@ int PolygeneConfig::getDefaultThemeId()
         return default_theme_id;
 }
 
-size_t PolygeneConfig::numThemes()
+size_t OrbitsConfig::numThemes()
 {
         json_error_t error;
         std::string path = asset::plugin(pluginInstance, m_path);
