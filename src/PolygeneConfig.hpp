@@ -45,23 +45,12 @@ enum PolygeneComponents
         POLYGENE_COMPONENT_COUNT
 };
 
-struct PolygeneTheme
-{
-        std::string m_name;
-        std::string m_components[POLYGENE_COMPONENT_COUNT];
-
-        bool fromJson(json_t *root);
-};
-
 struct PolygeneConfig
 {
         Vec m_positions[POLYGENE_COMPONENT_COUNT];
         Vec m_sizes[POLYGENE_COMPONENT_COUNT];
 
-        std::vector<PolygeneTheme> m_themes;
-
         bool init();
-        bool fromJson(std::string path);
         bool loadComponentPositions();
         float readFloatAttribute(std::string &content, std::string attribute, size_t &search);
 

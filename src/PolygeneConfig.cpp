@@ -117,63 +117,6 @@ static PolygeneComponents componentSvgEnum(std::string str)
         return POLYGENE_COMPONENT_COUNT;
 }
 
-// TODO: not calculating paths here would save some memory
-#define LOAD_PATH(_enum)                                                                                               \
-        do                                                                                                             \
-        {                                                                                                              \
-                obj = json_object_get(root, componentJsonString(_enum));                                               \
-                if(!obj)                                                                                               \
-                        return false;                                                                                  \
-                str = json_string_value(obj);                                                                          \
-                if(!str)                                                                                               \
-                        return false;                                                                                  \
-                std::string path = std::string("res/") + str;                                                          \
-                m_components[_enum] = asset::plugin(pluginInstance, path);                                             \
-        } while(0)
-
-bool PolygeneTheme::fromJson(json_t *root)
-{
-        json_t *obj;
-
-        obj = json_object_get(root, "name");
-        if(!obj)
-                return false;
-        const char *str = json_string_value(obj);
-        if(!str)
-                return false;
-        m_name = str;
-
-        LOAD_PATH(POLYGENE_COMPONENT_PANEL);
-        LOAD_PATH(POLYGENE_COMPONENT_SCREW_TOP_LEFT);
-        LOAD_PATH(POLYGENE_COMPONENT_SCREW_TOP_RIGHT);
-        LOAD_PATH(POLYGENE_COMPONENT_SCREW_BOTTOM_LEFT);
-        LOAD_PATH(POLYGENE_COMPONENT_SCREW_BOTTOM_RIGHT);
-        LOAD_PATH(POLYGENE_COMPONENT_CLOCK_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_SYNC_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_BEAT_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_CHANNEL_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_LENGTH_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_LENGTH_CV_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_LENGTH_CV_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_HITS_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_HITS_CV_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_HITS_CV_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_SHIFT_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_SHIFT_CV_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_SHIFT_CV_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_ODDITY_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_ODDITY_CV_KNOB);
-        LOAD_PATH(POLYGENE_COMPONENT_ODDITY_CV_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_REVERSE_SWITCH_ON);
-        LOAD_PATH(POLYGENE_COMPONENT_REVERSE_SWITCH_OFF);
-        LOAD_PATH(POLYGENE_COMPONENT_REVERSE_CV_PORT);
-        LOAD_PATH(POLYGENE_COMPONENT_INVERT_SWITCH_ON);
-        LOAD_PATH(POLYGENE_COMPONENT_INVERT_SWITCH_OFF);
-        LOAD_PATH(POLYGENE_COMPONENT_INVERT_CV_PORT);
-
-        return true;
-}
-
 bool PolygeneConfig::init()
 {
         return loadComponentPositions();
