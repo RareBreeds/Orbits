@@ -207,7 +207,7 @@ float PolygeneConfig::readFloatAttribute(std::string &content, std::string attri
 
 bool PolygeneConfig::loadComponentPositions()
 {
-        std::ifstream ifs(m_themes[getDefaultThemeId()].m_components[POLYGENE_COMPONENT_PANEL]);
+        std::ifstream ifs(getSvg(POLYGENE_COMPONENT_PANEL));
         std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
 
         // Find all component positions from the svg
