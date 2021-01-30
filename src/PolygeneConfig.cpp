@@ -176,12 +176,6 @@ bool PolygeneTheme::fromJson(json_t *root)
 
 bool PolygeneConfig::init()
 {
-        bool result = fromJson(asset::plugin(pluginInstance, "res/polygene-layout.json"));
-        if(!result)
-        {
-                return false;
-        }
-
         return loadComponentPositions();
 }
 
@@ -268,65 +262,6 @@ bool PolygeneConfig::loadComponentPositions()
         return true;
 }
 
-bool PolygeneConfig::fromJson(std::string path)
-{
-        json_t *root;
-        json_error_t error;
-        root = json_load_file(path.c_str(), 0, &error);
-        if(!root)
-        {
-                return false;
-        }
-
-        json_t *themes = json_object_get(root, "themes");
-        if(!themes)
-        {
-                json_decref(root);
-                return false;
-        }
-
-        size_t index;
-        json_t *value;
-        json_array_foreach(themes, index, value)
-        {
-                PolygeneTheme theme;
-                theme.fromJson(value);
-                m_themes.push_back(theme);
-        }
-
-        json_t *def = json_object_get(root, "default");
-        if(!def)
-        {
-                json_decref(root);
-                return false;
-        }
-
-        const char *default_name = json_string_value(def);
-        if(!default_name)
-        {
-                json_decref(root);
-        }
-
-        size_t i;
-        for(i = 0; i < m_themes.size(); ++i)
-        {
-                if(m_themes[i].m_name == default_name)
-                {
-                        //m_default = i;
-                        break;
-                }
-        }
-
-        if(i == m_themes.size())
-        {
-                json_decref(root);
-                return false;
-        }
-
-        json_decref(root);
-
-        return true;
-}
 
 std::string PolygeneConfig::getSvg(PolygeneComponents component, int theme)
 {
