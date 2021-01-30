@@ -66,35 +66,12 @@ struct PolygeneConfig
         bool loadComponentPositions();
         float readFloatAttribute(std::string &content, std::string attribute, size_t &search);
 
-        std::string getSvg(PolygeneComponents component, int theme)
-        {
-                return m_themes[theme].m_components[component];
-        }
-
-        std::string getSvg(PolygeneComponents component)
-        {
-                return getSvg(component, m_default);
-        }
-
-        Vec getPos(PolygeneComponents component)
-        {
-                return m_positions[component];
-        }
-
-        Vec getSize(PolygeneComponents component)
-        {
-                return m_sizes[component];
-        }
-
-        std::string getThemeName(int theme)
-        {
-                return m_themes[theme].m_name;
-        }
-
-        std::string getThemeName()
-        {
-                return getThemeName(m_default);
-        }
+        std::string getSvg(PolygeneComponents component, int theme);
+        std::string getSvg(PolygeneComponents component);
+        Vec getPos(PolygeneComponents component);
+        Vec getSize(PolygeneComponents component);
+        std::string getThemeName(int theme);
+        std::string getThemeName();
 };
 
 extern PolygeneConfig polygene_config;

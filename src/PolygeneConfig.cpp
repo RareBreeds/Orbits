@@ -327,3 +327,33 @@ bool PolygeneConfig::fromJson(std::string path)
 
         return true;
 }
+
+std::string PolygeneConfig::getSvg(PolygeneComponents component, int theme)
+{
+        return m_themes[theme].m_components[component];
+}
+
+std::string PolygeneConfig::getSvg(PolygeneComponents component)
+{
+        return getSvg(component, m_default);
+}
+
+Vec PolygeneConfig::getPos(PolygeneComponents component)
+{
+        return m_positions[component];
+}
+
+Vec PolygeneConfig::getSize(PolygeneComponents component)
+{
+        return m_sizes[component];
+}
+
+std::string PolygeneConfig::getThemeName(int theme)
+{
+        return m_themes[theme].m_name;
+}
+
+std::string PolygeneConfig::getThemeName()
+{
+        return getThemeName(m_default);
+}
