@@ -447,7 +447,7 @@ void RareBreeds_Orbits_PolygeneWidget::appendContextMenu(Menu *menu)
         theme_label->text = "Theme";
         menu->addChild(theme_label);
 
-        for(size_t i = 0; i < polygene_config.m_themes.size(); ++i)
+        for(size_t i = 0; i < polygene_config.numThemes(); ++i)
         {
                 menu->addChild(new PolygeneThemeChoiceItem(this, i, polygene_config.getThemeName(i).c_str()));
         }
@@ -455,7 +455,7 @@ void RareBreeds_Orbits_PolygeneWidget::appendContextMenu(Menu *menu)
 
 void RareBreeds_Orbits_PolygeneWidget::loadTheme(const char *theme)
 {
-        for(size_t i = 0; i < polygene_config.m_themes.size(); ++i)
+        for(size_t i = 0; i < polygene_config.numThemes(); ++i)
         {
                 if(polygene_config.getThemeName(i) == theme)
                 {

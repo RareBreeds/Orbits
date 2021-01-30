@@ -386,7 +386,6 @@ int PolygeneConfig::getDefaultThemeId()
         json_t *root = json_load_file(path.c_str(), 0, &error);
         json_t *def = json_object_get(root, "default");
         const char *default_name = json_string_value(def);
-        INFO("%s", default_name);
         json_t *themes = json_object_get(root, "themes");
         size_t index;
         json_t *value;
@@ -399,6 +398,18 @@ int PolygeneConfig::getDefaultThemeId()
                 break;
             }
         }
-        INFO("%u", default_theme_id);
+        json_decref(root);
+
         return default_theme_id;
+}
+
+size_t PolygeneConfig::numThemes()
+{
+        json_error_t error;
+        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        json_t *root = json_load_file(path.c_str(), 0, &error);
+        json_t *themes = json_object_get(root, "themes");
+        size_t count = json_array_size(themes);
+        json_decref(root);
+        return count;
 }

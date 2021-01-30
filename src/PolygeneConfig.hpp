@@ -72,6 +72,7 @@ struct PolygeneConfig
         std::string getThemeName(int theme);
         std::string getThemeName();
         int getDefaultThemeId();
+        size_t numThemes();
 };
 
 extern PolygeneConfig polygene_config;
