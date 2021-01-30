@@ -92,6 +92,8 @@ struct PolygeneRhythmDisplay : TransparentWidget
 
         PolygeneRhythmDisplay();
         void draw(const DrawArgs &args) override;
+        void drawCircles(const DrawArgs &args);
+        void drawArcs(const DrawArgs &args);
 };
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
@@ -100,6 +102,11 @@ PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 }
 
 void PolygeneRhythmDisplay::draw(const DrawArgs &args)
+{
+        drawArcs(args);
+}
+
+void PolygeneRhythmDisplay::drawCircles(const DrawArgs &args)
 {
         if(!module)
         {
@@ -113,23 +120,13 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         const auto invert = module->m_active_channel->readInvert();
         const auto reverse = module->m_active_channel->readReverse();
 
-        const auto inverted_display = false;
-        const auto background_color = inverted_display ? color::WHITE : color::BLACK;
-        const auto foreground_color = inverted_display ? color::BLACK : color::WHITE;
-        nvgStrokeColor(args.vg, color::WHITE);
+        const auto foreground_color = color::WHITE;
+        nvgStrokeColor(args.vg, foreground_color);
         nvgSave(args.vg);
 
         const Rect b = Rect(Vec(0, 0), box.size);
         nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
 
-        // Only the background is drawn in the background colour
-        nvgStrokeColor(args.vg, background_color);
-        nvgFillColor(args.vg, background_color);
-        nvgBeginPath(args.vg);
-        nvgRoundedRect(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y, 5.f);
-        nvgFill(args.vg);
-
-        // Everything drawn after here is in the foreground colour
         nvgStrokeColor(args.vg, foreground_color);
         nvgFillColor(args.vg, foreground_color);
 
@@ -237,6 +234,94 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
                 }
 
                 nvgRestore(args.vg);
+        }
+
+        nvgResetScissor(args.vg);
+        nvgRestore(args.vg);
+}
+
+void PolygeneRhythmDisplay::drawArcs(const DrawArgs &args)
+{
+        if(!module)
+        {
+                return;
+        }
+
+        const auto foreground_color = color::WHITE;
+        nvgStrokeColor(args.vg, foreground_color);
+        nvgSave(args.vg);
+
+        const Rect b = Rect(Vec(0, 0), box.size);
+        nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
+
+        // Everything drawn after here is in the foreground colour
+        nvgStrokeColor(args.vg, foreground_color);
+        nvgFillColor(args.vg, foreground_color);
+
+        // Translate so (0, 0) is the center of the screen
+        nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+        // Scale to [-1, 1]
+        nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+        // Flip x and y so we start at the top and positive angle
+        // increments go clockwise
+        nvgScale(args.vg, -1.f, -1.f);
+
+        // Inner circle radius
+        const auto inner_circle_radius = 0.1f;
+        const auto channel_width = (1.0f - inner_circle_radius) / 16.0f;
+        // Width of the line when drawing circles
+        const auto arc_stroke_width = channel_width / 2.0f;
+        nvgStrokeWidth(args.vg, arc_stroke_width);
+
+        // Add a border so we don't draw over the edge
+        nvgScale(args.vg, 1.0 - channel_width, 1.0 - channel_width);
+
+        int c = 0;
+        for(auto channel : module->m_channels)
+        {
+                const auto length = channel.readLength();
+                const auto hits = channel.readHits(length);
+                const auto shift = channel.readShift(length);
+                const auto oddity = channel.readOddity(length, hits);
+                const auto invert = channel.readInvert();
+                const auto reverse = channel.readReverse();
+
+                for(auto k = 0u; k < length; ++k)
+                {
+                        auto current_step = channel.m_current_step == k;
+                        auto on_beat = channel.isOnBeat(length, hits, shift, oddity, k, invert);
+                        if(on_beat)
+                        {
+                            if(current_step)
+                            {
+                                nvgStrokeColor(args.vg, color::WHITE);
+                            }
+                            else
+                            {
+                                nvgStrokeColor(args.vg, nvgRGB(0xcc, 0xcc, 0xcc));
+                            }
+                        }
+                        else if(current_step)
+                        {
+                            nvgStrokeColor(args.vg, nvgRGB(0x50, 0x50, 0x50));    
+                        }
+
+
+                        if(on_beat || current_step)
+                        {
+                                const auto radius = 1.0f - c * channel_width;
+                                const auto pi2_len = 2.0f * M_PI / length;
+                                auto a0 = k * pi2_len + M_PI_2;
+                                const auto len = pi2_len - 0.05f;
+                                auto a1 = a0 + len;
+                                nvgBeginPath(args.vg);
+                                nvgArc(args.vg, 0.0f, 0.0f, radius, a0, a1, NVG_CW);
+                                nvgStroke(args.vg);
+                        }
+                }
+                ++c;
         }
 
         nvgResetScissor(args.vg);
@@ -351,7 +436,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         PolygeneRhythmDisplay *r =
                 createWidget<PolygeneRhythmDisplay>(polygene_config.getPos(POLYGENE_COMPONENT_DISPLAY));
         r->module = module;
-        r->box.size = mm2px(Vec(32.0, 32.0));
+        r->box.size = polygene_config.getSize(POLYGENE_COMPONENT_DISPLAY);
         addChild(r);
 }
 

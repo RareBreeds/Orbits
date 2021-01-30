@@ -56,12 +56,15 @@ struct PolygeneTheme
 struct PolygeneConfig
 {
         Vec m_positions[POLYGENE_COMPONENT_COUNT];
+        Vec m_sizes[POLYGENE_COMPONENT_COUNT];
+
         std::vector<PolygeneTheme> m_themes;
         size_t m_default;
 
         bool init();
         bool fromJson(std::string path);
         bool loadComponentPositions();
+        float readFloatAttribute(std::string &content, std::string attribute, size_t &search);
 
         std::string getSvg(PolygeneComponents component, int theme)
         {
@@ -76,6 +79,11 @@ struct PolygeneConfig
         Vec getPos(PolygeneComponents component)
         {
                 return m_positions[component];
+        }
+
+        Vec getSize(PolygeneComponents component)
+        {
+                return m_sizes[component];
         }
 
         std::string getThemeName(int theme)

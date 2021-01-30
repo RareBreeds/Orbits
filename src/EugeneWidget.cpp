@@ -109,21 +109,12 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         const auto length = module->readLength();
         const auto hits = module->readHits(length);
         const auto shift = module->readShift(length);
-        const auto inverted_display = false;
-        const auto background_color = inverted_display ? color::WHITE : color::BLACK;
-        const auto foreground_color = inverted_display ? color::BLACK : color::WHITE;
+        const auto foreground_color = color::WHITE;
 
         nvgSave(args.vg);
 
         const Rect b = Rect(Vec(0, 0), box.size);
         nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
-
-        // Only the background is drawn in the background colour
-        nvgStrokeColor(args.vg, background_color);
-        nvgFillColor(args.vg, background_color);
-        nvgBeginPath(args.vg);
-        nvgRoundedRect(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y, 5.f);
-        nvgFill(args.vg);
 
         // Everything drawn after here is in the foreground colour
         nvgStrokeColor(args.vg, foreground_color);

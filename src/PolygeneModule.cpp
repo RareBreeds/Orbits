@@ -247,6 +247,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 
 void RareBreeds_Orbits_Polygene::reset()
 {
+        m_previous_channel_id = max_channels;
         m_active_channel_id = 0;
         m_active_channel = &m_channels[m_active_channel_id];
 
@@ -267,18 +268,18 @@ void RareBreeds_Orbits_Polygene::reset()
 
 void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 {
-        auto active_channels = inputs[CLOCK_INPUT].getChannels();
-        outputs[BEAT_OUTPUT].setChannels(active_channels);
+        m_active_channels = inputs[CLOCK_INPUT].getChannels();
+        outputs[BEAT_OUTPUT].setChannels(m_active_channels);
 
-        auto previous_channel_id = m_active_channel_id;
         m_active_channel_id = std::round(params[CHANNEL_KNOB_PARAM].getValue());
         m_active_channel = &m_channels[m_active_channel_id];
 
         // Update the SVGs on the reverse and invert buttons when the channel changes
-        if(previous_channel_id != m_active_channel_id)
+        if(m_previous_channel_id != m_active_channel_id)
         {
                 params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
                 params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+                m_previous_channel_id = m_active_channel_id;
         }
 
         float length = params[LENGTH_KNOB_PARAM].getValue();

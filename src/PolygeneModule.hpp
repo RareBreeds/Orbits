@@ -47,6 +47,7 @@ struct RareBreeds_Orbits_Polygene : Module
 
         // The channel currently being displayed and controlled by the knobs
         int m_active_channel_id = 0;
+        int m_previous_channel_id = max_channels;
 
         // Old knob values
         float m_length, m_length_cv;
@@ -86,6 +87,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 void onRandomize();
         };
 
+        int m_active_channels = 1;
         Channel m_channels[max_channels];
         Channel *m_active_channel;
         dsp::BooleanTrigger reverse_trigger;

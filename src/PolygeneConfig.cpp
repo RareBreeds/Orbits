@@ -178,9 +178,31 @@ bool PolygeneConfig::init()
 {
         bool result = fromJson(asset::plugin(pluginInstance, "res/polygene-layout.json"));
         if(!result)
+        {
                 return false;
+        }
 
         return loadComponentPositions();
+}
+
+float PolygeneConfig::readFloatAttribute(std::string &content, std::string attribute, size_t &search)
+{
+        search = content.find(attribute + "=", search);
+        if(search == std::string::npos)
+        {
+                return 0.0f;
+        }
+
+        size_t float_start = search + attribute.length() + 2;
+        size_t float_end = content.find("\"", float_start);
+        if(float_end == std::string::npos)
+        {
+                return 0.0f;
+        }
+
+        search = float_end;
+        float value = std::stof(content.substr(float_start, float_end - float_start));
+        return value;
 }
 
 bool PolygeneConfig::loadComponentPositions()
@@ -204,37 +226,19 @@ bool PolygeneConfig::loadComponentPositions()
                         break;
                 }
 
-                search = content.find("x=", search);
-                if(search == std::string::npos)
+                float width = 0.0f;
+                float height = 0.0f;
+                if(content.substr(search + 1, 4) == "rect")
                 {
-                        break;
+                        // Read width and height
+                        width = readFloatAttribute(content, "width", search);
+                        height = readFloatAttribute(content, "height", search);
                 }
 
-                size_t float_start = search + 3;
-                size_t float_end = content.find("\"", float_start);
-                if(float_end == std::string::npos)
-                {
-                        break;
-                }
+                float x = readFloatAttribute(content, "x", search);
+                float y = readFloatAttribute(content, "y", search);
 
-                float x = std::stof(content.substr(float_start, float_end - float_start));
-
-                search = content.find("y=", float_end);
-                if(search == std::string::npos)
-                {
-                        break;
-                }
-
-                float_start = search + 3;
-                float_end = content.find("\"", float_start);
-                if(float_end == std::string::npos)
-                {
-                        break;
-                }
-
-                float y = std::stof(content.substr(float_start, float_end - float_start));
-
-                search = content.find("inkscape:label=", float_end);
+                search = content.find("inkscape:label=", search);
                 if(search == std::string::npos)
                 {
                         break;
@@ -250,10 +254,12 @@ bool PolygeneConfig::loadComponentPositions()
                 std::string name = content.substr(name_start, name_end - name_start);
 
                 Vec pos = mm2px(Vec(x, y));
+                Vec size = mm2px(Vec(width, height));
                 PolygeneComponents component = componentSvgEnum(name);
                 if(component < POLYGENE_COMPONENT_COUNT)
                 {
                         m_positions[component] = pos;
+                        m_sizes[component] = size;
                 }
 
                 search = name_end;
@@ -268,7 +274,9 @@ bool PolygeneConfig::fromJson(std::string path)
         json_error_t error;
         root = json_load_file(path.c_str(), 0, &error);
         if(!root)
+        {
                 return false;
+        }
 
         json_t *themes = json_object_get(root, "themes");
         if(!themes)
