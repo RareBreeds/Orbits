@@ -438,6 +438,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         r->module = module;
         r->box.size = polygene_config.getSize(POLYGENE_COMPONENT_DISPLAY);
         addChild(r);
+        loadTheme(polygene_config.getDefaultTheme());
 }
 
 void RareBreeds_Orbits_PolygeneWidget::appendContextMenu(Menu *menu)
