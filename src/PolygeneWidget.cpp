@@ -2,7 +2,7 @@
 #include "OrbitsConfig.hpp"
 #include "PolygeneModule.hpp"
 
-OrbitsConfig config("res/polygene-layout.json");
+static OrbitsConfig config("res/polygene-layout.json");
 
 // Interface for components with the ability to change skins
 struct PolygeneSkinned

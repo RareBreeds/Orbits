@@ -1,4 +1,3 @@
-#include "EugeneConfig.hpp"
 #include "plugin.hpp"
 
 Plugin *pluginInstance;
@@ -8,11 +7,7 @@ void init(Plugin *p)
         pluginInstance = p;
 
         // Add modules here
-        if(eugene_config.init())
-        {
-                p->addModel(modelRareBreeds_Orbits_Eugene);
-        }
-
+        p->addModel(modelRareBreeds_Orbits_Eugene);
         p->addModel(modelRareBreeds_Orbits_Polygene);
 
         // Any other plugin initialization may go here.
