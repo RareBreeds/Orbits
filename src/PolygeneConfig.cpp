@@ -330,7 +330,19 @@ bool PolygeneConfig::fromJson(std::string path)
 
 std::string PolygeneConfig::getSvg(PolygeneComponents component, int theme)
 {
-        return m_themes[theme].m_components[component];
+        json_error_t error;
+        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        json_t *root = json_load_file(path.c_str(), 0, &error);
+        // TODO: root and error handling
+
+        // Find this theme ID
+        json_t *themes = json_object_get(root, "themes");
+        json_t *entry = json_array_get(themes, theme);
+
+        // TODO: Replace component enum with string
+        json_t *obj = json_object_get(entry, componentJsonString(component));
+        const char *str = json_string_value(obj);
+        return asset::plugin(pluginInstance, std::string("res/") + str);
 }
 
 std::string PolygeneConfig::getSvg(PolygeneComponents component)
