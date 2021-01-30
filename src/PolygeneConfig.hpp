@@ -59,7 +59,6 @@ struct PolygeneConfig
         Vec m_sizes[POLYGENE_COMPONENT_COUNT];
 
         std::vector<PolygeneTheme> m_themes;
-        size_t m_default;
 
         bool init();
         bool fromJson(std::string path);
@@ -72,6 +71,7 @@ struct PolygeneConfig
         Vec getSize(PolygeneComponents component);
         std::string getThemeName(int theme);
         std::string getThemeName();
+        int getDefaultThemeId();
 };
 
 extern PolygeneConfig polygene_config;

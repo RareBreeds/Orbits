@@ -207,7 +207,7 @@ float PolygeneConfig::readFloatAttribute(std::string &content, std::string attri
 
 bool PolygeneConfig::loadComponentPositions()
 {
-        std::ifstream ifs(m_themes[m_default].m_components[POLYGENE_COMPONENT_PANEL]);
+        std::ifstream ifs(m_themes[getDefaultThemeId()].m_components[POLYGENE_COMPONENT_PANEL]);
         std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
 
         // Find all component positions from the svg
@@ -312,7 +312,7 @@ bool PolygeneConfig::fromJson(std::string path)
         {
                 if(m_themes[i].m_name == default_name)
                 {
-                        m_default = i;
+                        //m_default = i;
                         break;
                 }
         }
@@ -347,7 +347,7 @@ std::string PolygeneConfig::getSvg(PolygeneComponents component, int theme)
 
 std::string PolygeneConfig::getSvg(PolygeneComponents component)
 {
-        return getSvg(component, m_default);
+        return getSvg(component, getDefaultThemeId());
 }
 
 Vec PolygeneConfig::getPos(PolygeneComponents component)
@@ -362,10 +362,43 @@ Vec PolygeneConfig::getSize(PolygeneComponents component)
 
 std::string PolygeneConfig::getThemeName(int theme)
 {
-        return m_themes[theme].m_name;
+        json_error_t error;
+        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        json_t *root = json_load_file(path.c_str(), 0, &error);
+        json_t *themes = json_object_get(root, "themes");
+        json_t *entry = json_array_get(themes, theme);
+        json_t *name = json_object_get(entry, "name");
+        std::string theme_name(json_string_value(name));
+        json_decref(root);
+        return theme_name;
 }
 
 std::string PolygeneConfig::getThemeName()
 {
-        return getThemeName(m_default);
+        return getThemeName(getDefaultThemeId());
+}
+
+int PolygeneConfig::getDefaultThemeId()
+{
+        int default_theme_id = 0;
+        json_error_t error;
+        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        json_t *root = json_load_file(path.c_str(), 0, &error);
+        json_t *def = json_object_get(root, "default");
+        const char *default_name = json_string_value(def);
+        INFO("%s", default_name);
+        json_t *themes = json_object_get(root, "themes");
+        size_t index;
+        json_t *value;
+        json_array_foreach(themes, index, value)
+        {
+            json_t *name = json_object_get(value, "name");
+            if(std::string(json_string_value(name)) == std::string(default_name))
+            {
+                default_theme_id = index;
+                break;
+            }
+        }
+        INFO("%u", default_theme_id);
+        return default_theme_id;
 }

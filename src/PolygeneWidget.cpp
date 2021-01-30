@@ -15,7 +15,7 @@ struct PolygeneSkinnedKnob : RoundKnob, PolygeneSkinned
         PolygeneSkinnedKnob(PolygeneComponents component)
         {
                 m_component = component;
-                loadTheme(polygene_config.m_default);
+                loadTheme(polygene_config.getDefaultThemeId());
         }
 
         void loadTheme(int theme) override
@@ -32,7 +32,7 @@ struct PolygeneSkinnedScrew : app::SvgScrew, PolygeneSkinned
         PolygeneSkinnedScrew(PolygeneComponents component)
         {
                 m_component = component;
-                loadTheme(polygene_config.m_default);
+                loadTheme(polygene_config.getDefaultThemeId());
         }
 
         void loadTheme(int theme) override
@@ -74,7 +74,7 @@ struct PolygeneSkinnedPort : app::SvgPort, PolygeneSkinned
         PolygeneSkinnedPort(PolygeneComponents component)
         {
                 m_component = component;
-                loadTheme(polygene_config.m_default);
+                loadTheme(polygene_config.getDefaultThemeId());
                 shadow->opacity = 0.07;
         }
 
