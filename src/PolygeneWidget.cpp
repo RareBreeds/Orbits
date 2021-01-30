@@ -2,6 +2,8 @@
 #include "PolygeneConfig.hpp"
 #include "PolygeneModule.hpp"
 
+PolygeneConfig polygene_config("res/polygene-layout.json");
+
 // Interface for components with the ability to change skins
 struct PolygeneSkinned
 {

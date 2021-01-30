@@ -3,7 +3,10 @@
 #include "PolygeneConfig.hpp"
 #include "plugin.hpp"
 
-PolygeneConfig polygene_config;
+PolygeneConfig::PolygeneConfig(std::string path)
+{
+    m_path = path;
+}
 
 float PolygeneConfig::rFindFloatAttribute(std::string &content, std::string attribute, size_t search)
 {
@@ -28,15 +31,10 @@ float PolygeneConfig::rFindFloatAttribute(std::string &content, std::string attr
 std::string PolygeneConfig::getSvg(std::string component, int theme)
 {
         json_error_t error;
-        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        std::string path = asset::plugin(pluginInstance, m_path);
         json_t *root = json_load_file(path.c_str(), 0, &error);
-        // TODO: root and error handling
-
-        // Find this theme ID
         json_t *themes = json_object_get(root, "themes");
         json_t *entry = json_array_get(themes, theme);
-
-        // TODO: Replace component enum with string
         json_t *obj = json_object_get(entry, component.c_str());
         const char *str = json_string_value(obj);
         return asset::plugin(pluginInstance, std::string("res/") + str);
@@ -72,7 +70,7 @@ Vec PolygeneConfig::getSize(std::string component)
 std::string PolygeneConfig::getThemeName(int theme)
 {
         json_error_t error;
-        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        std::string path = asset::plugin(pluginInstance, m_path);
         json_t *root = json_load_file(path.c_str(), 0, &error);
         json_t *themes = json_object_get(root, "themes");
         json_t *entry = json_array_get(themes, theme);
@@ -91,7 +89,7 @@ int PolygeneConfig::getDefaultThemeId()
 {
         int default_theme_id = 0;
         json_error_t error;
-        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        std::string path = asset::plugin(pluginInstance, m_path);
         json_t *root = json_load_file(path.c_str(), 0, &error);
         json_t *def = json_object_get(root, "default");
         const char *default_name = json_string_value(def);
@@ -115,7 +113,7 @@ int PolygeneConfig::getDefaultThemeId()
 size_t PolygeneConfig::numThemes()
 {
         json_error_t error;
-        std::string path = asset::plugin(pluginInstance, "res/polygene-layout.json");
+        std::string path = asset::plugin(pluginInstance, m_path);
         json_t *root = json_load_file(path.c_str(), 0, &error);
         json_t *themes = json_object_get(root, "themes");
         size_t count = json_array_size(themes);
