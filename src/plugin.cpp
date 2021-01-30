@@ -1,26 +1,22 @@
-#include <fstream>
-
-#include "plugin.hpp"
 #include "EugeneConfig.hpp"
 #include "PolygeneConfig.hpp"
+#include "plugin.hpp"
 
 Plugin *pluginInstance;
 
 void init(Plugin *p)
 {
-	pluginInstance = p;
+        pluginInstance = p;
 
-	// Add modules here
-	if(eugene_config.init())
-	{
-		p->addModel(modelRareBreeds_Orbits_Eugene);
-	}
+        // Add modules here
+        if(eugene_config.init())
+        {
+                p->addModel(modelRareBreeds_Orbits_Eugene);
+        }
 
-    if(polygene_config.init())
-    {
-	    p->addModel(modelRareBreeds_Orbits_Polygene);
-    }
+        p->addModel(modelRareBreeds_Orbits_Polygene);
 
-	// Any other plugin initialization may go here.
-	// As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce startup times of Rack.
+        // Any other plugin initialization may go here.
+        // As an alternative, consider lazy-loading assets and lookup tables when your module is created to reduce
+        // startup times of Rack.
 }
