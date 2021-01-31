@@ -37,7 +37,9 @@ std::string OrbitsConfig::getSvg(std::string component, int theme)
         json_t *entry = json_array_get(themes, theme);
         json_t *obj = json_object_get(entry, component.c_str());
         const char *str = json_string_value(obj);
-        return asset::plugin(pluginInstance, std::string("res/") + str);
+        std::string svg = asset::plugin(pluginInstance, std::string("res/") + str);
+        json_decref(root);
+        return svg;
 }
 
 std::string OrbitsConfig::getSvg(std::string component)
