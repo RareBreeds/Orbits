@@ -15,10 +15,6 @@ struct RareBreeds_Orbits_Polygene : Module
                 HITS_KNOB_PARAM,
                 SHIFT_KNOB_PARAM,
                 ODDITY_KNOB_PARAM,
-                LENGTH_CV_KNOB_PARAM,
-                HITS_CV_KNOB_PARAM,
-                SHIFT_CV_KNOB_PARAM,
-                ODDITY_CV_KNOB_PARAM,
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
                 NUM_PARAMS
@@ -50,10 +46,10 @@ struct RareBreeds_Orbits_Polygene : Module
         int m_previous_channel_id = max_channels;
 
         // Old knob values
-        float m_length, m_length_cv;
-        float m_hits, m_hits_cv;
-        float m_shift, m_shift_cv;
-        float m_oddity, m_oddity_cv;
+        float m_length;
+        float m_hits;
+        float m_shift;
+        float m_oddity;
 
         struct Channel
         {
@@ -65,10 +61,10 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_invert_trigger;
                 dsp::PulseGenerator m_output_generator;
                 bool m_apply_sync = false;
-                float m_length, m_length_cv;
-                float m_hits, m_hits_cv;
-                float m_shift, m_shift_cv;
-                float m_oddity, m_oddity_cv;
+                float m_length;
+                float m_hits;
+                float m_shift;
+                float m_oddity;
                 bool m_reverse, m_invert;
                 RareBreeds_Orbits_Polygene *m_module;
 
