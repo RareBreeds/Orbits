@@ -149,26 +149,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         nvgRestore(args.vg);
 }
 
-struct EugeneThemeChoiceItem : MenuItem
-{
-        RareBreeds_Orbits_EugeneWidget *m_widget;
-        int m_id;
-
-        EugeneThemeChoiceItem(RareBreeds_Orbits_EugeneWidget *widget, int id, const char *name)
-        {
-                m_widget = widget;
-                m_id = id;
-                text = name;
-                rightText = CHECKMARK(widget->m_theme == id);
-        }
-
-        void onAction(const event::Action &e) override
-        {
-                m_widget->loadTheme(m_id);
-        }
-};
-
-RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module)
+RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&config)
 {
         setModule(module);
 
@@ -178,105 +159,38 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
                 module->widget = this;
         }
 
-        m_theme = config.getDefaultThemeId();
+        m_theme = m_config->getDefaultThemeId();
 
         // clang-format off
-        setPanel(APP->window->loadSvg(config.getSvg("panel")));
+        setPanel(APP->window->loadSvg(m_config->getSvg("panel")));
 
-        addChild(createOrbitsSkinnedScrew(&config, "screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(&config, "screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(&config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(&config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "length_knob", module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "hits_knob", module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "shift_knob", module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "length_cv_knob", module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "hits_cv_knob", module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "shift_cv_knob", module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(&config, "reverse_switch", module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(&config, "invert_switch", module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "length_knob", module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_knob", module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "shift_knob", module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "length_cv_knob", module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_cv_knob", module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "shift_cv_knob", module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
-        addInput(createOrbitsSkinnedInput(&config, "clock_port", module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-        addInput(createOrbitsSkinnedInput(&config, "sync_port", module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-        addInput(createOrbitsSkinnedInput(&config, "length_cv_port", module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(&config, "hits_cv_port", module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(&config, "shift_cv_port", module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(&config, "reverse_cv_port", module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(&config, "invert_cv_port", module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "length_cv_port", module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "hits_cv_port", module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "shift_cv_port", module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
-        addOutput(createOrbitsSkinnedOutput(&config, "beat_port", module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+        addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
         // clang-format on
 
-        EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(config.getPos("display"));
+        EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(m_config->getPos("display"));
         r->module = module;
-        r->box.size = config.getSize("display");
+        r->box.size = m_config->getSize("display");
         addChild(r);
-}
-
-void RareBreeds_Orbits_EugeneWidget::appendContextMenu(Menu *menu)
-{
-        menu->addChild(new MenuSeparator);
-        MenuLabel *theme_label = new MenuLabel;
-        theme_label->text = "Theme";
-        menu->addChild(theme_label);
-
-        for(size_t i = 0; i < config.numThemes(); ++i)
-        {
-                menu->addChild(new EugeneThemeChoiceItem(this, i, config.getThemeName(i).c_str()));
-        }
-}
-
-void RareBreeds_Orbits_EugeneWidget::loadTheme(const char *theme)
-{
-        for(size_t i = 0; i < config.numThemes(); ++i)
-        {
-                if(config.getThemeName(i) == theme)
-                {
-                        loadTheme(i);
-                        break;
-                }
-        }
-}
-
-void RareBreeds_Orbits_EugeneWidget::loadTheme(int theme)
-{
-        m_theme = theme;
-
-        for(auto child : children)
-        {
-                OrbitsSkinned *skinned = dynamic_cast<OrbitsSkinned *>(child);
-                if(skinned)
-                {
-                        skinned->loadTheme(theme);
-                }
-        }
-
-        setPanel(APP->window->loadSvg(config.getSvg("panel", theme)));
-}
-
-json_t *RareBreeds_Orbits_EugeneWidget::dataToJson()
-{
-        json_t *root = json_object();
-        if(root)
-        {
-                json_t *theme = json_string(config.getThemeName(m_theme).c_str());
-                if(theme)
-                {
-                        json_object_set_new(root, "theme", theme);
-                }
-        }
-        return root;
-}
-
-void RareBreeds_Orbits_EugeneWidget::dataFromJson(json_t *root)
-{
-        if(root)
-        {
-                json_t *obj = json_object_get(root, "theme");
-                if(obj)
-                {
-                        loadTheme(json_string_value(obj));
-                }
-        }
 }
