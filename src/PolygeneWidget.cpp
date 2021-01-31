@@ -1,91 +1,9 @@
 #include "PolygeneWidget.hpp"
 #include "OrbitsConfig.hpp"
+#include "OrbitsSkinned.hpp"
 #include "PolygeneModule.hpp"
 
 static OrbitsConfig config("res/polygene-layout.json");
-
-// Interface for components with the ability to change skins
-struct PolygeneSkinned
-{
-        virtual void loadTheme(int theme);
-};
-
-struct PolygeneSkinnedKnob : RoundKnob, PolygeneSkinned
-{
-        std::string m_component;
-
-        PolygeneSkinnedKnob(std::string component)
-        {
-                m_component = component;
-                loadTheme(config.getDefaultThemeId());
-        }
-
-        void loadTheme(int theme) override
-        {
-                setSvg(APP->window->loadSvg(config.getSvg(m_component, theme)));
-                fb->dirty = true;
-        }
-};
-
-struct PolygeneSkinnedScrew : app::SvgScrew, PolygeneSkinned
-{
-        std::string m_component;
-
-        PolygeneSkinnedScrew(std::string component)
-        {
-                m_component = component;
-                loadTheme(config.getDefaultThemeId());
-        }
-
-        void loadTheme(int theme) override
-        {
-                setSvg(APP->window->loadSvg(config.getSvg(m_component, theme)));
-                fb->dirty = true;
-        }
-};
-
-struct PolygeneSkinnedSwitch : app::SvgSwitch, PolygeneSkinned
-{
-        std::string m_component;
-
-        PolygeneSkinnedSwitch(std::string component)
-        {
-                m_component = component;
-                // Relies on the OFF enum being one after ON
-                addFrame(APP->window->loadSvg(config.getSvg(m_component + "_off")));
-                addFrame(APP->window->loadSvg(config.getSvg(m_component + "_on")));
-                shadow->opacity = 0.0;
-        }
-
-        void loadTheme(int theme) override
-        {
-                // Relies on the OFF enum being one after ON
-                frames[0] = APP->window->loadSvg(config.getSvg(m_component + "_off", theme));
-                frames[1] = APP->window->loadSvg(config.getSvg(m_component + "_on", theme));
-
-                event::Change change;
-                onChange(change);
-                onChange(change);
-        }
-};
-
-struct PolygeneSkinnedPort : app::SvgPort, PolygeneSkinned
-{
-        std::string m_component;
-
-        PolygeneSkinnedPort(std::string component)
-        {
-                m_component = component;
-                loadTheme(config.getDefaultThemeId());
-                shadow->opacity = 0.07;
-        }
-
-        void loadTheme(int theme) override
-        {
-                setSvg(APP->window->loadSvg(config.getSvg(m_component, theme)));
-                // fb->dirty = true; // Already set by setSvg for SvgPorts
-        }
-};
 
 struct PolygeneRhythmDisplay : TransparentWidget
 {
@@ -348,49 +266,6 @@ struct PolygeneThemeChoiceItem : MenuItem
         }
 };
 
-// TODO: Consider moving screw positions to the config
-static PolygeneSkinnedScrew *createSkinnedScrew(std::string component, math::Vec pos)
-{
-        PolygeneSkinnedScrew *o = new PolygeneSkinnedScrew(component);
-        o->box.pos = pos.minus(o->box.size.div(2));
-        return o;
-}
-
-template <class TParamWidget>
-static TParamWidget *createSkinnedParam(std::string component, engine::Module *module, int paramId)
-{
-        TParamWidget *o = new TParamWidget(component);
-        o->box.pos = config.getPos(component).minus(o->box.size.div(2));
-        if(module)
-        {
-                o->paramQuantity = module->paramQuantities[paramId];
-        }
-        return o;
-}
-
-static PolygeneSkinnedPort *createSkinnedPort(std::string component, engine::Module *module, int portId)
-{
-        PolygeneSkinnedPort *o = new PolygeneSkinnedPort(component);
-        o->box.pos = config.getPos(component).minus(o->box.size.div(2));
-        o->module = module;
-        o->portId = portId;
-        return o;
-}
-
-static PolygeneSkinnedPort *createSkinnedInput(std::string component, engine::Module *module, int inputId)
-{
-        PolygeneSkinnedPort *o = createSkinnedPort(component, module, inputId);
-        o->type = app::PortWidget::INPUT;
-        return o;
-}
-
-static PolygeneSkinnedPort *createSkinnedOutput(std::string component, engine::Module *module, int outputId)
-{
-        PolygeneSkinnedPort *o = createSkinnedPort(component, module, outputId);
-        o->type = app::PortWidget::OUTPUT;
-        return o;
-}
-
 RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module)
 {
         setModule(module);
@@ -407,33 +282,33 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         setPanel(APP->window->loadSvg(config.getSvg("panel")));
 
         // TODO: Screw positions are based on the panel size, could have a position for them in config based on panel size
-        addChild(createSkinnedScrew("screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createSkinnedScrew("screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createSkinnedScrew("screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
-        addChild(createSkinnedScrew("screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(&config, "screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(&config, "screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(&config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        addChild(createOrbitsSkinnedScrew(&config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("channel_knob", module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("length_knob", module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("hits_knob", module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("shift_knob", module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("oddity_knob", module, RareBreeds_Orbits_Polygene::ODDITY_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("length_cv_knob", module, RareBreeds_Orbits_Polygene::LENGTH_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("hits_cv_knob", module, RareBreeds_Orbits_Polygene::HITS_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("shift_cv_knob", module, RareBreeds_Orbits_Polygene::SHIFT_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedKnob>("oddity_cv_knob", module, RareBreeds_Orbits_Polygene::ODDITY_CV_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedSwitch>("reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
-        addParam(createSkinnedParam<PolygeneSkinnedSwitch>("invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "channel_knob", module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "length_knob", module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "hits_knob", module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "shift_knob", module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "oddity_knob", module, RareBreeds_Orbits_Polygene::ODDITY_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "length_cv_knob", module, RareBreeds_Orbits_Polygene::LENGTH_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "hits_cv_knob", module, RareBreeds_Orbits_Polygene::HITS_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "shift_cv_knob", module, RareBreeds_Orbits_Polygene::SHIFT_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(&config, "oddity_cv_knob", module, RareBreeds_Orbits_Polygene::ODDITY_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(&config, "reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(&config, "invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
 
-        addInput(createSkinnedInput("clock_port", module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
-        addInput(createSkinnedInput("sync_port", module, RareBreeds_Orbits_Polygene::SYNC_INPUT));
-        addInput(createSkinnedInput("length_cv_port", module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
-        addInput(createSkinnedInput("hits_cv_port", module, RareBreeds_Orbits_Polygene::HITS_CV_INPUT));
-        addInput(createSkinnedInput("shift_cv_port", module, RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT));
-        addInput(createSkinnedInput("oddity_cv_port", module, RareBreeds_Orbits_Polygene::ODDITY_CV_INPUT));
-        addInput(createSkinnedInput("reverse_cv_port", module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
-        addInput(createSkinnedInput("invert_cv_port", module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "clock_port", module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "sync_port", module, RareBreeds_Orbits_Polygene::SYNC_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "length_cv_port", module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "hits_cv_port", module, RareBreeds_Orbits_Polygene::HITS_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "shift_cv_port", module, RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "oddity_cv_port", module, RareBreeds_Orbits_Polygene::ODDITY_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "reverse_cv_port", module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(&config, "invert_cv_port", module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
 
-        addOutput(createSkinnedOutput("beat_port", module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
+        addOutput(createOrbitsSkinnedOutput(&config, "beat_port", module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
         // clang-format on
 
         PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(config.getPos("display"));
@@ -473,7 +348,7 @@ void RareBreeds_Orbits_PolygeneWidget::loadTheme(int theme)
 
         for(auto child : children)
         {
-                PolygeneSkinned *skinned = dynamic_cast<PolygeneSkinned *>(child);
+                OrbitsSkinned *skinned = dynamic_cast<OrbitsSkinned *>(child);
                 if(skinned)
                 {
                         skinned->loadTheme(theme);
