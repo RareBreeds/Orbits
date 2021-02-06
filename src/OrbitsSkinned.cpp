@@ -1,9 +1,5 @@
 #include "OrbitsSkinned.hpp"
 
-void OrbitsSkinned::loadTheme(int theme)
-{
-}
-
 OrbitsSkinnedKnob::OrbitsSkinnedKnob(OrbitsConfig *config, std::string component)
 {
         m_config = config;

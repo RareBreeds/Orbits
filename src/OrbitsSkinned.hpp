@@ -8,7 +8,7 @@ struct OrbitsSkinned
 {
         OrbitsConfig *m_config;
         std::string m_component;
-        virtual void loadTheme(int theme);
+        virtual void loadTheme(int theme) = 0;
 };
 
 struct OrbitsSkinnedKnob : RoundKnob, OrbitsSkinned
