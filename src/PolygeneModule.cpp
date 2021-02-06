@@ -37,6 +37,7 @@ static void json_load_integer(json_t *root, const char *param, int *result)
 
 void RareBreeds_Orbits_Polygene::Channel::init(RareBreeds_Orbits_Polygene *module, int channel)
 {
+        m_current_step = 0;
         m_module = module;
         m_channel = channel;
         m_length = m_module->params[LENGTH_KNOB_PARAM].getValue();
@@ -221,6 +222,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configParam(ODDITY_KNOB_PARAM, 0.f, 1.f, 0.0f, "Oddity", "%", 0.f, 100.f);
         configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
         configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
+        configParam(RANDOM_KNOB_PARAM, 0.f, 1.f, 0.f, "Random");
 
         reset();
 }
@@ -291,6 +293,13 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 
         invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
         m_active_channel->m_invert = invert_trigger.state;
+
+        if(random_trigger.process(std::round(params[RANDOM_KNOB_PARAM].getValue())))
+        {
+                m_active_channel->onRandomize();
+                params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
+                params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+        }
 
         for(auto i = 0u; i < max_channels; ++i)
         {

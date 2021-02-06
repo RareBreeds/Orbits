@@ -54,6 +54,12 @@ void OrbitsSkinnedSwitch::loadTheme(int theme)
         onChange(change);
 }
 
+OrbitsSkinnedButton::OrbitsSkinnedButton(OrbitsConfig *config, std::string component)
+        : OrbitsSkinnedSwitch(config, component)
+{
+        momentary = true;
+}
+
 OrbitsSkinnedPort::OrbitsSkinnedPort(OrbitsConfig *config, std::string component)
 {
         m_config = config;

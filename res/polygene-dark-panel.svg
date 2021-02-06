@@ -262,11 +262,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.613529"
-     inkscape:cx="153.63853"
-     inkscape:cy="43.363075"
+     inkscape:zoom="1.5579229"
+     inkscape:cx="14.689913"
+     inkscape:cy="237.60764"
      inkscape:document-units="mm"
-     inkscape:current-layer="g1184"
+     inkscape:current-layer="layer2"
      showgrid="true"
      inkscape:window-width="1920"
      inkscape:window-height="1138"
@@ -1226,9 +1226,17 @@
     <circle
        style="display:inline;opacity:0.94;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.23441;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-6-8-1-6"
-       cx="72.241096"
-       cy="39.479446"
+       cx="73.080963"
+       cy="41.233967"
        r="5.6409659"
        inkscape:label="channel_knob" />
+    <ellipse
+       style="display:inline;opacity:0.794788;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.256649;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path1082-2-1"
+       cx="72.906754"
+       cy="59.116833"
+       inkscape:label="random_button"
+       rx="5.4667501"
+       ry="5.6418333" />
   </g>
 </svg>

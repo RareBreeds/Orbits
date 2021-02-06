@@ -35,6 +35,11 @@ struct OrbitsSkinnedSwitch : app::SvgSwitch, OrbitsSkinned
         void loadTheme(int theme) override;
 };
 
+struct OrbitsSkinnedButton : OrbitsSkinnedSwitch
+{
+        OrbitsSkinnedButton(OrbitsConfig *config, std::string component);
+};
+
 struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
 {
         OrbitsSkinnedPort(OrbitsConfig *config, std::string component);
