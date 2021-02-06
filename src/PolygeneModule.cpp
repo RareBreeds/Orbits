@@ -203,9 +203,9 @@ void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Polygene::Channel::onRandomize()
 {
-        m_length = random::uniform() * (euclidean::max_length - 1) + 1;
+        m_length = random::uniform() * euclidean::max_length;
         m_hits = random::uniform();
-        m_shift = random::uniform();
+        m_shift = random::uniform() * (euclidean::max_length - 1);
         m_oddity = random::uniform();
         m_reverse = (random::uniform() < 0.5f);
         m_invert = (random::uniform() < 0.5f);
@@ -279,14 +279,12 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 m_shift = shift;
         }
 
-
         float oddity = params[ODDITY_KNOB_PARAM].getValue();
         if(oddity != m_oddity)
         {
                 m_active_channel->m_oddity = oddity;
                 m_oddity = oddity;
         }
-
 
         reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
         m_active_channel->m_reverse = reverse_trigger.state;

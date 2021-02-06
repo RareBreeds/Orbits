@@ -17,6 +17,12 @@ struct OrbitsSkinnedKnob : RoundKnob, OrbitsSkinned
         void loadTheme(int theme) override;
 };
 
+struct OrbitsNonRandomizedSkinnedKnob : OrbitsSkinnedKnob
+{
+        OrbitsNonRandomizedSkinnedKnob(OrbitsConfig *config, std::string component);
+        void randomize() override;
+};
+
 struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
 {
         OrbitsSkinnedScrew(OrbitsConfig *config, std::string component);
@@ -36,9 +42,12 @@ struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
 };
 
 OrbitsSkinnedScrew *createOrbitsSkinnedScrew(OrbitsConfig *config, std::string component, math::Vec pos);
-OrbitsSkinnedPort *createOrbitsSkinnedPort(OrbitsConfig *config, std::string component, engine::Module *module, int portId);
-OrbitsSkinnedPort *createOrbitsSkinnedInput(OrbitsConfig *config, std::string component, engine::Module *module, int inputId);
-OrbitsSkinnedPort *createOrbitsSkinnedOutput(OrbitsConfig *config, std::string component, engine::Module *module, int outputId);
+OrbitsSkinnedPort *createOrbitsSkinnedPort(OrbitsConfig *config, std::string component, engine::Module *module,
+                                           int portId);
+OrbitsSkinnedPort *createOrbitsSkinnedInput(OrbitsConfig *config, std::string component, engine::Module *module,
+                                            int inputId);
+OrbitsSkinnedPort *createOrbitsSkinnedOutput(OrbitsConfig *config, std::string component, engine::Module *module,
+                                             int outputId);
 
 template <class TParamWidget>
 TParamWidget *createOrbitsSkinnedParam(OrbitsConfig *config, std::string component, engine::Module *module, int paramId)

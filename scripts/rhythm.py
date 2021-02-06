@@ -3,6 +3,7 @@
 import math
 import random
 import itertools
+import collections
 
 def _necklacesOfLengthAndDensity(n, d, k=2):
     '''
@@ -243,6 +244,14 @@ class Rhythm:
         return [i for i,b in enumerate(self) if b]
 
     @property
+    def offset_list(self):
+        '''
+        Opposite of the onset lest, all the beats that there is no onset
+        in the rhythm.
+        '''
+        return [i for i,b in enumerate(self) if not b]
+
+    @property
     def off_beat_onsets(self):
         '''
         https://research.cs.queensu.ca/home/daver/Pubs/MyPDF/MeasureSycopa.pdf
@@ -320,6 +329,14 @@ class Rhythm:
         return max(self.inter_onset_vector) - min(self.inter_onset_vector)
 
     @property
+    def non_zero_inter_onset_vector_entries(self):
+        return sum(1 for v in self.inter_onset_vector if v)
+
+    @property
+    def unique_inter_onset_vector_entries(self):
+        return len(set(self.inter_onset_vector))
+
+    @property
     def adjacent_inter_onset_vector(self):
         vec = []
         first_on = -1
@@ -376,6 +393,29 @@ class Rhythm:
 
     def append(self, other):
         return Rhythm(self._rhythm + other._rhythm)
+
+    def moveRandomBeat(self):
+        if self.density == 0 or self.density == self.length:
+            raise ValueError(f"Can't move random onset in {self}")
+        # Replace a random entry in the onset list with one
+        # from the offset list
+        new_onset_list = self.onset_list
+        new_onset_list.remove(random.choice(new_onset_list))
+        new_onset_list.append(random.choice(self.offset_list))
+        return Rhythm.fromOnsetList(self.length, new_onset_list)
+
+    def moveRandomBeatWithMaximumDistance(self, max_distance):
+        if self.density == 0 or self.density == self.length:
+            raise ValueError(f"Can't move random onset in {self}")
+
+        new_onset_list = self.onset_list
+        while True:
+            to_remove = random.choice(new_onset_list)
+            offset_choices = [off for off in self.offset_list if min(abs(off - to_remove), self.length - abs(off - to_remove)) <= max_distance]
+            if len(offset_choices) > 0:
+                new_onset_list.remove(to_remove)
+                new_onset_list.append(random.choice(offset_choices))
+                return Rhythm.fromOnsetList(self.length, new_onset_list)
 
     def svgCircle(self):
         rhythm_size = 500
@@ -434,6 +474,34 @@ class Rhythm:
 
         return svg
 
+    def rotDistance(self, other):
+        return min(self.distance(other.rotate(i)) for i in range(self.length))
+
+    def rotateToMinDistance(self, other):
+        result = r = self
+        min_distance = 1000000
+        for _ in range(self.length):
+            d = r.distance(other)
+            if d < min_distance:
+                result = r
+                min_distance = d
+            r = r.rotate(1)
+        assert min_distance == 1, "not one away"
+        return result
+
+    def distance(self, other):
+        if self.length != other.length:
+            raise ValueError("Lengths differ")
+        if self.density != other.density:
+            raise ValueError("Densities differ")
+
+        diff = self ^ other
+        if diff.onsets != 2:
+            return self.length
+
+        d = diff.onset_list[1] - diff.onset_list[0]
+        return min(d, diff.length - d)
+
     def __mul__(self, other):
         return Rhythm(self._rhythm * other)
 
@@ -484,6 +552,9 @@ class Rhythm:
 
     def __xor__(self, other):
         return Rhythm(a != b for a,b in itertools.zip_longest(self, other, fillvalue=False))
+
+    def __hash__(self):
+        return hash(str(self))
 
     @staticmethod
     def canonicalise(rhythm):
