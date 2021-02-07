@@ -11,6 +11,8 @@ struct OrbitsConfig
         Vec getSize(std::string component);
         std::string getThemeName(int theme);
         std::string getThemeName();
+        std::array<uint8_t, 3> getColour(std::string component, int theme);
+        std::array<uint8_t, 3> getColour(std::string component);
         int getDefaultThemeId();
         size_t numThemes();
 private:

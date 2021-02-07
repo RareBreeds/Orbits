@@ -5,18 +5,28 @@
 
 static OrbitsConfig config("res/polygene-layout.json");
 
-struct PolygeneRhythmDisplay : TransparentWidget
+struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
         RareBreeds_Orbits_Polygene *module = NULL;
         std::shared_ptr<Font> font;
+        NVGcolor m_display_accent;
 
         PolygeneRhythmDisplay();
         void draw(const DrawArgs &args) override;
+        void loadTheme(int theme) override;
 };
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
         font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
+        std::array<uint8_t, 3> colour = config.getColour("display_accent");
+        m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
+}
+
+void PolygeneRhythmDisplay::loadTheme(int theme)
+{
+        std::array<uint8_t, 3> colour = config.getColour("display_accent", theme);
+        m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
 }
 
 void PolygeneRhythmDisplay::draw(const DrawArgs &args)
@@ -85,7 +95,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
                 NVGcolor dash_colour;
                 if(c == module->m_active_channel_id)
                 {
-                        dash_colour = nvgRGB(192, 0, 57);
+                        dash_colour = m_display_accent;
                 }
                 else if(c < module->m_active_channels)
                 {

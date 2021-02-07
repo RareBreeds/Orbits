@@ -5,7 +5,7 @@
 
 OrbitsConfig::OrbitsConfig(std::string path)
 {
-    m_path = path;
+        m_path = path;
 }
 
 float OrbitsConfig::rFindFloatAttribute(std::string &content, std::string attribute, size_t search)
@@ -121,4 +121,29 @@ size_t OrbitsConfig::numThemes()
         size_t count = json_array_size(themes);
         json_decref(root);
         return count;
+}
+
+std::array<uint8_t, 3> OrbitsConfig::getColour(std::string component, int theme)
+{
+        json_error_t error;
+        std::string path = asset::plugin(pluginInstance, m_path);
+        json_t *root = json_load_file(path.c_str(), 0, &error);
+        json_t *themes = json_object_get(root, "themes");
+        json_t *entry = json_array_get(themes, theme);
+        json_t *obj = json_object_get(entry, component.c_str());
+
+        std::array<uint8_t, 3> colour;
+        for(auto i = 0u; i < 3; ++i)
+        {
+                json_t *c = json_array_get(obj, i);
+                colour[i] = json_integer_value(c);
+        }
+
+        json_decref(root);
+        return colour;
+}
+
+std::array<uint8_t, 3> OrbitsConfig::getColour(std::string component)
+{
+        return getColour(component, getDefaultThemeId());
 }

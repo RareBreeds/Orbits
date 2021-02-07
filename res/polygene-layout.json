@@ -42,7 +42,9 @@
             "random_button_off" : "eugene-dark-inv-switch-off.svg",
 
             "sync_button_on" : "eugene-dark-rev-switch-on.svg",
-            "sync_button_off" : "eugene-dark-rev-switch-off.svg"
+            "sync_button_off" : "eugene-dark-rev-switch-off.svg",
+
+            "display_accent" : [192, 0, 57]
         },
         {
             "name" : "Light",
@@ -86,7 +88,9 @@
             "random_button_off" : "eugene-dark-inv-switch-off.svg",
 
             "sync_button_on" : "eugene-dark-rev-switch-on.svg",
-            "sync_button_off" : "eugene-dark-rev-switch-off.svg"
+            "sync_button_off" : "eugene-dark-rev-switch-off.svg",
+
+            "display_accent" : [0, 187, 225]
         }
     ],
     "default" : "Dark"
