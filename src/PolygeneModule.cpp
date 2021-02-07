@@ -83,7 +83,7 @@ bool RareBreeds_Orbits_Polygene::Channel::isOnBeat(unsigned int length, unsigned
 unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
 {
         auto cv = m_module->inputs[LENGTH_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_length = m_length +  cv * (euclidean::max_length - 1);
+        auto f_length = m_length + cv * (euclidean::max_length - 1);
         return clampRounded(f_length, 1, euclidean::max_length);
 }
 
@@ -97,14 +97,14 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readHits(unsigned int length)
 unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
 {
         auto cv = m_module->inputs[SHIFT_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_shift = m_shift +  cv * (euclidean::max_length - 1);
+        auto f_shift = m_shift + cv * (euclidean::max_length - 1);
         return clampRounded(f_shift, 0, euclidean::max_length - 1) % length;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readOddity(unsigned int length, unsigned int hits)
 {
         auto cv = m_module->inputs[ODDITY_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_oddity = m_oddity +  cv;
+        auto f_oddity = m_oddity + cv;
         auto count = euclidean::numNearEvenRhythms(length, hits);
         return clampRounded(f_oddity * (count - 1), 0, count - 1);
 }
@@ -223,6 +223,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
         configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
         configParam(RANDOM_KNOB_PARAM, 0.f, 1.f, 0.f, "Random");
+        configParam(SYNC_KNOB_PARAM, 0.f, 1.f, 0.f, "Sync");
 
         reset();
 }
@@ -301,9 +302,17 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
         }
 
-        for(auto i = 0u; i < max_channels; ++i)
+        if(sync_trigger.process(std::round(params[SYNC_KNOB_PARAM].getValue())))
         {
-                m_channels[i].process(args);
+                for(auto &chan : m_channels)
+                {
+                        chan.m_current_step = 0;
+                }
+        }
+
+        for(auto &chan : m_channels)
+        {
+                chan.process(args);
         }
 }
 
@@ -321,9 +330,9 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_t *channels = json_array();
                 if(channels)
                 {
-                        for(auto i = 0u; i < max_channels; ++i)
+                        for(auto &chan : m_channels)
                         {
-                                json_t *channel_json = m_channels[i].dataToJson();
+                                json_t *channel_json = chan.dataToJson();
                                 if(channel_json)
                                 {
                                         json_array_append_new(channels, channel_json);
@@ -381,9 +390,9 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Polygene::onRandomize()
 {
-        for(auto i = 0u; i < max_channels; ++i)
+        for(auto &chan : m_channels)
         {
-                m_channels[i].onRandomize();
+                chan.onRandomize();
         }
 
         // Parameters have already been randomised by VCV rack

@@ -43,13 +43,13 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         // Draw length text center bottom and hits text center top
         nvgBeginPath(args.vg);
         nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-        nvgFontSize(args.vg, 12);
+        nvgFontSize(args.vg, 18);
         nvgFontFaceId(args.vg, font->handle);
 
         const auto active_length = module->m_active_channel->readLength();
         const auto active_hits = module->m_active_channel->readHits(active_length);
-        nvgText(args.vg, 0.f, -4.f, std::to_string(active_hits).c_str(), NULL);
-        nvgText(args.vg, 0.f, 4.f, std::to_string(active_length).c_str(), NULL);
+        nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
+        nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
         nvgFill(args.vg);
 
         // Scale to [-1, 1]
@@ -60,7 +60,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         nvgScale(args.vg, -1.f, -1.f);
 
         // Inner circle radius
-        const auto inner_circle_radius = 0.1f;
+        const auto inner_circle_radius = 0.17f;
         const auto channel_width = (1.0f - inner_circle_radius) / 16.0f;
         // Width of the line when drawing circles
         const auto arc_stroke_width = channel_width / 2.0f;
@@ -158,6 +158,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "random_button", module, RareBreeds_Orbits_Polygene::RANDOM_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "sync_button", module, RareBreeds_Orbits_Polygene::SYNC_KNOB_PARAM));
 
         addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Polygene::SYNC_INPUT));

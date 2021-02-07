@@ -18,6 +18,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
                 RANDOM_KNOB_PARAM,
+                SYNC_KNOB_PARAM,
                 NUM_PARAMS
         };
         enum InputIds
@@ -90,6 +91,7 @@ struct RareBreeds_Orbits_Polygene : Module
         dsp::BooleanTrigger reverse_trigger;
         dsp::BooleanTrigger invert_trigger;
         dsp::BooleanTrigger random_trigger;
+        dsp::BooleanTrigger sync_trigger;
         RareBreeds_Orbits_PolygeneWidget *widget = NULL;
 
         RareBreeds_Orbits_Polygene();

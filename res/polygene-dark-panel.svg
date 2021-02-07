@@ -1224,18 +1224,26 @@
        r="4.8440595"
        inkscape:label="oddity_cv_port" />
     <circle
-       style="display:inline;opacity:0.94;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.23441;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.23441;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-6-8-1-6"
        cx="73.080963"
        cy="41.233967"
        r="5.6409659"
        inkscape:label="channel_knob" />
     <ellipse
-       style="display:inline;opacity:0.794788;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.256649;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.256649;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-2-1"
        cx="72.906754"
        cy="59.116833"
        inkscape:label="random_button"
+       rx="5.4667501"
+       ry="5.6418333" />
+    <ellipse
+       style="display:inline;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.256649;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path1082-2-1-3"
+       cx="7.2897501"
+       cy="59.116833"
+       inkscape:label="sync_button"
        rx="5.4667501"
        ry="5.6418333" />
   </g>

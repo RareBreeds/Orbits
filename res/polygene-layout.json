@@ -15,7 +15,7 @@
             "channel_knob" : "eugene-dark-knob-small.svg",
 
             "length_knob" : "eugene-dark-knob-large.svg",
-            "length_cv_knob" : "eugene-dark-knob-small.svg", 
+            "length_cv_knob" : "eugene-dark-knob-small.svg",
             "length_cv_port" : "eugene-dark-port.svg",
 
             "hits_knob" : "eugene-dark-knob-large.svg",
@@ -39,7 +39,10 @@
             "invert_cv_port" : "eugene-dark-port.svg",
 
             "random_button_on" : "eugene-dark-inv-switch-on.svg",
-            "random_button_off" : "eugene-dark-inv-switch-off.svg"
+            "random_button_off" : "eugene-dark-inv-switch-off.svg",
+
+            "sync_button_on" : "eugene-dark-rev-switch-on.svg",
+            "sync_button_off" : "eugene-dark-rev-switch-off.svg"
         },
         {
             "name" : "Light",
@@ -56,7 +59,7 @@
             "channel_knob" : "eugene-dark-knob-small.svg",
 
             "length_knob" : "eugene-dark-knob-large.svg",
-            "length_cv_knob" : "eugene-dark-knob-small.svg", 
+            "length_cv_knob" : "eugene-dark-knob-small.svg",
             "length_cv_port" : "eugene-dark-port.svg",
 
             "hits_knob" : "eugene-dark-knob-large.svg",
@@ -80,7 +83,10 @@
             "invert_cv_port" : "eugene-dark-port.svg",
 
             "random_button_on" : "eugene-dark-inv-switch-on.svg",
-            "random_button_off" : "eugene-dark-inv-switch-off.svg"
+            "random_button_off" : "eugene-dark-inv-switch-off.svg",
+
+            "sync_button_on" : "eugene-dark-rev-switch-on.svg",
+            "sync_button_off" : "eugene-dark-rev-switch-off.svg"
         }
     ],
     "default" : "Dark"

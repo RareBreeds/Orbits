@@ -68,4 +68,5 @@ struct RareBreeds_Orbits_Eugene : Module
         void process(const ProcessArgs &args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
+        void onReset() override;
 };
