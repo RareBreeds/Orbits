@@ -37,7 +37,7 @@ std::string OrbitsConfig::getSvg(std::string component, int theme)
         json_t *entry = json_array_get(themes, theme);
         json_t *obj = json_object_get(entry, component.c_str());
         const char *str = json_string_value(obj);
-        std::string svg = asset::plugin(pluginInstance, std::string("res/") + str);
+        std::string svg = str ? asset::plugin(pluginInstance, std::string("res/") + str) : "";
         json_decref(root);
         return svg;
 }
@@ -77,9 +77,10 @@ std::string OrbitsConfig::getThemeName(int theme)
         json_t *themes = json_object_get(root, "themes");
         json_t *entry = json_array_get(themes, theme);
         json_t *name = json_object_get(entry, "name");
-        std::string theme_name(json_string_value(name));
+        const char *theme_name = json_string_value(name);
+        std::string theme_name_str = theme_name ? theme_name : "";
         json_decref(root);
-        return theme_name;
+        return theme_name_str;
 }
 
 std::string OrbitsConfig::getThemeName()
@@ -101,7 +102,8 @@ int OrbitsConfig::getDefaultThemeId()
         json_array_foreach(themes, index, value)
         {
                 json_t *name = json_object_get(value, "name");
-                if(std::string(json_string_value(name)) == std::string(default_name))
+                const char *theme_name = json_string_value(name);
+                if(theme_name && default_name && (std::string(theme_name) == std::string(default_name)))
                 {
                         default_theme_id = index;
                         break;
