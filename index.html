@@ -7,14 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Manual for the Orbits VCV Rack Plugin by RareBreeds.">
   
-  
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Orbits VCV Rack Plugin Manual</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
-
-  <link rel="stylesheet" href="css/theme.css" />
-  <link rel="stylesheet" href="css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <title>Orbits Manual - Orbits VCV Rack Plugin Manual</title>
+  <link rel="stylesheet" href="css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
@@ -25,7 +22,7 @@
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
   <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -36,7 +33,6 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href="." class="icon icon-home"> Orbits VCV Rack Plugin Manual</a>
         <div role="search">
@@ -47,42 +43,29 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Orbits Manual</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#eugene">Eugene</a>
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href=".">Orbits Manual</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#orbits-manual">Orbits Manual</a></li>
+    
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#example-patch">Example Patch</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#specifications">Specifications</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#panel">Panel</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#out-output">Out : Output</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#clk-input">Clk : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#sync-input">Sync : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#len-input">Len : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#hits-input">Hits : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#shift-input">Shift : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#reverse-input">Reverse : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#invert-input">Invert : Input</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#cv-input">CV : Input</a>
-    </li>
+        
+            <li><a class="toctree-l3" href="#eugene">Eugene</a></li>
+        
         </ul>
-    </li>
+    
+
     </ul>
-                    </li>
-                </ul>
+	    </li>
+          
+        </ul>
       </div>
-    </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -107,7 +90,6 @@
       
     </li>
   </ul>
-  
   <hr/>
 </div>
           <div role="main">
@@ -137,8 +119,7 @@
 <p>A rising edge advances the current beat. Schmitt triggered.</p>
 <h3 id="sync-input">Sync : Input</h3>
 <p>Resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.</p>
-<p>In versions after v1.1.0 the input is latched and applied on the next rising clock edge. This allows any high level at any time during the clock period to be used to reset the rhythm, for example the output of one Eugene can be fed into the sync input to start a rhythm again based on the on-beat in another rhythm.</p>
-<p>In the first release (v1.1.0) this input was synchronous, the sync was only applied if a rising edge of Clk happened whilst this signal was high.</p>
+<p>This input is synchronous, the sync is only applied if a rising edge of Clk happens whilst sync is high.</p>
 <h3 id="len-input">Len : Input</h3>
 <p>The number of beats in the rhythm. Integer range between 1 to 32 inclusive.</p>
 <h3 id="hits-input">Hits : Input</h3>
@@ -169,7 +150,7 @@ Rotating this knob has the effect of rotating the beat the same direction around
     
   </div>
 
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -179,7 +160,7 @@ Rotating this knob has the effect of rotating the beat the same direction around
 
   </div>
 
-  <div class="rst-versions" role="note" aria-label="versions">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
@@ -189,16 +170,11 @@ Rotating this knob has the effect of rotating the beat the same direction around
     <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
       <script src="search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        };
-    </script>
 
 </body>
 </html>
 
 <!--
-MkDocs version : 1.1.2
-Build Date UTC : 2020-12-27 23:05:26.337673+00:00
+MkDocs version : 1.0.4
+Build Date UTC : 2021-02-09 20:27:28
 -->
