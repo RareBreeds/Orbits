@@ -6,6 +6,8 @@ Orbits is an [open source](https://github.com/RareBreeds/Orbits/) plugin for [VC
 
 Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) generator module.
 
+![Themes](img/themes.png)
+
 ### Example Patch
 
 ![Patch](img/patch.png)
