@@ -26,9 +26,9 @@
             "shift_cv_knob" : "polygene-dark-knob-small.svg",
             "shift_cv_port" : "polygene-dark-port.svg",
 
-            "oddity_knob" : "polygene-dark-knob-large.svg",
-            "oddity_cv_knob" : "polygene-dark-knob-small.svg",
-            "oddity_cv_port" : "polygene-dark-port.svg",
+            "variation_knob" : "polygene-dark-knob-large.svg",
+            "variation_cv_knob" : "polygene-dark-knob-small.svg",
+            "variation_cv_port" : "polygene-dark-port.svg",
 
             "reverse_switch_on" : "polygene-dark-rev-switch-on.svg",
             "reverse_switch_off" : "polygene-dark-rev-switch-off.svg",
@@ -72,9 +72,9 @@
             "shift_cv_knob" : "polygene-light-knob-small.svg",
             "shift_cv_port" : "polygene-light-port.svg",
 
-            "oddity_knob" : "polygene-light-knob-large.svg",
-            "oddity_cv_knob" : "polygene-light-knob-small.svg",
-            "oddity_cv_port" : "polygene-light-port.svg",
+            "variation_knob" : "polygene-light-knob-large.svg",
+            "variation_cv_knob" : "polygene-light-knob-small.svg",
+            "variation_cv_port" : "polygene-light-port.svg",
 
             "reverse_switch_on" : "polygene-light-rev-switch-on.svg",
             "reverse_switch_off" : "polygene-light-rev-switch-off.svg",

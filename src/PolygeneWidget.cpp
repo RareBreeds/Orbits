@@ -85,7 +85,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
                 const auto length = channel.readLength();
                 const auto hits = channel.readHits(length);
                 const auto shift = channel.readShift(length);
-                const auto oddity = channel.readOddity(length, hits);
+                const auto variation = channel.readVariation(length, hits);
                 const auto invert = channel.readInvert();
                 const auto radius = 1.0f - c * channel_width;
                 const auto pi2_len = 2.0f * M_PI / length;
@@ -123,7 +123,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
                                 nvgFill(args.vg);
                         }
 
-                        auto on_beat = channel.isOnBeat(length, hits, shift, oddity, k, invert);
+                        auto on_beat = channel.isOnBeat(length, hits, shift, variation, k, invert);
                         if(on_beat)
                         {
                                 nvgBeginPath(args.vg);
@@ -164,7 +164,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "length_knob", module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_knob", module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "shift_knob", module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "oddity_knob", module, RareBreeds_Orbits_Polygene::ODDITY_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "variation_knob", module, RareBreeds_Orbits_Polygene::VARIATION_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "random_button", module, RareBreeds_Orbits_Polygene::RANDOM_KNOB_PARAM));
@@ -175,7 +175,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addInput(createOrbitsSkinnedInput(m_config, "length_cv_port", module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "hits_cv_port", module, RareBreeds_Orbits_Polygene::HITS_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "shift_cv_port", module, RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "oddity_cv_port", module, RareBreeds_Orbits_Polygene::ODDITY_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "variation_cv_port", module, RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
 

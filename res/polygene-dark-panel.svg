@@ -1047,14 +1047,14 @@
        cx="77.470001"
        cy="88.0625"
        r="7.2680302"
-       inkscape:label="oddity_knob" />
+       inkscape:label="variation_knob" />
     <circle
        style="display:inline;opacity:0.94;fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.201295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-2-0-0-7"
        cx="77.470001"
        cy="101.82084"
        r="4.8440595"
-       inkscape:label="oddity_cv_port" />
+       inkscape:label="variation_cv_port" />
     <ellipse
        style="display:inline;opacity:1;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.23551;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-2-1"

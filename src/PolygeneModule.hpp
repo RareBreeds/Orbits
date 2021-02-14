@@ -14,7 +14,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 LENGTH_KNOB_PARAM,
                 HITS_KNOB_PARAM,
                 SHIFT_KNOB_PARAM,
-                ODDITY_KNOB_PARAM,
+                VARIATION_KNOB_PARAM,
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
                 RANDOM_KNOB_PARAM,
@@ -28,7 +28,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 LENGTH_CV_INPUT,
                 HITS_CV_INPUT,
                 SHIFT_CV_INPUT,
-                ODDITY_CV_INPUT,
+                VARIATION_CV_INPUT,
                 REVERSE_CV_INPUT,
                 INVERT_CV_INPUT,
                 NUM_INPUTS
@@ -51,7 +51,7 @@ struct RareBreeds_Orbits_Polygene : Module
         float m_length;
         float m_hits;
         float m_shift;
-        float m_oddity;
+        float m_variation;
 
         struct Channel
         {
@@ -66,19 +66,19 @@ struct RareBreeds_Orbits_Polygene : Module
                 float m_length;
                 float m_hits;
                 float m_shift;
-                float m_oddity;
+                float m_variation;
                 bool m_reverse, m_invert;
                 RareBreeds_Orbits_Polygene *m_module;
 
                 void init(RareBreeds_Orbits_Polygene *module, int channel);
                 bool readReverse(void);
                 bool readInvert(void);
-                bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int oddity,
+                bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
                               unsigned int beat, bool invert);
                 unsigned int readLength();
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
-                unsigned int readOddity(unsigned int length, unsigned int shift);
+                unsigned int readVariation(unsigned int length, unsigned int shift);
                 void process(const ProcessArgs &args);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);

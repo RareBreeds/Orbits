@@ -43,7 +43,7 @@ void RareBreeds_Orbits_Polygene::Channel::init(RareBreeds_Orbits_Polygene *modul
         m_length = m_module->params[LENGTH_KNOB_PARAM].getValue();
         m_hits = m_module->params[HITS_KNOB_PARAM].getValue();
         m_shift = m_module->params[SHIFT_KNOB_PARAM].getValue();
-        m_oddity = m_module->params[ODDITY_KNOB_PARAM].getValue();
+        m_variation = m_module->params[VARIATION_KNOB_PARAM].getValue();
         m_reverse = false;
         m_invert = false;
 }
@@ -75,9 +75,9 @@ bool RareBreeds_Orbits_Polygene::Channel::readInvert(void)
 }
 
 bool RareBreeds_Orbits_Polygene::Channel::isOnBeat(unsigned int length, unsigned int hits, unsigned int shift,
-                                                   unsigned int oddity, unsigned int beat, bool invert)
+                                                   unsigned int variation, unsigned int beat, bool invert)
 {
-        return euclidean::nearEvenRhythmBeat(length, hits, oddity, shift, beat) != invert;
+        return euclidean::nearEvenRhythmBeat(length, hits, variation, shift, beat) != invert;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
@@ -101,12 +101,12 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
         return clampRounded(f_shift, 0, euclidean::max_length - 1) % length;
 }
 
-unsigned int RareBreeds_Orbits_Polygene::Channel::readOddity(unsigned int length, unsigned int hits)
+unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int length, unsigned int hits)
 {
-        auto cv = m_module->inputs[ODDITY_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_oddity = m_oddity + cv;
+        auto cv = m_module->inputs[VARIATION_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+        auto f_variation = m_variation + cv;
         auto count = euclidean::numNearEvenRhythms(length, hits);
-        return clampRounded(f_oddity * (count - 1), 0, count - 1);
+        return clampRounded(f_variation * (count - 1), 0, count - 1);
 }
 
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
@@ -163,8 +163,8 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto hits = readHits(length);
                 auto shift = readShift(length);
                 auto invert = readInvert();
-                auto oddity = readOddity(length, hits);
-                if(isOnBeat(length, hits, shift, oddity, m_current_step, invert))
+                auto variation = readVariation(length, hits);
+                if(isOnBeat(length, hits, shift, variation, m_current_step, invert))
                 {
                         m_output_generator.trigger(1e-3f);
                 }
@@ -182,7 +182,7 @@ json_t *RareBreeds_Orbits_Polygene::Channel::dataToJson()
                 json_object_set_new(root, "length", json_real(m_length));
                 json_object_set_new(root, "hits", json_real(m_hits));
                 json_object_set_new(root, "shift", json_real(m_shift));
-                json_object_set_new(root, "oddity", json_real(m_oddity));
+                json_object_set_new(root, "variation", json_real(m_variation));
                 json_object_set_new(root, "reverse", json_boolean(m_reverse));
                 json_object_set_new(root, "invert", json_boolean(m_invert));
         }
@@ -196,7 +196,7 @@ void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
                 json_load_real(root, "length", &m_length);
                 json_load_real(root, "hits", &m_hits);
                 json_load_real(root, "shift", &m_shift);
-                json_load_real(root, "oddity", &m_oddity);
+                json_load_real(root, "variation", &m_variation);
                 json_load_bool(root, "reverse", &m_reverse);
                 json_load_bool(root, "invert", &m_invert);
         }
@@ -207,7 +207,7 @@ void RareBreeds_Orbits_Polygene::Channel::onRandomize()
         m_length = random::uniform() * euclidean::max_length;
         m_hits = random::uniform();
         m_shift = random::uniform() * (euclidean::max_length - 1);
-        m_oddity = random::uniform();
+        m_variation = random::uniform();
         m_reverse = (random::uniform() < 0.5f);
         m_invert = (random::uniform() < 0.5f);
 }
@@ -219,7 +219,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configParam(LENGTH_KNOB_PARAM, 1.f, euclidean::max_length, euclidean::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
         configParam(SHIFT_KNOB_PARAM, 0.f, euclidean::max_length - 1, 0.f, "Shift");
-        configParam(ODDITY_KNOB_PARAM, 0.f, 1.f, 0.0f, "Oddity", "%", 0.f, 100.f);
+        configParam(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f, "Variation", "%", 0.f, 100.f);
         configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
         configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
         configParam(RANDOM_KNOB_PARAM, 0.f, 1.f, 0.f, "Random");
@@ -237,7 +237,7 @@ void RareBreeds_Orbits_Polygene::reset()
         m_length = params[LENGTH_KNOB_PARAM].getValue();
         m_hits = params[HITS_KNOB_PARAM].getValue();
         m_shift = params[SHIFT_KNOB_PARAM].getValue();
-        m_oddity = params[ODDITY_KNOB_PARAM].getValue();
+        m_variation = params[VARIATION_KNOB_PARAM].getValue();
 
         for(auto i = 0u; i < max_channels; ++i)
         {
@@ -282,11 +282,11 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 m_shift = shift;
         }
 
-        float oddity = params[ODDITY_KNOB_PARAM].getValue();
-        if(oddity != m_oddity)
+        float variation = params[VARIATION_KNOB_PARAM].getValue();
+        if(variation != m_variation)
         {
-                m_active_channel->m_oddity = oddity;
-                m_oddity = oddity;
+                m_active_channel->m_variation = variation;
+                m_variation = variation;
         }
 
         reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
@@ -324,7 +324,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "length", json_real(m_length));
                 json_object_set_new(root, "hits", json_real(m_hits));
                 json_object_set_new(root, "shift", json_real(m_shift));
-                json_object_set_new(root, "oddity", json_real(m_oddity));
+                json_object_set_new(root, "variation", json_real(m_variation));
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
                 json_t *channels = json_array();
@@ -362,7 +362,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_load_real(root, "length", &m_length);
                 json_load_real(root, "hits", &m_hits);
                 json_load_real(root, "shift", &m_shift);
-                json_load_real(root, "oddity", &m_oddity);
+                json_load_real(root, "variation", &m_variation);
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
@@ -401,7 +401,7 @@ void RareBreeds_Orbits_Polygene::onRandomize()
         params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
         params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
         params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
-        params[ODDITY_KNOB_PARAM].setValue(m_active_channel->m_oddity);
+        params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
 }
 
 void RareBreeds_Orbits_Polygene::onReset()
