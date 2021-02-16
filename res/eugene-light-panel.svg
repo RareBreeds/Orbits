@@ -1054,7 +1054,7 @@
        id="path1082-2"
        cx="9.8424997"
        cy="111.61043"
-       inkscape:label="reverse_knob"
+       inkscape:label="reverse_switch"
        rx="5.4667501"
        ry="5.6418333" />
     <ellipse
@@ -1062,7 +1062,7 @@
        id="path1082-7"
        cx="51.099083"
        cy="111.61043"
-       inkscape:label="invert_knob"
+       inkscape:label="invert_switch"
        rx="5.3100858"
        ry="5.3285041" />
     <circle
@@ -1071,49 +1071,49 @@
        cx="13.282083"
        cy="96.529175"
        r="4.8440595"
-       inkscape:label="length_cv" />
+       inkscape:label="length_cv_port" />
     <circle
        style="fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.206667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-3-0"
        cx="30.480001"
        cy="96.529175"
        r="4.8440614"
-       inkscape:label="hits_cv" />
+       inkscape:label="hits_cv_port" />
     <circle
        style="fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.201295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-2-0"
        cx="22.807085"
        cy="111.61043"
        r="4.8440623"
-       inkscape:label="reverse_cv" />
+       inkscape:label="reverse_cv_port" />
     <circle
        style="fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.206667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-7-9"
        cx="38.152916"
        cy="111.61043"
        r="4.8440623"
-       inkscape:label="invert_cv" />
+       inkscape:label="invert_cv_port" />
     <circle
        style="fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-4"
        cx="54.292503"
        cy="23.239584"
        r="4.8440628"
-       inkscape:label="beat" />
+       inkscape:label="beat_port" />
     <circle
        style="display:inline;opacity:0.94;fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-6"
        cx="6.6675005"
        cy="23.239584"
        r="4.8440604"
-       inkscape:label="clock" />
+       inkscape:label="clock_port" />
     <circle
        style="display:inline;opacity:0.94;fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-6-7"
        cx="6.6675005"
        cy="40.4375"
        r="4.8440619"
-       inkscape:label="sync" />
+       inkscape:label="sync_port" />
     <circle
        style="display:inline;opacity:0.94;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.302023;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-6"
@@ -1127,7 +1127,7 @@
        cx="47.677917"
        cy="96.529175"
        r="4.8440595"
-       inkscape:label="shift_cv" />
+       inkscape:label="shift_cv_port" />
     <circle
        style="display:inline;opacity:0.94;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.23441;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-79"

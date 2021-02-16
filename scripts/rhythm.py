@@ -3,6 +3,7 @@
 import math
 import random
 import itertools
+import collections
 
 def _necklacesOfLengthAndDensity(n, d, k=2):
     '''
@@ -243,6 +244,14 @@ class Rhythm:
         return [i for i,b in enumerate(self) if b]
 
     @property
+    def offset_list(self):
+        '''
+        Opposite of the onset lest, all the beats that there is no onset
+        in the rhythm.
+        '''
+        return [i for i,b in enumerate(self) if not b]
+
+    @property
     def off_beat_onsets(self):
         '''
         https://research.cs.queensu.ca/home/daver/Pubs/MyPDF/MeasureSycopa.pdf
@@ -320,6 +329,14 @@ class Rhythm:
         return max(self.inter_onset_vector) - min(self.inter_onset_vector)
 
     @property
+    def non_zero_inter_onset_vector_entries(self):
+        return sum(1 for v in self.inter_onset_vector if v)
+
+    @property
+    def unique_inter_onset_vector_entries(self):
+        return len(set(self.inter_onset_vector))
+
+    @property
     def adjacent_inter_onset_vector(self):
         vec = []
         first_on = -1
@@ -376,6 +393,29 @@ class Rhythm:
 
     def append(self, other):
         return Rhythm(self._rhythm + other._rhythm)
+
+    def moveRandomBeat(self):
+        if self.density == 0 or self.density == self.length:
+            raise ValueError(f"Can't move random onset in {self}")
+        # Replace a random entry in the onset list with one
+        # from the offset list
+        new_onset_list = self.onset_list
+        new_onset_list.remove(random.choice(new_onset_list))
+        new_onset_list.append(random.choice(self.offset_list))
+        return Rhythm.fromOnsetList(self.length, new_onset_list)
+
+    def moveRandomBeatWithMaximumDistance(self, max_distance):
+        if self.density == 0 or self.density == self.length:
+            raise ValueError(f"Can't move random onset in {self}")
+
+        new_onset_list = self.onset_list
+        while True:
+            to_remove = random.choice(new_onset_list)
+            offset_choices = [off for off in self.offset_list if min(abs(off - to_remove), self.length - abs(off - to_remove)) <= max_distance]
+            if len(offset_choices) > 0:
+                new_onset_list.remove(to_remove)
+                new_onset_list.append(random.choice(offset_choices))
+                return Rhythm.fromOnsetList(self.length, new_onset_list)
 
     def svgCircle(self):
         rhythm_size = 500
@@ -434,6 +474,34 @@ class Rhythm:
 
         return svg
 
+    def rotDistance(self, other):
+        return min(self.distance(other.rotate(i)) for i in range(self.length))
+
+    def rotateToMinDistance(self, other):
+        result = r = self
+        min_distance = 1000000
+        for _ in range(self.length):
+            d = r.distance(other)
+            if d < min_distance:
+                result = r
+                min_distance = d
+            r = r.rotate(1)
+        assert min_distance == 1, "not one away"
+        return result
+
+    def distance(self, other):
+        if self.length != other.length:
+            raise ValueError("Lengths differ")
+        if self.density != other.density:
+            raise ValueError("Densities differ")
+
+        diff = self ^ other
+        if diff.onsets != 2:
+            return self.length
+
+        d = diff.onset_list[1] - diff.onset_list[0]
+        return min(d, diff.length - d)
+
     def __mul__(self, other):
         return Rhythm(self._rhythm * other)
 
@@ -485,6 +553,9 @@ class Rhythm:
     def __xor__(self, other):
         return Rhythm(a != b for a,b in itertools.zip_longest(self, other, fillvalue=False))
 
+    def __hash__(self):
+        return hash(str(self))
+
     @staticmethod
     def canonicalise(rhythm):
         return tuple(b in {True, 'x', 'X', '1'} for b in rhythm)
@@ -510,7 +581,243 @@ class Rhythm:
     def optimalEvenBeats(length, density):
         return [(n // density, n % density) for n in range(0, density * length, length)]
 
+
+def scorePath(path, distances):
+    # Paths are better if they're close to the euclidean
+    # rhythm at the start and further away at the end
+    #return sum((len(path) - i) * distances[n] for i,n in enumerate(path))
+    inv_count = 1
+    for i in range(len(path)):
+        for j in range(i + 1, len(path)):
+            if distances[path[i]] > distances[path[j]]:
+                inv_count += 1
+    return len(path) + (1 / inv_count)
+
+def pickRandomNavigableNode(graph, node, visited):
+    try:
+        return random.choice([a for a in graph[node] if a not in visited])
+    except IndexError:
+        return None
+
+def randomPath(graph, distances, start):
+    path = [start]
+    visited = set([start])
+    while len(path) < 32:
+        n = pickRandomNavigableNode(graph, path[-1], visited)
+        if n is None:
+            break
+        visited.add(n)
+        path.append(n)
+    return path
+
+def findBestPathRandom(graph, distances, start, maximum_attempts):
+    best_path = []
+    best_score = 0.0
+    attempts = 0
+    while attempts < maximum_attempts:
+        path = randomPath(graph, distances, start)
+        score = scorePath(path, distances)
+        if score > best_score:
+            best_path = list(path)
+            best_score = score
+            print(f"{score:.4f}", len(best_path), "".join(str(distances[p]) for p in best_path))
+            printGraph(graph, best_path)
+        attempts += 1
+    return best_path
+
+def findBestPath(graph, distances, start, maximum_attempts):
+    best_path = []
+    best_score = 0.0
+    visited = set()
+    path = []
+    attempts = 0
+    def searchFromNode(node):
+        nonlocal best_path
+        nonlocal best_score
+        nonlocal attempts
+        visited.add(node)
+        path.append(node)
+        ps = scorePath(path, distances)
+        if ps > best_score:
+            best_path = list(path)
+            best_score = ps
+            print(f"{ps:.4f}", len(best_path), "".join(str(distances[p]) for p in best_path))
+            printGraph(graph, best_path)
+
+        # Paths longer than 32 aren't useful as we only have 32 positions on the knob
+        if len(path) < 32:
+            for e in graph[node]:
+                if e not in visited:
+                    searchFromNode(e)
+                if best_score == min(len(graph), 32) + 1:
+                    break
+                if attempts >= maximum_attempts:
+                    break
+        attempts += 1
+        visited.remove(node)
+        path.pop()
+    searchFromNode(start)
+    return best_path
+
+def printGraph(graph, path, filename="out.dot"):
+    with open(filename, "w") as f:
+        f.write("strict graph {\n")
+        for g in graph:
+            for d in graph[g]:
+                f.write(f'"{g}" -- "{d}"\n')
+
+        path_penwidth=5
+        prev = None
+        for n in path:
+            f.write(f'"{n}" [penwidth={path_penwidth}]\n')
+            if prev:
+                f.write(f'"{prev}" -- "{n}" [penwidth={path_penwidth}]\n')
+            prev = n
+        f.write("}")
+
+def randomiseEdges(graph):
+    for n in graph:
+        random.shuffle(graph[n])
+
+def growGraph(length=9, density=4, max_nodes_in_graph=20, max_distance=1, attempts=1000, path_repeats=20):
+    '''
+    Start off with a euclidean rhythm of the given length and density.
+    Add it into the graph.
+    Randomly move a beat of the original rhythm by 1 position until it is not
+      a rotation of a rhythm already in the graph
+    add it into the graph
+    link it to each node that has a rotational distance of 1
+    repeat until we can't find any more
+    repeat with the one's that are 1 away from the euclidean rhythm, then 2 etc.
+    '''
+
+    start = Rhythm.maximallyEven(length, density)
+    graph = {start : []}
+
+    tosearch = collections.deque([start])
+    while tosearch and len(graph) < max_nodes_in_graph:
+        r = tosearch.pop()
+        failed_attempts = 0
+        while failed_attempts < attempts and len(graph) < max_nodes_in_graph:
+            n = r.moveRandomBeatWithMaximumDistance(max_distance)
+            if any(n.isRotationOf(i) for i in graph):
+                failed_attempts += 1
+            else:
+                graph[n] = []
+                tosearch.appendleft(n)
+                failed_attempts = 0
+
+    # Connect the graph
+    for r1 in graph:
+        for r2 in graph:
+            if r1.rotDistance(r2) <= max_distance:
+                graph[r1].append(r2)
+
+    # Find distances from the Euclidean node
+    # Dijkstra
+    q = set()
+    distances = {}
+    for v in graph:
+        q.add(v)
+        distances[v] = 100000000
+    distances[start] = 0
+
+    while q:
+        u = min(q, key=lambda k:distances[k])
+        q.remove(u)
+        for v in graph[u]:
+            alt = distances[u] + 1
+            if alt < distances[v]:
+                distances[v] = alt
+
+    # Rather than random path, maybe shuffle the graph and search?
+    # Starting at the maximally even node, see how long a path we can make
+    path = findBestPath(graph, distances, start, 10000)
+    for _ in range(path_repeats):
+        print(f"{_}")
+        randomiseEdges(graph)
+        candidate = findBestPath(graph, distances, start, 10000)
+        candidate_score = scorePath(candidate, distances)
+        path_score = scorePath(path, distances)
+        if candidate_score > path_score:
+            path = candidate
+        if candidate_score == min(len(graph), 32) + 1:
+            # Can't improve on this score so finish
+            break
+        if path_score == min(len(graph), 32) + 1:
+            # Can't improve on this score so finish
+            break
+    printGraph(graph, path)
+
+    with open(f"rhythms.{length}.{density}.txt", "w") as f:
+        prev = None
+        for r in path:
+            if prev is not None:
+                r = r.rotateToMinDistance(prev)
+            f.write(f"{r}\n")
+            prev = r
+
+    with open(f"integers.{length}.{density}.txt", "w") as f:
+        prev = None
+        for r in path:
+            if prev is not None:
+                r = r.rotateToMinDistance(prev)
+            f.write(f'0x{int(r):08x}\n')
+            prev = r
+
+    printGraph(graph, path, f"graph.{length}.{density}.dot")
+
 if __name__ == "__main__":
+    # List all necklaces with N bits set
+    # Find a way of traversing through all of them by only moving one bit at a time a distance of 1
+    # Create graph of rhythms and edges directed to other rhythms that are 1 beat away, find Hamiltonian path?
+    max_nodes = 200
+    for length in range(22, 33):
+        for hits in range(1, length):
+            print(f"============={length} {hits}===============")
+            growGraph(length, hits, max_nodes)
+    '''
+    graph = {r:[] for r in Rhythm.necklacesOfLengthAndDensity(9, 4)}
+    print(graph)
+    for r1 in graph:
+        for r2 in graph:
+            if r1.rotDistance(r2) == 1:
+                graph[r1].append(r2)
+    with open("out.dot", "w") as f:
+        f.write("strict graph {\n")
+        for g in graph:
+            for d in graph[g]:
+                f.write(f'"{g}" -- "{d}"\n')
+        f.write("\n}")
+    print("====================")
+
+    rhythms = set()
+    r = Rhythm.maximallyEven(10, 7)
+    prev = None
+    maximum_distance = 1
+    fail_count = 0
+    while True:
+        if not any(r.isRotationOf(seen) for seen in rhythms):
+            if prev is None or (r ^ prev).density == 2:
+                print(r)
+                if prev:
+                    print(r.distance(prev))
+                rhythms.add(r)
+                prev = r
+                fail_count = 0
+        else:
+            fail_count += 1
+            if fail_count > 10000:
+                maximum_distance += 1
+                print("INCREASE DISTANCE {}", maximum_distance)
+                fail_count = 0
+        r = prev.moveRandomBeatWithMaximumDistance(maximum_distance)
+
+
+    for length in range(1, 65):
+        for density in range(length + 1):
+            print(f'0x{int(Rhythm.maximallyEven(length, density)):016x}')
+
     print(Rhythm.maximallyEven(20, 17).svgCircle())
     print(Rhythm.maximallyEven(65, 38).svgBoxes())
     print(Rhythm.fromInt(1, 3).svgBoxes())
@@ -527,3 +834,4 @@ if __name__ == "__main__":
     print(Rhythm(".....x.x") | Rhythm(".xxxxxxxxxx"))
     print(Rhythm(".....x.x") ^ Rhythm(".xxxxxxxxxx"))
     print(Rhythm("x.x.x...x.x.....xx.xx.x.x...x.x.....xx.xx.x.x...x.x.....xx.x").period)
+    '''

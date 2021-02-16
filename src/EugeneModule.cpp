@@ -242,3 +242,8 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
                 }
         }
 }
+
+void RareBreeds_Orbits_Eugene::onReset()
+{
+        index = 0;
+}
