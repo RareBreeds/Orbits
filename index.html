@@ -57,6 +57,8 @@
         
             <li><a class="toctree-l3" href="#eugene">Eugene</a></li>
         
+            <li><a class="toctree-l3" href="#polygene">Polygene</a></li>
+        
         </ul>
     
 
@@ -121,13 +123,13 @@
 <h3 id="sync-input">Sync : Input</h3>
 <p>Resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.</p>
 <p>This input is synchronous, the sync is only applied if a rising edge of Clk happens whilst sync is high.</p>
-<h3 id="len-input">Len : Input</h3>
+<h3 id="length-input">Length : Input</h3>
 <p>The number of beats in the rhythm. Integer range between 1 to 32 inclusive.</p>
 <h3 id="hits-input">Hits : Input</h3>
 <p>The number of on-beats in the rhythm, or the density. Integer range between 0 and the current Length inclusive.</p>
 <h3 id="shift-input">Shift : Input</h3>
 <p>Sets the beat in the rhythm to start from. A sync pulse will set the current beat to this number of beats before beat 0. Integer range between 0 and the current Length - 1 inclusive.
-Rotating this knob has the effect of rotating the beat the same direction around the circle.</p>
+Rotating this knob has the effect of rotating the start beat the same direction around the circle.</p>
 <h3 id="reverse-input">Reverse : Input</h3>
 <p>Sets the direction that the clock advances the beat. Clockwise when off, anticlockwise when on.</p>
 <h3 id="invert-input">Invert : Input</h3>
@@ -138,6 +140,61 @@ Rotating this knob has the effect of rotating the beat the same direction around
 <p>Len, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The CV is summed with the current knob setting.</p>
 <p>Reverse and Invert have Schmitt triggered CV inputs that override the switch settings.</p>
 <p><img alt="CV" src="img/cv.png" /></p>
+<h2 id="polygene">Polygene</h2>
+<p>Polygene is a polyphonic rhythm generator module.</p>
+<p><img alt="Themes" src="img/polygene-themes.png" /></p>
+<h3 id="example-patch_1">Example Patch</h3>
+<p><img alt="Patch" src="img/polygene-patch.png" /></p>
+<h3 id="specifications_1">Specifications</h3>
+<ul>
+<li>Visualisation and control of up to 16 rhythms</li>
+<li><a href="https://en.wikipedia.org/wiki/Euclidean_rhythm">Euclidean Rhythms</a> up to 32 beats long</li>
+<li>Rhythms are both reversible and invertible</li>
+<li>Variation knob provides unique variations around the Euclidean rhythm pattern</li>
+<li>External clock input</li>
+<li>Sync button and CV input for syncing the start of the rhythm with another signal</li>
+<li>Shift knob for selecting the initial beat of the rhythm</li>
+<li>Lots of CV controllable parameters</li>
+</ul>
+<h3 id="panel_1">Panel</h3>
+<h3 id="clk-input-polyphonic-rising-edge-sensitive-schmitt-triggered">Clk : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered</h3>
+<p>The number of active channels on this input sets the number of channels active on the output.</p>
+<p>A rising edge advances the current beat for that channel.</p>
+<h3 id="sync-input-polyphonic-rising-edge-sensitive-schmitt-triggered">Sync : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered</h3>
+<p>A rising edge on a channel tells the current beat to reset to zero on the next rising clock edge for that channel.</p>
+<p>Pressing the sync button syncs all channels.</p>
+<h3 id="channel-knob-input">Channel Knob : Input</h3>
+<p>The channel knob selects the current active channel. The selected channel is highlighted on the display and is the channel that will be modified by any changes to the Length, Hits, Shift, Variation, Reverse or Invert manual controls.</p>
+<p>Always ranges from 1 to 16 channels, inactive channels are greyed out and are enabled by providing a clock input on that channel.</p>
+<h3 id="rnd-input">RND : Input</h3>
+<p>Pressing the RND button randomises the length, hits, shift, variation, invert and reverse values for the selected channel.</p>
+<h3 id="length-input-polyphonic">Length : Input, Polyphonic</h3>
+<p>The number of beats in the rhythm. Integer range between 1 to 32 inclusive.</p>
+<p>The voltage on the length CV input is divided by 5 and multiplied by the length knob setting for that channel to decide the final length value for a channel.</p>
+<p>Moving the length knob changes the length setting for the currently selected channel.</p>
+<h3 id="hits-input-polyphonic">Hits : Input, Polyphonic</h3>
+<p>The number of on-beats in the rhythm, or the density. Integer range between 0 and the current Length inclusive.</p>
+<p>The voltage on the hits CV input is divided by 5 and multipied by the hits knob setting for that channel to decide the final hits value for a channel.</p>
+<p>Moving the hits knob changes the hits setting for the currently selected channel.</p>
+<h3 id="shift-input-polyphonic">Shift : Input, Polyphonic</h3>
+<p>Sets the beat in the rhythm to start from. A sync pulse will set the current beat to this number of beats before beat 0. Integer range between 0 and the current Length - 1 inclusive.</p>
+<p>Rotating this knob has the effect of rotating the start beat the same direction around the circle.</p>
+<p>The voltage on the shift CV input is divided by 5 and multiplied by the shift knob setting for that channel to decide the final shift value for a channel.</p>
+<p>Moving the shift knob changes the shift setting for the currently selected channel.</p>
+<h3 id="variation-input-polyphonic">Variation : Input, Polyphonic</h3>
+<p>Sets the rhythm variation. When set to 0 the rhythm variation is Euclidean. As the knob is rotated clockwise the rhythm changes moving one beat by one position at a time. The variation is always unique in that it is never a duplicate or a rotation of a previous rhythm for a given length and hits.</p>
+<p>The voltage of the variation CV input is divided by 5 and multipied by the variation knob setting for that channel to decide the final variation value for a channel.</p>
+<p>Moving the variation knob changes the variation setting for the currently selected channel.</p>
+<h3 id="reverse-input-polyphonic-level-sensitive-schmitt-triggered">Reverse : Input, Polyphonic, Level Sensitive, Schmitt Triggered</h3>
+<p>Sets the direction that the clock advances the beat. Clockwise when off, anticlockwise when on.</p>
+<p>If the reverse CV input is connected its values are used in preference to the button settings for that channel.</p>
+<h3 id="invert-input-polyphonic-level-sensitive-schmitt-triggered">Invert : Input, Polyphonic, Level Sensitive, Schmitt Triggered</h3>
+<p>Inverts the rhythm. When this button is on on-beats become off-beats and off-beats become on-beats.</p>
+<p>If the invert CV input is connected its values are used in preference to the button settings for that channel.</p>
+<h3 id="out-output-polyphonic">Out : Output, Polyphonic</h3>
+<p>A pulse is output when an on-beat (hit) is clocked for that channel.</p>
+<p>The number of output channels matches the number of channels active on the clock input.</p>
+<p>0-10V Unipolar CV 1ms pulse duration.</p>
               
             </div>
           </div>
@@ -177,5 +234,5 @@ Rotating this knob has the effect of rotating the beat the same direction around
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2021-02-09 21:19:08
+Build Date UTC : 2021-02-18 18:50:32
 -->
