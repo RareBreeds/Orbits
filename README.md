@@ -3,7 +3,7 @@ VCV Rack Plugin
 
 ## Modules
   * [Eugene](https://rarebreeds.github.io/Orbits/#eugene) - Euclidean Rhythm Generator
-  * [POlygene](https://rarebreeds.github.io/Orbits/#polygene) - Polyphonic Rhythm Generator
+  * [Polygene](https://rarebreeds.github.io/Orbits/#polygene) - Polyphonic Rhythm Generator
 
 ## Building
 
