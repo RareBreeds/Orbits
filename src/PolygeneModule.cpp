@@ -121,8 +121,9 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 
         if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
         {
-                m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getPolyVoltage(m_channel));
-                if(m_sync_trigger.isHigh())
+                // A rising edge of the sync input tells the module to set the current step
+                // to 0 on the next rising clock edge
+                if(m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getPolyVoltage(m_channel)))
                 {
                         m_apply_sync = true;
                 }
