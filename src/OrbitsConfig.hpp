@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "plugin.hpp"
 
 struct OrbitsConfig
