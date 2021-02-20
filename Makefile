@@ -18,5 +18,8 @@ SOURCES += $(wildcard src/*.cpp)
 DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
 
+dist-all:
+	./scripts/build-all.sh
+
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
