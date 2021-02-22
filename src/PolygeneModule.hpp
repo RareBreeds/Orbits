@@ -62,7 +62,6 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_reverse_trigger;
                 dsp::SchmittTrigger m_invert_trigger;
                 dsp::PulseGenerator m_output_generator;
-                bool m_apply_sync = false;
                 float m_length;
                 float m_hits;
                 float m_shift;

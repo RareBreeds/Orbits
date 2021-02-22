@@ -119,19 +119,19 @@ void RareBreeds_Orbits_Eugene::advanceIndex()
 
 void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
 {
+        if(inputs[SYNC_INPUT].isConnected() && syncTrigger.process(inputs[SYNC_INPUT].getVoltage()))
+        {
+                index = 0;
+        }
+
         if(inputs[CLOCK_INPUT].isConnected() && clockTrigger.process(inputs[CLOCK_INPUT].getVoltage()))
         {
-                advanceIndex();
-
-                if(inputs[SYNC_INPUT].isConnected() && syncTrigger.process(inputs[SYNC_INPUT].getVoltage()))
-                {
-                        index = 0;
-                }
-
                 if(rhythm[index])
                 {
                         outputGenerator.trigger(1e-3f);
                 }
+
+                advanceIndex();
         }
 
         outputs[BEAT_OUTPUT].setVoltage(outputGenerator.process(args.sampleTime) ? 10.f : 0.f);

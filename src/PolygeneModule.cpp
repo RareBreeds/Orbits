@@ -121,17 +121,29 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 
         if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
         {
-                // A rising edge of the sync input tells the module to set the current step
-                // to 0 on the next rising clock edge
+                // A rising edge of the sync input tells the module to set the current step to 0
                 if(m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getPolyVoltage(m_channel)))
                 {
-                        m_apply_sync = true;
+                        m_current_step = 0;
                 }
         }
 
+        // A rising clock edge means first play the current beat
+        // then advance to the next step
         if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel &&
            m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
         {
+                // Play the current beat
+                auto hits = readHits(length);
+                auto shift = readShift(length);
+                auto invert = readInvert();
+                auto variation = readVariation(length, hits);
+                if(isOnBeat(length, hits, shift, variation, m_current_step, invert))
+                {
+                        m_output_generator.trigger(1e-3f);
+                }
+
+                // Advance to the next step
                 if(readReverse())
                 {
                         if(m_current_step == 0)
@@ -153,21 +165,6 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                         {
                                 ++m_current_step;
                         }
-                }
-
-                if(m_apply_sync)
-                {
-                        m_apply_sync = false;
-                        m_current_step = 0;
-                }
-
-                auto hits = readHits(length);
-                auto shift = readShift(length);
-                auto invert = readInvert();
-                auto variation = readVariation(length, hits);
-                if(isOnBeat(length, hits, shift, variation, m_current_step, invert))
-                {
-                        m_output_generator.trigger(1e-3f);
                 }
         }
 

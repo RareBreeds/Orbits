@@ -35,9 +35,7 @@ A pulse is output when an on-beat (hit) is clocked. 0-10V Unipolar CV 1ms pulse 
 A rising edge advances the current beat. Schmitt triggered.
 
 ### Sync : Input
-Resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.
-
-This input is synchronous, the sync is only applied if a rising edge of Clk happens whilst sync is high.
+A rising edge resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.
 
 ### Length : Input
 The number of beats in the rhythm. Integer range between 1 to 32 inclusive.
@@ -96,7 +94,7 @@ A rising edge advances the current beat for that channel.
 
 ### Sync : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered
 
-A rising edge on a channel tells the current beat to reset to zero on the next rising clock edge for that channel.
+A rising edge on a channel resets the current beat to the first beat of the rhythm for that channel which is always 12 o'clock on the display.
 
 Pressing the sync button syncs all channels.
 
