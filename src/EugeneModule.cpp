@@ -126,12 +126,37 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
 
         if(inputs[CLOCK_INPUT].isConnected() && clockTrigger.process(inputs[CLOCK_INPUT].getVoltage()))
         {
+                auto length = readLength();
+                auto reverse = readReverse();
+
+                if(reverse)
+                {
+                        if(index == 0)
+                        {
+                                index = length - 1;
+                        }
+                        else
+                        {
+                                --index;
+                        }
+                }
+
                 if(rhythm[index])
                 {
                         outputGenerator.trigger(1e-3f);
                 }
 
-                advanceIndex();
+                if(!reverse)
+                {
+                        if(index == length - 1)
+                        {
+                                index = 0;
+                        }
+                        else
+                        {
+                                ++index;
+                        }
+                }
         }
 
         outputs[BEAT_OUTPUT].setVoltage(outputGenerator.process(args.sampleTime) ? 10.f : 0.f);
