@@ -90,6 +90,7 @@ struct RareBreeds_Orbits_Polygene : Module
         dsp::BooleanTrigger reverse_trigger;
         dsp::BooleanTrigger invert_trigger;
         dsp::BooleanTrigger random_trigger;
+        dsp::PulseGenerator random_timer;
         dsp::BooleanTrigger sync_trigger;
         RareBreeds_Orbits_PolygeneWidget *widget = NULL;
 
