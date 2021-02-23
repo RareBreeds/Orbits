@@ -134,17 +134,16 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
            m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
         {
                 // Play the current beat
+                // If the channel is reversing we want to play the beat prior to this
+                // this ensures that a clock from the start of a rhythm plays the last
+                // note in the rhythm when reversed rather than the first.
                 auto hits = readHits(length);
                 auto shift = readShift(length);
                 auto invert = readInvert();
                 auto variation = readVariation(length, hits);
-                if(isOnBeat(length, hits, shift, variation, m_current_step, invert))
-                {
-                        m_output_generator.trigger(1e-3f);
-                }
+                auto reverse = readReverse();
 
-                // Advance to the next step
-                if(readReverse())
+                if(reverse)
                 {
                         if(m_current_step == 0)
                         {
@@ -155,7 +154,13 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                                 --m_current_step;
                         }
                 }
-                else
+
+                if(isOnBeat(length, hits, shift, variation, m_current_step, invert))
+                {
+                        m_output_generator.trigger(1e-3f);
+                }
+
+                if(!reverse)
                 {
                         if(m_current_step == length - 1)
                         {
