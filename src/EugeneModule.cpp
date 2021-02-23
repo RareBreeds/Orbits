@@ -2,7 +2,6 @@
 #include "Euclidean.hpp"
 #include "EugeneWidget.hpp"
 
-
 // TODO: Maximum length shouldn't be defined by what the Euclidean module can support
 // should be separate and Euclidean needs to support the max of all modules, or templated.
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
