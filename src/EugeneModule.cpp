@@ -156,9 +156,19 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                                 ++index;
                         }
                 }
+
+                //const auto eoc_step = 0; // Last beat trigger, good for syncing rhythms to start on the next clock
+                const auto eoc_step = reverse ? length - 1 : 1;  // First beat trigger, good for starting something when the first beat plays
+                // TODO: Only trigger after first rotation has completed
+                // TODO: Menu option to select between on repeat, on first beat, on last beat
+                if(index == eoc_step)
+                {
+                        eocGenerator.trigger(1e-3f);
+                }
         }
 
         outputs[BEAT_OUTPUT].setVoltage(outputGenerator.process(args.sampleTime) ? 10.f : 0.f);
+        outputs[EOC_OUTPUT].setVoltage(eocGenerator.process(args.sampleTime) ? 10.f : 0.f);
 }
 
 void RareBreeds_Orbits_Eugene::updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift,

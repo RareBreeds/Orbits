@@ -12,6 +12,7 @@
             "clock_port" : "polygene-dark-port.svg",
             "sync_port" : "polygene-dark-port.svg",
             "beat_port" : "polygene-dark-port.svg",
+            "eoc_port" : "polygene-dark-port.svg",
             "channel_knob" : "polygene-dark-knob-small.svg",
 
             "length_knob" : "polygene-dark-knob-large.svg",
@@ -58,6 +59,7 @@
             "clock_port" : "polygene-light-port.svg",
             "sync_port" : "polygene-light-port.svg",
             "beat_port" : "polygene-light-port.svg",
+            "eoc_port" : "polygene-light-port.svg",
             "channel_knob" : "polygene-light-knob-small.svg",
 
             "length_knob" : "polygene-light-knob-large.svg",

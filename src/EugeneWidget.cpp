@@ -124,7 +124,11 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
                 }
 
                 // Current beat marker
-                if(module->index == k)
+                // Highlight the beat that has just played
+                // For forward moving rhythms this is the previous index
+                // For reversed rhythms this is index
+                if((reverse && module->index == k) ||
+                   (!reverse && ((k == length - 1) ? (0 == module->index) : (k + 1 == module->index))))
                 {
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, outline_radius);
@@ -187,6 +191,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
 
         addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+        addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
         // clang-format on
 
         EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(m_config->getPos("display"));

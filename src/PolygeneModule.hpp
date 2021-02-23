@@ -36,6 +36,7 @@ struct RareBreeds_Orbits_Polygene : Module
         enum OutputIds
         {
                 BEAT_OUTPUT,
+                EOC_OUTPUT,
                 NUM_OUTPUTS
         };
         enum LightIds
@@ -62,6 +63,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_reverse_trigger;
                 dsp::SchmittTrigger m_invert_trigger;
                 dsp::PulseGenerator m_output_generator;
+                dsp::PulseGenerator m_eoc_generator;
                 float m_length;
                 float m_hits;
                 float m_shift;

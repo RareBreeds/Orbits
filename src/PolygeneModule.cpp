@@ -171,10 +171,22 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                                 ++m_current_step;
                         }
                 }
+
+                //const auto eoc_step = 0; // Last beat trigger, good for syncing rhythms to start on the next clock
+                const auto eoc_step = reverse ? length - 1 : 1;  // First beat trigger, good for starting something when the first beat plays
+                // TODO: Only trigger after first rotation has completed
+                // TODO: Menu option to select between on repeat, on first beat, on last beat 
+                if(m_current_step == eoc_step)
+                {
+                        m_eoc_generator.trigger(1e-3f);
+                }
         }
 
         auto out = m_output_generator.process(args.sampleTime) ? 10.f : 0.f;
         m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
+
+        auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
+        m_module->outputs[EOC_OUTPUT].setVoltage(eoc_out, m_channel);
 }
 
 json_t *RareBreeds_Orbits_Polygene::Channel::dataToJson()
@@ -252,13 +264,18 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 {
         m_active_channels = inputs[CLOCK_INPUT].getChannels();
         outputs[BEAT_OUTPUT].setChannels(m_active_channels);
+        outputs[EOC_OUTPUT].setChannels(m_active_channels);
 
         m_active_channel_id = std::round(params[CHANNEL_KNOB_PARAM].getValue());
         m_active_channel = &m_channels[m_active_channel_id];
 
-        // Update the SVGs on the reverse and invert buttons when the channel changes
+        // Update the SVGs when the channel changes
         if(m_previous_channel_id != m_active_channel_id)
         {
+                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
+                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
+                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
+                params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
                 params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
                 params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
                 m_previous_channel_id = m_active_channel_id;
@@ -302,6 +319,10 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         if(random_trigger.process(rnd))
         {
                 m_active_channel->onRandomize();
+                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
+                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
+                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
+                params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
                 params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
                 params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
 
@@ -314,6 +335,10 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         if(rnd && !random_timer.process(args.sampleTime))
         {
                 m_active_channel->onRandomize();
+                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
+                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
+                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
+                params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
                 params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
                 params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
 

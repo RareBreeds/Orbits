@@ -12,6 +12,7 @@
             "clock_port" : "eugene-dark-port.svg",
             "sync_port" : "eugene-dark-port.svg",
             "beat_port" : "eugene-dark-port.svg",
+            "eoc_port" : "eugene-dark-port.svg",
 
             "length_knob" : "eugene-dark-knob-large.svg",
             "length_cv_knob" : "eugene-dark-knob-small.svg", 
@@ -45,6 +46,7 @@
             "clock_port" : "eugene-light-port.svg",
             "sync_port" : "eugene-light-port.svg",
             "beat_port" : "eugene-light-port.svg",
+            "eoc_port" : "eugene-light-port.svg",
 
             "length_knob" : "eugene-light-knob-large.svg",
             "length_cv_knob" : "eugene-light-knob-small.svg", 

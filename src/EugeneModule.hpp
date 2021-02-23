@@ -33,6 +33,7 @@ struct RareBreeds_Orbits_Eugene : Module
         enum OutputIds
         {
                 BEAT_OUTPUT,
+                EOC_OUTPUT,
                 NUM_OUTPUTS
         };
         enum LightIds
@@ -45,6 +46,7 @@ struct RareBreeds_Orbits_Eugene : Module
         dsp::SchmittTrigger reverseTrigger;
         dsp::SchmittTrigger invertTrigger;
         dsp::PulseGenerator outputGenerator;
+        dsp::PulseGenerator eocGenerator;
         unsigned int index = 0;
         euclidean::Rhythm rhythm;
         unsigned int oldLength = euclidean::max_length + 1;
