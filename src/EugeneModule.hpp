@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Euclidean.hpp"
-#include "plugin.hpp"
+#include "OrbitsModule.hpp"
 
 struct RareBreeds_Orbits_EugeneWidget;
 
@@ -46,7 +46,10 @@ struct RareBreeds_Orbits_Eugene : Module
         dsp::SchmittTrigger reverseTrigger;
         dsp::SchmittTrigger invertTrigger;
         dsp::PulseGenerator outputGenerator;
-        dsp::PulseGenerator eocGenerator;
+
+        Orbits::EOCModule eoc;
+        Orbits::EOCGenerator eocGenerator;
+
         unsigned int index = 0;
         euclidean::Rhythm rhythm;
         unsigned int oldLength = euclidean::max_length + 1;
@@ -71,4 +74,6 @@ struct RareBreeds_Orbits_Eugene : Module
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
         void onReset() override;
+        int getEOCMode(void);
+        void setEOCMode(int eoc_mode);
 };

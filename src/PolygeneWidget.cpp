@@ -189,36 +189,14 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addChild(r);
 }
 
-struct OrbitsEOCModeItem : MenuItem
-{
-        RareBreeds_Orbits_Polygene *m_module;
-        int m_id;
-
-        OrbitsEOCModeItem(RareBreeds_Orbits_Polygene *module, int id, const char *name);
-        void onAction(const event::Action &e) override;
-};
-
-OrbitsEOCModeItem::OrbitsEOCModeItem(RareBreeds_Orbits_Polygene *module, int id, const char *name)
-{
-        m_module = module;
-        m_id = id;
-        text = name;
-        rightText = CHECKMARK(module->getEOCMode() == id);
-}
-
-void OrbitsEOCModeItem::onAction(const event::Action &e)
-{
-        m_module->setEOCMode(m_id);
-}
-
 void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 {
-        // TODO: Poly and Eugene can be composed of a EOC module to handle this, to share code
         menu->addChild(new MenuSeparator);
         MenuLabel *eoc_label = new MenuLabel;
         eoc_label->text = "EOC Mode";
         menu->addChild(eoc_label);
-        menu->addChild(new OrbitsEOCModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), 0, "On Repeat"));
-        menu->addChild(new OrbitsEOCModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), 1, "First Beat"));
-        menu->addChild(new OrbitsEOCModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), 2, "Last Beat"));   
+        Orbits::EOCModule *eoc_module = &(static_cast<RareBreeds_Orbits_Polygene *>(module)->eoc);
+        menu->addChild(new EOCModeItem(eoc_module, 0, "On Repeat"));
+        menu->addChild(new EOCModeItem(eoc_module, 1, "First Beat"));
+        menu->addChild(new EOCModeItem(eoc_module, 2, "Last Beat"));
 }

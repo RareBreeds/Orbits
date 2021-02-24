@@ -109,6 +109,7 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
         return clampRounded(f_variation * (count - 1), 0, count - 1);
 }
 
+
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 {
         auto length = readLength();
@@ -143,37 +144,8 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto variation = readVariation(length, hits);
                 auto reverse = readReverse();
 
-                // Replace conditional with polymorphism?
-                if(m_module->m_eoc_mode == 0) // on repeat
-                {
-                    if(m_current_step == 0 && m_previous_beat_was_last)
-                    {
-                            m_eoc_generator.trigger(1e-3f);
-                    }
-                }
-                else if(m_module->m_eoc_mode == 1) // first beat
-                {
-                    if(m_current_step == 0)
-                    {
-                            m_eoc_generator.trigger(1e-3f);
-                    }
-                }
-                else // last beat
-                {
-                    if(m_current_step == (reverse ? 1 : length - 1))
-                    {
-                            m_eoc_generator.trigger(1e-3f);   
-                    }
-                }
-
-                if(m_current_step == (reverse ? 1 : length - 1))
-                {
-                        m_previous_beat_was_last = true;
-                }
-                else
-                {
-                        m_previous_beat_was_last = false;
-                }
+                m_eoc_generator.update(m_module->eoc.getMode(), m_current_step == 0,
+                                       m_current_step == (reverse ? 1 : length - 1));
 
                 if(reverse)
                 {
@@ -392,6 +364,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "hits", json_real(m_hits));
                 json_object_set_new(root, "shift", json_real(m_shift));
                 json_object_set_new(root, "variation", json_real(m_variation));
+                json_object_set_new(root, "eoc", eoc.dataToJson());
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
                 json_t *channels = json_array();
@@ -430,6 +403,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_load_real(root, "hits", &m_hits);
                 json_load_real(root, "shift", &m_shift);
                 json_load_real(root, "variation", &m_variation);
+                eoc.dataFromJson(json_object_get(root, "eoc"));
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
@@ -474,14 +448,4 @@ void RareBreeds_Orbits_Polygene::onRandomize()
 void RareBreeds_Orbits_Polygene::onReset()
 {
         reset();
-}
-
-int RareBreeds_Orbits_Polygene::getEOCMode(void)
-{
-        return m_eoc_mode;
-}
-
-void RareBreeds_Orbits_Polygene::setEOCMode(int eoc_mode)
-{
-        m_eoc_mode = eoc_mode;
 }

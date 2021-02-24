@@ -128,6 +128,8 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                 auto length = readLength();
                 auto reverse = readReverse();
 
+                eocGenerator.update(eoc.getMode(), index == 0, index == (reverse ? 1 : length - 1));
+
                 if(reverse)
                 {
                         if(index == 0)
@@ -155,15 +157,6 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                         {
                                 ++index;
                         }
-                }
-
-                //const auto eoc_step = 0; // Last beat trigger, good for syncing rhythms to start on the next clock
-                const auto eoc_step = reverse ? length - 1 : 1;  // First beat trigger, good for starting something when the first beat plays
-                // TODO: Only trigger after first rotation has completed
-                // TODO: Menu option to select between on repeat, on first beat, on last beat
-                if(index == eoc_step)
-                {
-                        eocGenerator.trigger(1e-3f);
                 }
         }
 
@@ -251,12 +244,17 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
 json_t *RareBreeds_Orbits_Eugene::dataToJson()
 {
         json_t *root = json_object();
-        if(widget)
+        if(root)
         {
-                json_t *w = widget->dataToJson();
-                if(w)
+                json_object_set_new(root, "eoc", eoc.dataToJson());
+
+                if(widget)
                 {
-                        json_object_set_new(root, "widget", w);
+                        json_t *w = widget->dataToJson();
+                        if(w)
+                        {
+                                json_object_set_new(root, "widget", w);
+                        }
                 }
         }
         return root;
@@ -266,6 +264,8 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
 {
         if(root)
         {
+                eoc.dataFromJson(json_object_get(root, "eoc"));
+
                 if(widget)
                 {
                         json_t *obj = json_object_get(root, "widget");

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OrbitsConfig.hpp"
-#include "plugin.hpp"
+#include "OrbitsModule.hpp"
 
 struct OrbitsWidget : ModuleWidget
 {
@@ -26,3 +26,21 @@ struct OrbitsThemeChoiceItem : MenuItem
         void onAction(const event::Action &e) override;
 };
 
+struct EOCModeItem : MenuItem
+{
+        Orbits::EOCModule *m_module;
+        int m_id;
+
+        EOCModeItem(Orbits::EOCModule *module, int id, const char *name)
+        {
+                m_module = module;
+                m_id = id;
+                text = name;
+                rightText = CHECKMARK(module->getMode() == id);
+        }
+
+        void onAction(const event::Action &e) override
+        {
+                m_module->setMode(m_id);
+        }
+};
