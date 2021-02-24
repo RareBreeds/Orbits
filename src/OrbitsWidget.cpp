@@ -30,6 +30,8 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         {
                 menu->addChild(new OrbitsThemeChoiceItem(this, i, m_config->getThemeName(i).c_str()));
         }
+
+        appendModuleContextMenu(menu);
 }
 
 void OrbitsWidget::loadTheme(const char *theme)

@@ -10,6 +10,7 @@ struct OrbitsWidget : ModuleWidget
 
         OrbitsWidget(OrbitsConfig *config);
         void appendContextMenu(Menu *menu) override;
+        virtual void appendModuleContextMenu(Menu *menu) = 0;
         void loadTheme(const char *theme);
         void loadTheme(int theme);
         json_t *dataToJson();
@@ -24,3 +25,4 @@ struct OrbitsThemeChoiceItem : MenuItem
         OrbitsThemeChoiceItem(OrbitsWidget *widget, int id, const char *name);
         void onAction(const event::Action &e) override;
 };
+

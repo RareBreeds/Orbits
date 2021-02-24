@@ -54,6 +54,8 @@ struct RareBreeds_Orbits_Polygene : Module
         float m_shift;
         float m_variation;
 
+        int m_eoc_mode = 0;
+
         struct Channel
         {
                 unsigned int m_current_step = 0;
@@ -64,6 +66,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_invert_trigger;
                 dsp::PulseGenerator m_output_generator;
                 dsp::PulseGenerator m_eoc_generator;
+                bool m_previous_beat_was_last = false;
                 float m_length;
                 float m_hits;
                 float m_shift;
@@ -97,6 +100,9 @@ struct RareBreeds_Orbits_Polygene : Module
         RareBreeds_Orbits_PolygeneWidget *widget = NULL;
 
         RareBreeds_Orbits_Polygene();
+
+        int getEOCMode(void);
+        void setEOCMode(int eoc_mode);
 
         void reset();
         void process(const ProcessArgs &args) override;

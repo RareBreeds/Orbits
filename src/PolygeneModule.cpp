@@ -143,6 +143,38 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto variation = readVariation(length, hits);
                 auto reverse = readReverse();
 
+                // Replace conditional with polymorphism?
+                if(m_module->m_eoc_mode == 0) // on repeat
+                {
+                    if(m_current_step == 0 && m_previous_beat_was_last)
+                    {
+                            m_eoc_generator.trigger(1e-3f);
+                    }
+                }
+                else if(m_module->m_eoc_mode == 1) // first beat
+                {
+                    if(m_current_step == 0)
+                    {
+                            m_eoc_generator.trigger(1e-3f);
+                    }
+                }
+                else // last beat
+                {
+                    if(m_current_step == (reverse ? 1 : length - 1))
+                    {
+                            m_eoc_generator.trigger(1e-3f);   
+                    }
+                }
+
+                if(m_current_step == (reverse ? 1 : length - 1))
+                {
+                        m_previous_beat_was_last = true;
+                }
+                else
+                {
+                        m_previous_beat_was_last = false;
+                }
+
                 if(reverse)
                 {
                         if(m_current_step == 0)
@@ -170,15 +202,6 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                         {
                                 ++m_current_step;
                         }
-                }
-
-                //const auto eoc_step = 0; // Last beat trigger, good for syncing rhythms to start on the next clock
-                const auto eoc_step = reverse ? length - 1 : 1;  // First beat trigger, good for starting something when the first beat plays
-                // TODO: Only trigger after first rotation has completed
-                // TODO: Menu option to select between on repeat, on first beat, on last beat 
-                if(m_current_step == eoc_step)
-                {
-                        m_eoc_generator.trigger(1e-3f);
                 }
         }
 
@@ -451,4 +474,14 @@ void RareBreeds_Orbits_Polygene::onRandomize()
 void RareBreeds_Orbits_Polygene::onReset()
 {
         reset();
+}
+
+int RareBreeds_Orbits_Polygene::getEOCMode(void)
+{
+        return m_eoc_mode;
+}
+
+void RareBreeds_Orbits_Polygene::setEOCMode(int eoc_mode)
+{
+        m_eoc_mode = eoc_mode;
 }

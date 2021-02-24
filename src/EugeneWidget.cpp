@@ -199,3 +199,8 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         r->box.size = m_config->getSize("display");
         addChild(r);
 }
+
+void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
+{
+
+}
