@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Euclidean.hpp"
 #include "OrbitsModule.hpp"
+#include "Rhythm.hpp"
 
 struct RareBreeds_Orbits_PolygeneWidget;
 

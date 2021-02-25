@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Euclidean.hpp"
 #include "OrbitsModule.hpp"
+#include "Rhythm.hpp"
 
 struct RareBreeds_Orbits_EugeneWidget;
 
@@ -51,10 +51,10 @@ struct RareBreeds_Orbits_Eugene : Module
         Orbits::EOCGenerator eocGenerator;
 
         unsigned int index = 0;
-        euclidean::Rhythm rhythm;
-        unsigned int oldLength = euclidean::max_length + 1;
-        unsigned int oldHits = euclidean::max_length + 1;
-        unsigned int oldShift = euclidean::max_length + 1;
+        rhythm::Rhythm m_rhythm;
+        unsigned int oldLength = rhythm::max_length + 1;
+        unsigned int oldHits = rhythm::max_length + 1;
+        unsigned int oldShift = rhythm::max_length + 1;
         bool oldReverse = false;
         bool oldInvert = false;
         RareBreeds_Orbits_EugeneWidget *widget = NULL;

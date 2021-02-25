@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <bitset>
 
-namespace euclidean {
+namespace rhythm {
 
 static const auto max_length = 32u;
 

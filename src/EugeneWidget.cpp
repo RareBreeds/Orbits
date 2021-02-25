@@ -94,7 +94,6 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         // Add a border of half a circle so we don't draw over the edge
         nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
-        // TODO: probably faster to draw all filled objects first then all outlined as a separate path
         const bool invert = module->readInvert();
         for(unsigned int k = 0; k < length; ++k)
         {
@@ -105,7 +104,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
                 }
 
                 float radius = off_radius;
-                if(module->rhythm[k])
+                if(module->m_rhythm[k])
                 {
                         radius = on_radius;
                 }

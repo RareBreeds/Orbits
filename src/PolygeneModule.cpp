@@ -1,8 +1,7 @@
 #include "PolygeneModule.hpp"
-#include "Euclidean.hpp"
 #include "PolygeneWidget.hpp"
+#include "Rhythm.hpp"
 
-// TODO: Library function
 static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
         return clamp(int(std::round(value)), min, max);
@@ -77,14 +76,14 @@ bool RareBreeds_Orbits_Polygene::Channel::readInvert(void)
 bool RareBreeds_Orbits_Polygene::Channel::isOnBeat(unsigned int length, unsigned int hits, unsigned int shift,
                                                    unsigned int variation, unsigned int beat, bool invert)
 {
-        return euclidean::nearEvenRhythmBeat(length, hits, variation, shift, beat) != invert;
+        return rhythm::nearEvenRhythmBeat(length, hits, variation, shift, beat) != invert;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
 {
         auto cv = m_module->inputs[LENGTH_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_length = m_length + cv * (euclidean::max_length - 1);
-        return clampRounded(f_length, 1, euclidean::max_length);
+        auto f_length = m_length + cv * (rhythm::max_length - 1);
+        return clampRounded(f_length, 1, rhythm::max_length);
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readHits(unsigned int length)
@@ -97,15 +96,15 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readHits(unsigned int length)
 unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
 {
         auto cv = m_module->inputs[SHIFT_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
-        auto f_shift = m_shift + cv * (euclidean::max_length - 1);
-        return clampRounded(f_shift, 0, euclidean::max_length - 1) % length;
+        auto f_shift = m_shift + cv * (rhythm::max_length - 1);
+        return clampRounded(f_shift, 0, rhythm::max_length - 1) % length;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int length, unsigned int hits)
 {
         auto cv = m_module->inputs[VARIATION_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
         auto f_variation = m_variation + cv;
-        auto count = euclidean::numNearEvenRhythms(length, hits);
+        auto count = rhythm::numNearEvenRhythms(length, hits);
         return clampRounded(f_variation * (count - 1), 0, count - 1);
 }
 
@@ -213,9 +212,9 @@ void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Polygene::Channel::onRandomize()
 {
-        m_length = random::uniform() * euclidean::max_length;
+        m_length = random::uniform() * rhythm::max_length;
         m_hits = random::uniform();
-        m_shift = random::uniform() * (euclidean::max_length - 1);
+        m_shift = random::uniform() * (rhythm::max_length - 1);
         m_variation = random::uniform();
         m_reverse = (random::uniform() < 0.5f);
         m_invert = (random::uniform() < 0.5f);
@@ -225,9 +224,9 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
         configParam(CHANNEL_KNOB_PARAM, 0.f, 15.f, 0.f, "Channel", "", 0.f, 1.f, 1.f);
-        configParam(LENGTH_KNOB_PARAM, 1.f, euclidean::max_length, euclidean::max_length, "Length");
+        configParam(LENGTH_KNOB_PARAM, 1.f, rhythm::max_length, rhythm::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
-        configParam(SHIFT_KNOB_PARAM, 0.f, euclidean::max_length - 1, 0.f, "Shift");
+        configParam(SHIFT_KNOB_PARAM, 0.f, rhythm::max_length - 1, 0.f, "Shift");
         configParam(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f, "Variation", "%", 0.f, 100.f);
         configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
         configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");

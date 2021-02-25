@@ -1,15 +1,13 @@
 #include "EugeneModule.hpp"
-#include "Euclidean.hpp"
 #include "EugeneWidget.hpp"
+#include "Rhythm.hpp"
 
-// TODO: Maximum length shouldn't be defined by what the Euclidean module can support
-// should be separate and Euclidean needs to support the max of all modules, or templated.
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-        configParam(LENGTH_KNOB_PARAM, 1.f, euclidean::max_length, euclidean::max_length, "Length");
+        configParam(LENGTH_KNOB_PARAM, 1.f, rhythm::max_length, rhythm::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
-        configParam(SHIFT_KNOB_PARAM, 0.f, euclidean::max_length - 1, 0.f, "Shift");
+        configParam(SHIFT_KNOB_PARAM, 0.f, rhythm::max_length - 1, 0.f, "Shift");
         configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV");
         configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV");
         configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
@@ -29,10 +27,10 @@ unsigned int RareBreeds_Orbits_Eugene::readLength()
                 float input = inputs[LENGTH_CV_INPUT].getVoltage();
                 float normalized_input = input / 5.f;
                 float attenuation = params[LENGTH_CV_KNOB_PARAM].getValue();
-                value += attenuation * normalized_input * (euclidean::max_length - 1);
+                value += attenuation * normalized_input * (rhythm::max_length - 1);
         }
 
-        return clamp(int(std::round(value)), 1, euclidean::max_length);
+        return clamp(int(std::round(value)), 1, rhythm::max_length);
 }
 
 unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
@@ -60,10 +58,10 @@ unsigned int RareBreeds_Orbits_Eugene::readShift(unsigned int length)
                 float input = inputs[SHIFT_CV_INPUT].getVoltage();
                 float normalized_input = input / 5.f;
                 float attenuation = params[SHIFT_CV_KNOB_PARAM].getValue();
-                value += attenuation * normalized_input * (euclidean::max_length - 1);
+                value += attenuation * normalized_input * (rhythm::max_length - 1);
         }
 
-        return clamp(int(std::round(value)), 0, euclidean::max_length - 1) % length;
+        return clamp(int(std::round(value)), 0, rhythm::max_length - 1) % length;
 }
 
 bool RareBreeds_Orbits_Eugene::readReverse()
@@ -142,7 +140,7 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                         }
                 }
 
-                if(rhythm[index])
+                if(m_rhythm[index])
                 {
                         outputGenerator.trigger(1e-3f);
                 }
@@ -167,17 +165,17 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
 void RareBreeds_Orbits_Eugene::updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift,
                                                      bool invert)
 {
-        rhythm = euclidean::rhythm(length, hits);
+        m_rhythm = rhythm::rhythm(length, hits);
 
-        auto tmp = rhythm;
+        auto tmp = m_rhythm;
         for(unsigned int i = 0; i < length; ++i)
         {
-                rhythm[(i + shift) % length] = tmp[i];
+                m_rhythm[(i + shift) % length] = tmp[i];
         }
 
         if(invert)
         {
-                rhythm.flip();
+                m_rhythm.flip();
         }
 }
 
