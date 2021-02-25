@@ -90,7 +90,7 @@ struct EOCGenerator
 {
         dsp::PulseGenerator m_generator;
         bool m_previous_beat_was_last = false;
-        void update(int mode, bool is_first, bool is_last);
+        void update(Orbits::EOCMode &mode, bool is_first, bool is_last);
         bool process(float delta);
 };
 } // namespace Orbits

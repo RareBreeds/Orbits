@@ -109,7 +109,6 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
         return clampRounded(f_variation * (count - 1), 0, count - 1);
 }
 
-
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 {
         auto length = readLength();
@@ -144,7 +143,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto variation = readVariation(length, hits);
                 auto reverse = readReverse();
 
-                m_eoc_generator.update(m_module->eoc.getMode(), m_current_step == 0,
+                m_eoc_generator.update(m_module->eoc, m_current_step == 0,
                                        m_current_step == (reverse ? 1 : length - 1));
 
                 if(reverse)

@@ -58,9 +58,9 @@ void Orbits::EOCMode::dataFromJson(json_t *root)
         }
 }
 
-void Orbits::EOCGenerator::update(int mode, bool is_first, bool is_last)
+void Orbits::EOCGenerator::update(Orbits::EOCMode &mode, bool is_first, bool is_last)
 {
-        if(eoc_mode_options.process(mode, is_first, is_last, m_previous_beat_was_last))
+        if(eoc_mode_options.process(mode.getMode(), is_first, is_last, m_previous_beat_was_last))
         {
                 m_generator.trigger(1e-3f);
         }

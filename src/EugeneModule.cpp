@@ -128,7 +128,7 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                 auto length = readLength();
                 auto reverse = readReverse();
 
-                eocGenerator.update(eoc.getMode(), index == 0, index == (reverse ? 1 : length - 1));
+                eocGenerator.update(eoc, index == 0, index == (reverse ? 1 : length - 1));
 
                 if(reverse)
                 {
