@@ -88,15 +88,15 @@ void OrbitsWidget::dataFromJson(json_t *root)
         }
 }
 
-void Orbits::appendEOCContextMenu(Menu *menu, Orbits::EOCMode *eoc_mode)
+void EOCWidget::appendContextMenu(Menu *menu)
 {
         menu->addChild(new MenuSeparator);
         MenuLabel *eoc_label = new MenuLabel;
         eoc_label->text = "EOC Mode";
         menu->addChild(eoc_label);
-        std::vector<std::string> options = eoc_mode->getOptions();
+        std::vector<std::string> options = m_module->getOptions();
         for(size_t i = 0; i < options.size(); ++i)
         {
-                menu->addChild(new EOCModeItem(eoc_mode, i, options[i].c_str()));
+                menu->addChild(new EOCModeItem(m_module, i, options[i].c_str()));
         }
 }

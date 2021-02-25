@@ -54,8 +54,6 @@ struct RareBreeds_Orbits_Polygene : Module
         float m_shift;
         float m_variation;
 
-        int m_eoc_mode = 0;
-
         struct Channel
         {
                 unsigned int m_current_step = 0;

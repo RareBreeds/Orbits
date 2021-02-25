@@ -142,6 +142,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         : OrbitsWidget(&config)
 {
         setModule(module);
+        eoc_widget.m_module = &module->eoc;
 
         // Module may be NULL if this is the module selection screen
         if(module)
@@ -191,5 +192,5 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
 
 void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 {
-        Orbits::appendEOCContextMenu(menu, &(static_cast<RareBreeds_Orbits_Polygene *>(module)->eoc));
+        eoc_widget.appendContextMenu(menu);
 }

@@ -45,7 +45,8 @@ struct EOCModeItem : MenuItem
         }
 };
 
-namespace Orbits
+struct EOCWidget
 {
-    void appendEOCContextMenu(Menu *menu, Orbits::EOCMode *eoc_mode);
-}
+    Orbits::EOCMode *m_module;
+    void appendContextMenu(Menu *menu);
+};
