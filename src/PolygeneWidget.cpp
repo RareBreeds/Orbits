@@ -191,12 +191,5 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
 
 void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 {
-        menu->addChild(new MenuSeparator);
-        MenuLabel *eoc_label = new MenuLabel;
-        eoc_label->text = "EOC Mode";
-        menu->addChild(eoc_label);
-        Orbits::EOCModule *eoc_module = &(static_cast<RareBreeds_Orbits_Polygene *>(module)->eoc);
-        menu->addChild(new EOCModeItem(eoc_module, 0, "On Repeat"));
-        menu->addChild(new EOCModeItem(eoc_module, 1, "First Beat"));
-        menu->addChild(new EOCModeItem(eoc_module, 2, "Last Beat"));
+        Orbits::appendEOCContextMenu(menu, &(static_cast<RareBreeds_Orbits_Polygene *>(module)->eoc));
 }

@@ -100,7 +100,7 @@ struct RareBreeds_Orbits_Polygene : Module
 
         RareBreeds_Orbits_Polygene();
 
-        Orbits::EOCModule eoc;
+        Orbits::EOCMode eoc;
 
         void reset();
         void process(const ProcessArgs &args) override;
