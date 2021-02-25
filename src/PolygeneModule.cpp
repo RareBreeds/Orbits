@@ -253,6 +253,16 @@ void RareBreeds_Orbits_Polygene::reset()
         }
 }
 
+void RareBreeds_Orbits_Polygene::syncParamsToActiveChannel()
+{
+        params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
+        params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
+        params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
+        params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
+        params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
+        params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+}
+
 void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 {
         m_active_channels = inputs[CLOCK_INPUT].getChannels();
@@ -265,12 +275,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         // Update the SVGs when the channel changes
         if(m_previous_channel_id != m_active_channel_id)
         {
-                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
-                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
-                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
-                params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
-                params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
-                params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+                syncParamsToActiveChannel();
                 m_previous_channel_id = m_active_channel_id;
         }
 
@@ -312,12 +317,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         if(random_trigger.process(rnd))
         {
                 m_active_channel->onRandomize();
-                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
-                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
-                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
-                params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
-                params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
-                params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+                syncParamsToActiveChannel();
 
                 // Start the delay timer
                 const auto random_button_repeat_delay_s = 0.5f;
@@ -328,12 +328,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         if(rnd && !random_timer.process(args.sampleTime))
         {
                 m_active_channel->onRandomize();
-                params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
-                params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
-                params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
-                params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
-                params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_reverse);
-                params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_invert);
+                syncParamsToActiveChannel();
 
                 const auto random_button_repeat_rate_s = 0.05f;
                 random_timer.trigger(random_button_repeat_rate_s);
@@ -437,10 +432,7 @@ void RareBreeds_Orbits_Polygene::onRandomize()
         // Parameters have already been randomised by VCV rack
         // But then the active channel controlled by those parameters has been randomised again
         // Update the parameters so they reflect the active channels randomised parameters
-        params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_length);
-        params[HITS_KNOB_PARAM].setValue(m_active_channel->m_hits);
-        params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_shift);
-        params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_variation);
+        syncParamsToActiveChannel();
 }
 
 void RareBreeds_Orbits_Polygene::onReset()

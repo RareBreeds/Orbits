@@ -90,30 +90,6 @@ bool RareBreeds_Orbits_Eugene::readInvert()
         }
 }
 
-void RareBreeds_Orbits_Eugene::advanceIndex()
-{
-        unsigned int length = readLength();
-        if(readReverse())
-        {
-                if(index == 0)
-                {
-                        index = length - 1;
-                }
-                else
-                {
-                        --index;
-                }
-        }
-        else
-        {
-                ++index;
-                if(index >= length)
-                {
-                        index = 0;
-                }
-        }
-}
-
 void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
 {
         if(inputs[SYNC_INPUT].isConnected() && syncTrigger.process(inputs[SYNC_INPUT].getVoltage()))

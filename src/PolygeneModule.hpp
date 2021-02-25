@@ -101,6 +101,7 @@ struct RareBreeds_Orbits_Polygene : Module
         Orbits::EOCMode eoc;
 
         void reset();
+        void syncParamsToActiveChannel();
         void process(const ProcessArgs &args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
