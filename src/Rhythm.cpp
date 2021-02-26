@@ -5,12 +5,12 @@
 namespace rhythm
 {
 
-static uint32_t sumTo(unsigned int n)
+static uint32_t sumTo(uint32_t n)
 {
         return n * (n + 1) / 2;
 }
 
-Rhythm rhythm(unsigned int length, unsigned int on_beats)
+Rhythm rhythm(uint32_t length, uint32_t on_beats)
 {
         return nearEvenRhythm(length, on_beats, 0);
 }

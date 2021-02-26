@@ -138,16 +138,9 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
         outputs[EOC_OUTPUT].setVoltage(m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f);
 }
 
-void RareBreeds_Orbits_Eugene::updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift,
-                                                     bool invert)
+void RareBreeds_Orbits_Eugene::updateEuclideanRhythm(uint32_t length, uint32_t hits, uint32_t shift, bool invert)
 {
-        m_rhythm = rhythm::rhythm(length, hits);
-
-        auto tmp = m_rhythm;
-        for(unsigned int i = 0; i < length; ++i)
-        {
-                m_rhythm[(i + shift) % length] = tmp[i];
-        }
+        m_rhythm = rhythm::rhythm(length, hits, shift);
 
         if(invert)
         {
@@ -203,9 +196,7 @@ void RareBreeds_Orbits_Eugene::updateRhythm()
 
         if(update)
         {
-                // This function can take a bit of time to run
-                // Calling it for every sample is way too expensive
-                updateEuclideanRhythm(hits, length, shift, invert);
+                updateEuclideanRhythm(length, hits, shift, invert);
         }
 }
 

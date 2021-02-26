@@ -68,7 +68,7 @@ struct RareBreeds_Orbits_Eugene : Module
         bool readInvert();
         void advanceIndex();
         void updateOutput(const ProcessArgs &args);
-        void updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift, bool invert);
+        void updateEuclideanRhythm(uint32_t length, uint32_t hits, uint32_t shift, bool invert);
         void updateRhythm();
         void process(const ProcessArgs &args) override;
         json_t *dataToJson() override;
