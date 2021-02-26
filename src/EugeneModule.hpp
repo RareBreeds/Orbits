@@ -47,8 +47,8 @@ struct RareBreeds_Orbits_Eugene : Module
         dsp::SchmittTrigger m_invert_trigger;
         dsp::PulseGenerator m_output_generator;
 
-        Orbits::EOCMode m_eoc;
-        Orbits::EOCGenerator m_eoc_generator;
+        EOCMode m_eoc;
+        EOCGenerator m_eoc_generator;
 
         unsigned int m_current_step = 0;
         rhythm::Rhythm m_rhythm;

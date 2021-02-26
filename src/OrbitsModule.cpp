@@ -1,13 +1,13 @@
 #include "OrbitsModule.hpp"
 
-static const Orbits::EOCModeOptions eoc_mode_options;
+static const EOCModeOptions eoc_mode_options;
 
-bool Orbits::EOCModeOptions::process(int mode, bool is_first, bool is_last, bool prev_was_last) const
+bool EOCModeOptions::process(int mode, bool is_first, bool is_last, bool prev_was_last) const
 {
         return options[mode]->process(is_first, is_last, prev_was_last);
 }
 
-std::vector<std::string> Orbits::EOCModeOptions::getOptions(void) const
+std::vector<std::string> EOCModeOptions::getOptions(void) const
 {
         std::vector<std::string> opts;
         for(auto option : options)
@@ -17,7 +17,7 @@ std::vector<std::string> Orbits::EOCModeOptions::getOptions(void) const
         return opts;
 }
 
-Orbits::EOCModeOptions::~EOCModeOptions()
+EOCModeOptions::~EOCModeOptions()
 {
         for(auto i : options)
         {
@@ -25,32 +25,32 @@ Orbits::EOCModeOptions::~EOCModeOptions()
         }
 }
 
-size_t Orbits::EOCModeOptions::size() const
+size_t EOCModeOptions::size() const
 {
         return options.size();
 }
 
-int Orbits::EOCMode::getMode(void)
+int EOCMode::getMode(void)
 {
         return m_mode;
 }
 
-void Orbits::EOCMode::setMode(int mode)
+void EOCMode::setMode(int mode)
 {
         m_mode = math::clamp(mode, 0, eoc_mode_options.size());
 }
 
-std::vector<std::string> Orbits::EOCMode::getOptions(void)
+std::vector<std::string> EOCMode::getOptions(void)
 {
         return eoc_mode_options.getOptions();
 }
 
-json_t *Orbits::EOCMode::dataToJson(void)
+json_t *EOCMode::dataToJson(void)
 {
         return json_integer(m_mode);
 }
 
-void Orbits::EOCMode::dataFromJson(json_t *root)
+void EOCMode::dataFromJson(json_t *root)
 {
         if(root)
         {
@@ -58,7 +58,7 @@ void Orbits::EOCMode::dataFromJson(json_t *root)
         }
 }
 
-void Orbits::EOCGenerator::update(Orbits::EOCMode &mode, bool is_first, bool is_last)
+void EOCGenerator::update(EOCMode &mode, bool is_first, bool is_last)
 {
         if(eoc_mode_options.process(mode.getMode(), is_first, is_last, m_previous_beat_was_last))
         {
@@ -67,7 +67,7 @@ void Orbits::EOCGenerator::update(Orbits::EOCMode &mode, bool is_first, bool is_
         m_previous_beat_was_last = is_last;
 }
 
-bool Orbits::EOCGenerator::process(float delta)
+bool EOCGenerator::process(float delta)
 {
         return m_generator.process(delta);
 }

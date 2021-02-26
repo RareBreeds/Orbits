@@ -313,25 +313,12 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         m_invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
         m_active_channel->m_invert = m_invert_trigger.state;
 
+
         bool rnd = std::round(params[RANDOM_KNOB_PARAM].getValue());
-        if(m_random_trigger.process(rnd))
+        if(m_random_trigger.process(rnd, args.sampleTime))
         {
                 m_active_channel->onRandomize();
                 syncParamsToActiveChannel();
-
-                // Start the delay timer
-                const auto random_button_repeat_delay_s = 0.5f;
-                m_random_timer.trigger(random_button_repeat_delay_s);
-        }
-
-        // Once timer expires shuffle every time the repeat expires until the button is released
-        if(rnd && !m_random_timer.process(args.sampleTime))
-        {
-                m_active_channel->onRandomize();
-                syncParamsToActiveChannel();
-
-                const auto random_button_repeat_rate_s = 0.05f;
-                m_random_timer.trigger(random_button_repeat_rate_s);
         }
 
         if(m_sync_trigger.process(std::round(params[SYNC_KNOB_PARAM].getValue())))

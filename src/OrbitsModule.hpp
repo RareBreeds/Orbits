@@ -3,8 +3,6 @@
 #include "plugin.hpp"
 #include <vector>
 
-namespace Orbits
-{
 struct EOCModeOption
 {
         const char *desc;
@@ -90,7 +88,32 @@ struct EOCGenerator
 {
         dsp::PulseGenerator m_generator;
         bool m_previous_beat_was_last = false;
-        void update(Orbits::EOCMode &mode, bool is_first, bool is_last);
+        void update(EOCMode &mode, bool is_first, bool is_last);
         bool process(float delta);
 };
-} // namespace Orbits
+
+struct RepeatTrigger
+{
+        const float m_repeat_delay_s = 0.5f;
+        const float m_repeat_rate_s = 0.05f;
+
+        dsp::BooleanTrigger m_trigger;
+        dsp::PulseGenerator m_repeat_timer;
+
+        bool process(bool state, float sampleTime)
+        {
+                if(m_trigger.process(state))
+                {
+                        m_repeat_timer.trigger(m_repeat_delay_s);
+                        return true;
+                }    
+
+                if(state && !m_repeat_timer.process(sampleTime))
+                {
+                        m_repeat_timer.trigger(m_repeat_rate_s);
+                        return true;
+                }
+
+                return false;
+	    }
+};

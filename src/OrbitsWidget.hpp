@@ -28,10 +28,10 @@ struct OrbitsThemeChoiceItem : MenuItem
 
 struct EOCModeItem : MenuItem
 {
-        Orbits::EOCMode *m_module;
+        EOCMode *m_module;
         int m_id;
 
-        EOCModeItem(Orbits::EOCMode *module, int id, const char *name)
+        EOCModeItem(EOCMode *module, int id, const char *name)
         {
                 m_module = module;
                 m_id = id;
@@ -47,6 +47,6 @@ struct EOCModeItem : MenuItem
 
 struct EOCWidget
 {
-    Orbits::EOCMode *m_module;
+    EOCMode *m_module;
     void appendContextMenu(Menu *menu);
 };
