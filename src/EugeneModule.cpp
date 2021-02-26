@@ -68,8 +68,8 @@ bool RareBreeds_Orbits_Eugene::readReverse()
 {
         if(inputs[REVERSE_CV_INPUT].isConnected())
         {
-                reverseTrigger.process(inputs[REVERSE_CV_INPUT].getVoltage());
-                return reverseTrigger.isHigh();
+                m_reverse_trigger.process(inputs[REVERSE_CV_INPUT].getVoltage());
+                return m_reverse_trigger.isHigh();
         }
         else
         {
@@ -81,8 +81,8 @@ bool RareBreeds_Orbits_Eugene::readInvert()
 {
         if(inputs[INVERT_CV_INPUT].isConnected())
         {
-                invertTrigger.process(inputs[INVERT_CV_INPUT].getVoltage());
-                return invertTrigger.isHigh();
+                m_invert_trigger.process(inputs[INVERT_CV_INPUT].getVoltage());
+                return m_invert_trigger.isHigh();
         }
         else
         {
@@ -92,50 +92,50 @@ bool RareBreeds_Orbits_Eugene::readInvert()
 
 void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
 {
-        if(inputs[SYNC_INPUT].isConnected() && syncTrigger.process(inputs[SYNC_INPUT].getVoltage()))
+        if(inputs[SYNC_INPUT].isConnected() && m_sync_trigger.process(inputs[SYNC_INPUT].getVoltage()))
         {
-                index = 0;
+                m_current_step = 0;
         }
 
-        if(inputs[CLOCK_INPUT].isConnected() && clockTrigger.process(inputs[CLOCK_INPUT].getVoltage()))
+        if(inputs[CLOCK_INPUT].isConnected() && m_clock_trigger.process(inputs[CLOCK_INPUT].getVoltage()))
         {
                 auto length = readLength();
                 auto reverse = readReverse();
 
-                eocGenerator.update(eoc, index == 0, index == (reverse ? 1 : length - 1));
+                m_eoc_generator.update(m_eoc, m_current_step == 0, m_current_step == (reverse ? 1 : length - 1));
 
                 if(reverse)
                 {
-                        if(index == 0)
+                        if(m_current_step == 0)
                         {
-                                index = length - 1;
+                                m_current_step = length - 1;
                         }
                         else
                         {
-                                --index;
+                                --m_current_step;
                         }
                 }
 
-                if(m_rhythm[index])
+                if(m_rhythm[m_current_step])
                 {
-                        outputGenerator.trigger(1e-3f);
+                        m_output_generator.trigger(1e-3f);
                 }
 
                 if(!reverse)
                 {
-                        if(index == length - 1)
+                        if(m_current_step == length - 1)
                         {
-                                index = 0;
+                                m_current_step = 0;
                         }
                         else
                         {
-                                ++index;
+                                ++m_current_step;
                         }
                 }
         }
 
-        outputs[BEAT_OUTPUT].setVoltage(outputGenerator.process(args.sampleTime) ? 10.f : 0.f);
-        outputs[EOC_OUTPUT].setVoltage(eocGenerator.process(args.sampleTime) ? 10.f : 0.f);
+        outputs[BEAT_OUTPUT].setVoltage(m_output_generator.process(args.sampleTime) ? 10.f : 0.f);
+        outputs[EOC_OUTPUT].setVoltage(m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f);
 }
 
 void RareBreeds_Orbits_Eugene::updateEuclideanRhythm(unsigned int hits, unsigned int length, unsigned int shift,
@@ -160,44 +160,44 @@ void RareBreeds_Orbits_Eugene::updateRhythm()
         bool update = false;
 
         unsigned int length = readLength();
-        if(length != oldLength)
+        if(length != m_old_length)
         {
-                oldLength = length;
+                m_old_length = length;
                 update = true;
 
                 // wrap the index to the new length
                 // to avoid accessing the rhythm out of bounds
-                if(index >= length)
+                if(m_current_step >= length)
                 {
-                        index = 0;
+                        m_current_step = 0;
                 }
         }
 
         unsigned int shift = readShift(length);
-        if(shift != oldShift)
+        if(shift != m_old_shift)
         {
-                oldShift = shift;
+                m_old_shift = shift;
                 update = true;
         }
 
         unsigned int hits = readHits(length);
-        if(hits != oldHits)
+        if(hits != m_old_hits)
         {
-                oldHits = hits;
+                m_old_hits = hits;
                 update = true;
         }
 
         bool reverse = readReverse();
-        if(reverse != oldReverse)
+        if(reverse != m_old_reverse)
         {
-                oldReverse = reverse;
+                m_old_reverse = reverse;
                 update = true;
         }
 
         bool invert = readInvert();
-        if(invert != oldInvert)
+        if(invert != m_old_invert)
         {
-                oldInvert = invert;
+                m_old_invert = invert;
                 update = true;
         }
 
@@ -220,11 +220,11 @@ json_t *RareBreeds_Orbits_Eugene::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_object_set_new(root, "eoc", eoc.dataToJson());
+                json_object_set_new(root, "eoc", m_eoc.dataToJson());
 
-                if(widget)
+                if(m_widget)
                 {
-                        json_t *w = widget->dataToJson();
+                        json_t *w = m_widget->dataToJson();
                         if(w)
                         {
                                 json_object_set_new(root, "widget", w);
@@ -238,14 +238,14 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
 {
         if(root)
         {
-                eoc.dataFromJson(json_object_get(root, "eoc"));
+                m_eoc.dataFromJson(json_object_get(root, "eoc"));
 
-                if(widget)
+                if(m_widget)
                 {
                         json_t *obj = json_object_get(root, "widget");
                         if(obj)
                         {
-                                widget->dataFromJson(obj);
+                                m_widget->dataFromJson(obj);
                         }
                 }
         }
@@ -253,5 +253,5 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Eugene::onReset()
 {
-        index = 0;
+        m_current_step = 0;
 }

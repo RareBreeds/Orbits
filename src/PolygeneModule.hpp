@@ -89,16 +89,15 @@ struct RareBreeds_Orbits_Polygene : Module
         int m_active_channels = 1;
         Channel m_channels[max_channels];
         Channel *m_active_channel;
-        dsp::BooleanTrigger reverse_trigger;
-        dsp::BooleanTrigger invert_trigger;
-        dsp::BooleanTrigger random_trigger;
-        dsp::PulseGenerator random_timer;
-        dsp::BooleanTrigger sync_trigger;
-        RareBreeds_Orbits_PolygeneWidget *widget = NULL;
+        dsp::BooleanTrigger m_reverse_trigger;
+        dsp::BooleanTrigger m_invert_trigger;
+        dsp::BooleanTrigger m_random_trigger;
+        dsp::PulseGenerator m_random_timer;
+        dsp::BooleanTrigger m_sync_trigger;
+        RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
+        Orbits::EOCMode m_eoc;
 
         RareBreeds_Orbits_Polygene();
-
-        Orbits::EOCMode eoc;
 
         void reset();
         void syncParamsToActiveChannel();

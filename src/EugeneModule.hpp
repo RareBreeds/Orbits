@@ -41,23 +41,23 @@ struct RareBreeds_Orbits_Eugene : Module
                 NUM_LIGHTS
         };
 
-        dsp::SchmittTrigger clockTrigger;
-        dsp::SchmittTrigger syncTrigger;
-        dsp::SchmittTrigger reverseTrigger;
-        dsp::SchmittTrigger invertTrigger;
-        dsp::PulseGenerator outputGenerator;
+        dsp::SchmittTrigger m_clock_trigger;
+        dsp::SchmittTrigger m_sync_trigger;
+        dsp::SchmittTrigger m_reverse_trigger;
+        dsp::SchmittTrigger m_invert_trigger;
+        dsp::PulseGenerator m_output_generator;
 
-        Orbits::EOCMode eoc;
-        Orbits::EOCGenerator eocGenerator;
+        Orbits::EOCMode m_eoc;
+        Orbits::EOCGenerator m_eoc_generator;
 
-        unsigned int index = 0;
+        unsigned int m_current_step = 0;
         rhythm::Rhythm m_rhythm;
-        unsigned int oldLength = rhythm::max_length + 1;
-        unsigned int oldHits = rhythm::max_length + 1;
-        unsigned int oldShift = rhythm::max_length + 1;
-        bool oldReverse = false;
-        bool oldInvert = false;
-        RareBreeds_Orbits_EugeneWidget *widget = NULL;
+        unsigned int m_old_length = rhythm::max_length + 1;
+        unsigned int m_old_hits = rhythm::max_length + 1;
+        unsigned int m_old_shift = rhythm::max_length + 1;
+        bool m_old_reverse = false;
+        bool m_old_invert = false;
+        RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
 
         RareBreeds_Orbits_Eugene();
 

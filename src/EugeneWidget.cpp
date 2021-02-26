@@ -126,8 +126,9 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
                 // Highlight the beat that has just played
                 // For forward moving rhythms this is the previous index
                 // For reversed rhythms this is index
-                if((reverse && module->index == k) ||
-                   (!reverse && ((k == length - 1) ? (0 == module->index) : (k + 1 == module->index))))
+                if((reverse && module->m_current_step == k) ||
+                   (!reverse &&
+                    ((k == length - 1) ? (0 == module->m_current_step) : (k + 1 == module->m_current_step))))
                 {
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, outline_radius);
@@ -155,12 +156,12 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
 RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&config)
 {
         setModule(module);
-        eoc_widget.m_module = &module->eoc;
+        eoc_widget.m_module = &module->m_eoc;
 
         // Module may be NULL if this is the module selection screen
         if(module)
         {
-                module->widget = this;
+                module->m_widget = this;
         }
 
         m_theme = m_config->getDefaultThemeId();

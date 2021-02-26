@@ -142,7 +142,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto variation = readVariation(length, hits);
                 auto reverse = readReverse();
 
-                m_eoc_generator.update(m_module->eoc, m_current_step == 0,
+                m_eoc_generator.update(m_module->m_eoc, m_current_step == 0,
                                        m_current_step == (reverse ? 1 : length - 1));
 
                 if(reverse)
@@ -307,34 +307,34 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 m_variation = variation;
         }
 
-        reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
-        m_active_channel->m_reverse = reverse_trigger.state;
+        m_reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
+        m_active_channel->m_reverse = m_reverse_trigger.state;
 
-        invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
-        m_active_channel->m_invert = invert_trigger.state;
+        m_invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
+        m_active_channel->m_invert = m_invert_trigger.state;
 
         bool rnd = std::round(params[RANDOM_KNOB_PARAM].getValue());
-        if(random_trigger.process(rnd))
+        if(m_random_trigger.process(rnd))
         {
                 m_active_channel->onRandomize();
                 syncParamsToActiveChannel();
 
                 // Start the delay timer
                 const auto random_button_repeat_delay_s = 0.5f;
-                random_timer.trigger(random_button_repeat_delay_s);
+                m_random_timer.trigger(random_button_repeat_delay_s);
         }
 
         // Once timer expires shuffle every time the repeat expires until the button is released
-        if(rnd && !random_timer.process(args.sampleTime))
+        if(rnd && !m_random_timer.process(args.sampleTime))
         {
                 m_active_channel->onRandomize();
                 syncParamsToActiveChannel();
 
                 const auto random_button_repeat_rate_s = 0.05f;
-                random_timer.trigger(random_button_repeat_rate_s);
+                m_random_timer.trigger(random_button_repeat_rate_s);
         }
 
-        if(sync_trigger.process(std::round(params[SYNC_KNOB_PARAM].getValue())))
+        if(m_sync_trigger.process(std::round(params[SYNC_KNOB_PARAM].getValue())))
         {
                 for(auto &chan : m_channels)
                 {
@@ -357,7 +357,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "hits", json_real(m_hits));
                 json_object_set_new(root, "shift", json_real(m_shift));
                 json_object_set_new(root, "variation", json_real(m_variation));
-                json_object_set_new(root, "eoc", eoc.dataToJson());
+                json_object_set_new(root, "eoc", m_eoc.dataToJson());
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
                 json_t *channels = json_array();
@@ -375,9 +375,9 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                         json_object_set_new(root, "channels", channels);
                 }
 
-                if(widget)
+                if(m_widget)
                 {
-                        json_t *w = widget->dataToJson();
+                        json_t *w = m_widget->dataToJson();
                         if(w)
                         {
                                 json_object_set_new(root, "widget", w);
@@ -396,7 +396,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_load_real(root, "hits", &m_hits);
                 json_load_real(root, "shift", &m_shift);
                 json_load_real(root, "variation", &m_variation);
-                eoc.dataFromJson(json_object_get(root, "eoc"));
+                m_eoc.dataFromJson(json_object_get(root, "eoc"));
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
@@ -411,12 +411,12 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                         }
                 }
 
-                if(widget)
+                if(m_widget)
                 {
                         json_t *obj = json_object_get(root, "widget");
                         if(obj)
                         {
-                                widget->dataFromJson(obj);
+                                m_widget->dataFromJson(obj);
                         }
                 }
         }

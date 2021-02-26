@@ -142,12 +142,12 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         : OrbitsWidget(&config)
 {
         setModule(module);
-        eoc_widget.m_module = &module->eoc;
+        eoc_widget.m_module = &module->m_eoc;
 
         // Module may be NULL if this is the module selection screen
         if(module)
         {
-                module->widget = this;
+                module->m_widget = this;
         }
 
         m_theme = m_config->getDefaultThemeId();
