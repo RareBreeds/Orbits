@@ -303,11 +303,11 @@
        inkscape:collect="always"
        id="linearGradient991">
       <stop
-         style="stop-color:#1a1a1a;stop-opacity:1"
+         style="stop-color:#1c1c1c;stop-opacity:1"
          offset="0"
          id="stop987" />
       <stop
-         style="stop-color:#212121;stop-opacity:1"
+         style="stop-color:#262626;stop-opacity:1"
          offset="1"
          id="stop989" />
     </linearGradient>
@@ -370,7 +370,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="3.1950386"
      inkscape:cx="184.04459"
-     inkscape:cy="49.468632"
+     inkscape:cy="425.05095"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
