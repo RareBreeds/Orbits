@@ -20,15 +20,15 @@
       "keywords": "euclidean euclidian rhythm beat pattern sequence"
     },
     {
-        "slug": "RareBreeds_Orbits_Polygene",
-        "name": "Polygene",
-        "description": "Polyphonic Rhythm Generator",
-        "tags": [
-          "Clock modulator",
-          "Sequencer",
-          "Polyphonic"
-        ],
-        "keywords": "euclidean euclidian rhythm beat pattern poly sequence"
-      }
+      "slug": "RareBreeds_Orbits_Polygene",
+      "name": "Polygene",
+      "description": "Polyphonic Rhythm Generator",
+      "tags": [
+        "Clock modulator",
+        "Sequencer",
+        "Polyphonic"
+      ],
+      "keywords": "euclidean euclidian rhythm beat pattern poly sequence"
+    } 
   ]
 }
