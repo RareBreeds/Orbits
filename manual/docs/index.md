@@ -21,6 +21,7 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
  * Sync input for syncing the start of the rhythm with another signal
  * Shift knob for selecting the initial beat of the rhythm
  * Lots of CV controllable parameters
+ * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
 
 ### Panel
 
@@ -29,13 +30,25 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
 ![Display](img/display.png)
 
 ### Out : Output
-A pulse is output when an on-beat (hit) is clocked. 0-10V Unipolar CV 1ms pulse duration.
+A pulse is output when an on-beat (hit) is clocked.
 
-### Clk : Input
-A rising edge advances the current beat. Schmitt triggered.
+0-10V Unipolar CV 1ms pulse duration.
 
-### Sync : Input
-A rising edge resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display. Schmitt triggered.
+### EOC : Output
+A pulse is output when a new cycle starts.
+
+There's 3 behaviour options available when right clicking the module:
+ - On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
+ - First - On the first beat of the cycle, even if a cycle hasn't been completed.
+ - Last - On the last beat of the cycle.
+
+0-10V Unipolar CV 1ms pulse duration.
+
+### Clk : Input, Rising Edge Sensitive, Schmitt triggered
+A rising edge advances the current beat.
+
+### Sync : Input, Rising Edge Sensitive, Schmitt triggered
+A rising edge resets the current beat to the first beat of the rhythm which is always 12 o'clock on the display.
 
 ### Length : Input
 The number of beats in the rhythm. Integer range between 1 to 32 inclusive.
@@ -45,12 +58,13 @@ The number of on-beats in the rhythm, or the density. Integer range between 0 an
 
 ### Shift : Input
 Sets the beat in the rhythm to start from. A sync pulse will set the current beat to this number of beats before beat 0. Integer range between 0 and the current Length - 1 inclusive.
+
 Rotating this knob has the effect of rotating the start beat the same direction around the circle.
 
-### Reverse : Input
+### Reverse : Input, Level Sensitive, Schmitt triggered
 Sets the direction that the clock advances the beat. Clockwise when off, anticlockwise when on.
 
-### Invert : Input
+### Invert : Input, Level Sensitive, Schmitt triggered
 Inverts the Euclidean algorithm. When this switch is on on-beats become off-beats and off-beats become on-beats. Visually you can tell this is enabled by the on-beats being represented as empty circles rather than whole ones.
 
 ![Invert](img/invert.png)
@@ -83,6 +97,7 @@ Polygene is a polyphonic rhythm generator module.
  * Sync button and CV input for syncing the start of the rhythm with another signal
  * Shift knob for selecting the initial beat of the rhythm
  * Lots of CV controllable parameters
+ * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
 
 ### Panel
 
@@ -159,5 +174,17 @@ If the invert CV input is connected its values are used in preference to the but
 A pulse is output when an on-beat (hit) is clocked for that channel.
 
 The number of output channels matches the number of channels active on the clock input.
+
+0-10V Unipolar CV 1ms pulse duration.
+
+### EOC : Output, Polyphonic
+A pulse is output on each channel when a new cycle for that channel starts.
+
+The number of output channels matches the number of channels active on the clock input.
+
+There's 3 behaviour options available when right clicking the module:
+ - On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
+ - First - On the first beat of the cycle, even if a cycle hasn't been completed.
+ - Last - On the last beat of the cycle.
 
 0-10V Unipolar CV 1ms pulse duration.
