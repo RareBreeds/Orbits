@@ -1,5 +1,7 @@
 # Orbits Manual
 
+<a href='https://ko-fi.com/E1E63S8XF' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi5.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 Orbits is an [open source](https://github.com/RareBreeds/Orbits/) plugin for [VCV Rack](https://vcvrack.com/).
 
 ![Modules](img/all-modules.png)
