@@ -1,4 +1,6 @@
 ## [Unreleased]
+ - No changes
+## [1.2.0] - 2021-02-27
 ### Added
  - Polygene - a new polyphonic rhythm generator module
  - End of cycle output for Polygene and Eugene
@@ -22,6 +24,7 @@
 ## [1.1.0] - 2020-12-23
  - Initial Release
 
-[Unreleased]: https://github.com/RareBreeds/Orbits/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/RareBreeds/Orbits/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/RareBreeds/Orbits/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/RareBreeds/Orbits/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/RareBreeds/Orbits/releases/tag/v1.1.0
