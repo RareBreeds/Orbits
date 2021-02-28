@@ -90,12 +90,21 @@ struct BeatModeOption
         BeatModeOption(const char *_desc) : desc{_desc}
         {
         }
+        virtual bool process(bool pulse, bool state) const = 0;
+        virtual ~BeatModeOption()
+        {
+        }
 };
 
 struct BeatModeOptionPulse : BeatModeOption
 {
         BeatModeOptionPulse() : BeatModeOption("Pulse")
         {
+        }
+
+        bool process(bool pulse, bool state) const override
+        {
+                return pulse;
         }
 };
 
@@ -104,6 +113,15 @@ struct BeatModeOptionGate : BeatModeOption
         BeatModeOptionGate() : BeatModeOption("Gate")
         {
         }
+
+        bool process(bool pulse, bool state) const override
+        {
+                if(pulse)
+                {
+                        return false;
+                }
+                return state;
+        }
 };
 
 struct BeatModeOptionHold : BeatModeOption
@@ -111,12 +129,17 @@ struct BeatModeOptionHold : BeatModeOption
         BeatModeOptionHold() : BeatModeOption("Hold")
         {
         }
+
+        bool process(bool pulse, bool state) const override
+        {
+                return state;
+        }
 };
 
 class BeatModeOptions
 {
       public:
-        bool update(int mode, bool is_on) const;
+        bool process(int mode, bool pulse, bool state) const;
         std::vector<std::string> getOptions(void) const;
         ~BeatModeOptions();
         size_t size() const;
@@ -140,7 +163,7 @@ struct BeatGenerator
 {
         dsp::PulseGenerator m_generator;
         bool m_state = false;
-        void update(BeatMode &mode, bool is_on);
+        void update(bool is_on);
         bool process(BeatMode &mode, float delta);
 };
 

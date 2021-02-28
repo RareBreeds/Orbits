@@ -116,7 +116,7 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                         }
                 }
 
-                m_beat_generator.update(m_beat, m_rhythm[m_current_step]);
+                m_beat_generator.update(m_rhythm[m_current_step]);
 
                 if(!reverse)
                 {

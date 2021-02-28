@@ -72,8 +72,6 @@ bool EOCGenerator::process(float delta)
         return m_generator.process(delta);
 }
 
-
-
 static const BeatModeOptions beat_mode_options;
 
 std::vector<std::string> BeatModeOptions::getOptions(void) const
@@ -97,6 +95,11 @@ BeatModeOptions::~BeatModeOptions()
 size_t BeatModeOptions::size() const
 {
         return options.size();
+}
+
+bool BeatModeOptions::process(int mode, bool pulse, bool state) const
+{
+        return options[mode]->process(pulse, state);
 }
 
 int BeatMode::getMode(void)
@@ -127,32 +130,20 @@ void BeatMode::dataFromJson(json_t *root)
         }
 }
 
-void BeatGenerator::update(BeatMode &mode, bool is_on)
+void BeatGenerator::update(bool is_on)
 {
-        // TODO: Replace getMode with polymorphism
-        if(mode.getMode() == 0)
+        m_state = is_on;
+        if(is_on)
         {
-                if(is_on)
-                {
-                        m_generator.trigger();
-                }
-        }
-        else if(mode.getMode() == 1)
-        {
-                m_state = is_on;
-                if(is_on)
-                {
-                        m_generator.trigger();
-                }
-        }
-        else
-        {
-                m_state = is_on;
+                m_generator.trigger();
         }
 }
 
 bool BeatGenerator::process(BeatMode &mode, float delta)
 {
+        bool pulse = m_generator.process(delta);
+        return beat_mode_options.process(mode.getMode(), pulse, m_state);
+
         if(mode.getMode() == 0)
         {
                 return m_generator.process(delta);
