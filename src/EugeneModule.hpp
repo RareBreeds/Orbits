@@ -45,7 +45,8 @@ struct RareBreeds_Orbits_Eugene : Module
         dsp::SchmittTrigger m_sync_trigger;
         dsp::SchmittTrigger m_reverse_trigger;
         dsp::SchmittTrigger m_invert_trigger;
-        dsp::PulseGenerator m_output_generator;
+        BeatMode m_beat;
+        BeatGenerator m_beat_generator;
 
         EOCMode m_eoc;
         EOCGenerator m_eoc_generator;

@@ -156,6 +156,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
 RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&config)
 {
         setModule(module);
+        beat_widget.m_module = &module->m_beat;
         eoc_widget.m_module = &module->m_eoc;
 
         // Module may be NULL if this is the module selection screen
@@ -203,5 +204,6 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
 {
+        beat_widget.appendContextMenu(menu);
         eoc_widget.appendContextMenu(menu);
 }

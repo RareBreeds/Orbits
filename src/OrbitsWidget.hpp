@@ -47,6 +47,31 @@ struct EOCModeItem : MenuItem
 
 struct EOCWidget
 {
-    EOCMode *m_module;
-    void appendContextMenu(Menu *menu);
+        EOCMode *m_module;
+        void appendContextMenu(Menu *menu);
+};
+
+struct BeatModeItem : MenuItem
+{
+        BeatMode *m_module;
+        int m_id;
+
+        BeatModeItem(BeatMode *module, int id, const char *name)
+        {
+                m_module = module;
+                m_id = id;
+                text = name;
+                rightText = CHECKMARK(module->getMode() == id);
+        }
+
+        void onAction(const event::Action &e) override
+        {
+                m_module->setMode(m_id);
+        }
+};
+
+struct BeatWidget
+{
+        BeatMode *m_module;
+        void appendContextMenu(Menu *menu);
 };

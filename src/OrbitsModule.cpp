@@ -71,3 +71,102 @@ bool EOCGenerator::process(float delta)
 {
         return m_generator.process(delta);
 }
+
+
+
+static const BeatModeOptions beat_mode_options;
+
+std::vector<std::string> BeatModeOptions::getOptions(void) const
+{
+        std::vector<std::string> opts;
+        for(auto option : options)
+        {
+                opts.push_back(option->desc);
+        }
+        return opts;
+}
+
+BeatModeOptions::~BeatModeOptions()
+{
+        for(auto i : options)
+        {
+                delete i;
+        }
+}
+
+size_t BeatModeOptions::size() const
+{
+        return options.size();
+}
+
+int BeatMode::getMode(void)
+{
+        return m_mode;
+}
+
+void BeatMode::setMode(int mode)
+{
+        m_mode = math::clamp(mode, 0, beat_mode_options.size());
+}
+
+std::vector<std::string> BeatMode::getOptions(void)
+{
+        return beat_mode_options.getOptions();
+}
+
+json_t *BeatMode::dataToJson(void)
+{
+        return json_integer(m_mode);
+}
+
+void BeatMode::dataFromJson(json_t *root)
+{
+        if(root)
+        {
+                setMode(json_integer_value(root));
+        }
+}
+
+void BeatGenerator::update(BeatMode &mode, bool is_on)
+{
+        // TODO: Replace getMode with polymorphism
+        if(mode.getMode() == 0)
+        {
+                if(is_on)
+                {
+                        m_generator.trigger();
+                }
+        }
+        else if(mode.getMode() == 1)
+        {
+                m_state = is_on;
+                if(is_on)
+                {
+                        m_generator.trigger();
+                }
+        }
+        else
+        {
+                m_state = is_on;
+        }
+}
+
+bool BeatGenerator::process(BeatMode &mode, float delta)
+{
+        if(mode.getMode() == 0)
+        {
+                return m_generator.process(delta);
+        }
+        else if(mode.getMode() == 1)
+        {
+                if(m_generator.process(delta))
+                {
+                        return false;
+                }
+                return m_state;
+        }
+        else
+        {
+                return m_state;
+        }
+}

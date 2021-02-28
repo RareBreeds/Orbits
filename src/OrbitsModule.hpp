@@ -23,10 +23,6 @@ struct EOCModeOptionOnRepeat : EOCModeOption
         {
         }
 
-        virtual ~EOCModeOptionOnRepeat() override
-        {
-        }
-
         bool process(bool is_first, bool is_last, bool prev_was_last) const override
         {
                 return is_first && prev_was_last;
@@ -36,10 +32,6 @@ struct EOCModeOptionOnRepeat : EOCModeOption
 struct EOCModeOptionFirst : EOCModeOption
 {
         EOCModeOptionFirst() : EOCModeOption("First")
-        {
-        }
-
-        virtual ~EOCModeOptionFirst() override
         {
         }
 
@@ -92,6 +84,66 @@ struct EOCGenerator
         bool process(float delta);
 };
 
+struct BeatModeOption
+{
+        const char *desc;
+        BeatModeOption(const char *_desc) : desc{_desc}
+        {
+        }
+};
+
+struct BeatModeOptionPulse : BeatModeOption
+{
+        BeatModeOptionPulse() : BeatModeOption("Pulse")
+        {
+        }
+};
+
+struct BeatModeOptionGate : BeatModeOption
+{
+        BeatModeOptionGate() : BeatModeOption("Gate")
+        {
+        }
+};
+
+struct BeatModeOptionHold : BeatModeOption
+{
+        BeatModeOptionHold() : BeatModeOption("Hold")
+        {
+        }
+};
+
+class BeatModeOptions
+{
+      public:
+        bool update(int mode, bool is_on) const;
+        std::vector<std::string> getOptions(void) const;
+        ~BeatModeOptions();
+        size_t size() const;
+
+      private:
+        std::vector<BeatModeOption *> options{new BeatModeOptionPulse, new BeatModeOptionGate, new BeatModeOptionHold};
+};
+
+struct BeatMode
+{
+        int m_mode = 0;
+
+        int getMode(void);
+        void setMode(int mode);
+        std::vector<std::string> getOptions(void);
+        json_t *dataToJson(void);
+        void dataFromJson(json_t *root);
+};
+
+struct BeatGenerator
+{
+        dsp::PulseGenerator m_generator;
+        bool m_state = false;
+        void update(BeatMode &mode, bool is_on);
+        bool process(BeatMode &mode, float delta);
+};
+
 struct RepeatTrigger
 {
         const float m_repeat_delay_s = 0.5f;
@@ -106,7 +158,7 @@ struct RepeatTrigger
                 {
                         m_repeat_timer.trigger(m_repeat_delay_s);
                         return true;
-                }    
+                }
 
                 if(state && !m_repeat_timer.process(sampleTime))
                 {
@@ -115,5 +167,5 @@ struct RepeatTrigger
                 }
 
                 return false;
-	    }
+        }
 };

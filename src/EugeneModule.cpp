@@ -116,10 +116,7 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                         }
                 }
 
-                if(m_rhythm[m_current_step])
-                {
-                        m_output_generator.trigger(1e-3f);
-                }
+                m_beat_generator.update(m_beat, m_rhythm[m_current_step]);
 
                 if(!reverse)
                 {
@@ -134,7 +131,7 @@ void RareBreeds_Orbits_Eugene::updateOutput(const ProcessArgs &args)
                 }
         }
 
-        outputs[BEAT_OUTPUT].setVoltage(m_output_generator.process(args.sampleTime) ? 10.f : 0.f);
+        outputs[BEAT_OUTPUT].setVoltage(m_beat_generator.process(m_beat, args.sampleTime) ? 10.f : 0.f);
         outputs[EOC_OUTPUT].setVoltage(m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f);
 }
 
@@ -211,6 +208,7 @@ json_t *RareBreeds_Orbits_Eugene::dataToJson()
         json_t *root = json_object();
         if(root)
         {
+                json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
 
                 if(m_widget)
@@ -229,6 +227,7 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
 {
         if(root)
         {
+                m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
 
                 if(m_widget)

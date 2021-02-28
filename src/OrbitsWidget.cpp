@@ -100,3 +100,16 @@ void EOCWidget::appendContextMenu(Menu *menu)
                 menu->addChild(new EOCModeItem(m_module, i, options[i].c_str()));
         }
 }
+
+void BeatWidget::appendContextMenu(Menu *menu)
+{
+        menu->addChild(new MenuSeparator);
+        MenuLabel *beat_label = new MenuLabel;
+        beat_label->text = "Beat Mode";
+        menu->addChild(beat_label);
+        std::vector<std::string> options = m_module->getOptions();
+        for(size_t i = 0; i < options.size(); ++i)
+        {
+                menu->addChild(new BeatModeItem(m_module, i, options[i].c_str()));
+        }
+}
