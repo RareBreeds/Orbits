@@ -1,5 +1,10 @@
 ## [Unreleased]
- - No changes
+### Added
+ - 3 Beat mode options to Eugene and Polygene
+   - Pulse - 1ms pulse on an on beat
+   - Gate - Output held for the duration of the beat and retriggered
+   - Hold - Output is held high if the beat is on and low if a beat is off
+
 ## [1.2.0] - 2021-02-27
 ### Added
  - Polygene - a new polyphonic rhythm generator module
