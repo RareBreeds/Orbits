@@ -62,7 +62,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_sync_trigger;
                 dsp::SchmittTrigger m_reverse_trigger;
                 dsp::SchmittTrigger m_invert_trigger;
-                dsp::PulseGenerator m_output_generator;
+                BeatGenerator m_beat_generator;
                 EOCGenerator m_eoc_generator;
                 float m_length;
                 float m_hits;
@@ -94,6 +94,7 @@ struct RareBreeds_Orbits_Polygene : Module
         RepeatTrigger m_random_trigger;
         dsp::BooleanTrigger m_sync_trigger;
         RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
+        BeatMode m_beat;
         EOCMode m_eoc;
 
         RareBreeds_Orbits_Polygene();

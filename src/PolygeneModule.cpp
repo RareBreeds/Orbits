@@ -157,10 +157,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                         }
                 }
 
-                if(isOnBeat(length, hits, shift, variation, m_current_step, invert))
-                {
-                        m_output_generator.trigger(1e-3f);
-                }
+                m_beat_generator.update(isOnBeat(length, hits, shift, variation, m_current_step, invert));
 
                 if(!reverse)
                 {
@@ -175,7 +172,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 }
         }
 
-        auto out = m_output_generator.process(args.sampleTime) ? 10.f : 0.f;
+        auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
         m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
 
         auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
@@ -313,7 +310,6 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         m_invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
         m_active_channel->m_invert = m_invert_trigger.state;
 
-
         bool rnd = std::round(params[RANDOM_KNOB_PARAM].getValue());
         if(m_random_trigger.process(rnd, args.sampleTime))
         {
@@ -344,6 +340,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "hits", json_real(m_hits));
                 json_object_set_new(root, "shift", json_real(m_shift));
                 json_object_set_new(root, "variation", json_real(m_variation));
+                json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
@@ -383,6 +380,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_load_real(root, "hits", &m_hits);
                 json_load_real(root, "shift", &m_shift);
                 json_load_real(root, "variation", &m_variation);
+                m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
