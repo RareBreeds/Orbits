@@ -143,21 +143,4 @@ bool BeatGenerator::process(BeatMode &mode, float delta)
 {
         bool pulse = m_generator.process(delta);
         return beat_mode_options.process(mode.getMode(), pulse, m_state);
-
-        if(mode.getMode() == 0)
-        {
-                return m_generator.process(delta);
-        }
-        else if(mode.getMode() == 1)
-        {
-                if(m_generator.process(delta))
-                {
-                        return false;
-                }
-                return m_state;
-        }
-        else
-        {
-                return m_state;
-        }
 }
