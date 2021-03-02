@@ -24,7 +24,7 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
  * Shift knob for selecting the initial beat of the rhythm
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
- * 3 Beat modes that control the beat output behaviour
+ * 3 Beat modes that control the beat output behaviour (Unreleased \>v1.2.0)
 
 ### Panel
 
@@ -33,22 +33,25 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
 ![Display](img/display.png)
 
 ### Out : Output
-The output is raised when an on-beat (hit) is clocked.
-
-When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
- - Pulse - A 1ms pulse is output on each on-beat
- - Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats
- - Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats
+A pulse is output when an on-beat (hit) is clocked.
 
 0-10V Unipolar CV.
 
-### EOC : Output
+#### Unreleased (\>v1.2.0)
+When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
+
+- Pulse - A 1ms pulse is output on each on-beat
+- Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats
+- Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats
+
+### EOC : Output yes
 A pulse is output when a new cycle starts.
 
 There's 3 behaviour options available when right clicking the module:
- - On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
- - First - On the first beat of the cycle, even if a cycle hasn't been completed.
- - Last - On the last beat of the cycle.
+
+- On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
+- First - On the first beat of the cycle, even if a cycle hasn't been completed.
+- Last - On the last beat of the cycle.
 
 0-10V Unipolar CV 1ms pulse duration.
 
@@ -106,7 +109,7 @@ Polygene is a polyphonic rhythm generator module.
  * Shift knob for selecting the initial beat of the rhythm
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
- * 3 Beat modes that control the beat output behaviour
+ * 3 Beat modes that control the beat output behaviour (Unreleased \>v1.2.0)
 
 ### Panel
 
@@ -180,16 +183,18 @@ If the invert CV input is connected its values are used in preference to the but
 
 ### Out : Output, Polyphonic
 
-The output is raised when an on-beat (hit) is clocked for that channel.
-
-When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
- - Pulse - A 1ms pulse is output on each on-beat
- - Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats
- - Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats
+A pulse is output when an on-beat (hit) is clocked for that channel.
 
 The number of output channels matches the number of channels active on the clock input.
 
 0-10V Unipolar CV.
+
+#### Unreleased (\>v1.2.0)
+When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
+
+- Pulse - A 1ms pulse is output on each on-beat
+- Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats
+- Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats
 
 ### EOC : Output, Polyphonic
 A pulse is output on each channel when a new cycle for that channel starts.
@@ -197,8 +202,9 @@ A pulse is output on each channel when a new cycle for that channel starts.
 The number of output channels matches the number of channels active on the clock input.
 
 There's 3 behaviour options available when right clicking the module:
- - On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
- - First - On the first beat of the cycle, even if a cycle hasn't been completed.
- - Last - On the last beat of the cycle.
+
+- On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
+- First - On the first beat of the cycle, even if a cycle hasn't been completed.
+- Last - On the last beat of the cycle.
 
 0-10V Unipolar CV 1ms pulse duration.
