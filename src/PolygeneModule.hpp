@@ -77,6 +77,10 @@ struct RareBreeds_Orbits_Polygene : Module
                 bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
                               unsigned int beat, bool invert);
                 unsigned int readLength();
+                unsigned int readStep(unsigned int length)
+                {
+                        return m_current_step >= length ? 0 : m_current_step;
+                }
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
                 unsigned int readVariation(unsigned int length, unsigned int shift);

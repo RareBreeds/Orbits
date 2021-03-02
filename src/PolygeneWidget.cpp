@@ -108,14 +108,16 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
 
                 nvgStrokeColor(args.vg, dash_colour);
                 nvgFillColor(args.vg, dash_colour);
-
+                // The engine is run in a different thread, m_current_step is only updated on each clock
+                // cycle so may not have been wrapped to a new length parameter yet. If the current step
+                // is out of bounds then display it at 0.
+                auto current_step = channel.readStep(length);
                 for(auto k = 0u; k < length; ++k)
                 {
                         const auto a0 = k * pi2_len + M_PI_2;
                         const auto a1 = a0 + len;
 
-                        auto current_step = channel.m_current_step == k;
-                        if(current_step)
+                        if(current_step == k)
                         {
                                 const auto center = a0 - beat_gap / 2.f;
                                 nvgBeginPath(args.vg);

@@ -110,14 +110,6 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
 
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 {
-        auto length = readLength();
-
-        // Avoid stepping out of bounds
-        if(m_current_step >= length)
-        {
-                m_current_step = 0;
-        }
-
         if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
         {
                 // A rising edge of the sync input tells the module to set the current step to 0
@@ -136,11 +128,15 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 // If the channel is reversing we want to play the beat prior to this
                 // this ensures that a clock from the start of a rhythm plays the last
                 // note in the rhythm when reversed rather than the first.
+                auto length = readLength();
                 auto hits = readHits(length);
                 auto shift = readShift(length);
                 auto invert = readInvert();
                 auto variation = readVariation(length, hits);
                 auto reverse = readReverse();
+
+                // Avoid stepping out of bounds
+                m_current_step = readStep(length);
 
                 m_eoc_generator.update(m_module->m_eoc, m_current_step == 0,
                                        m_current_step == (reverse ? 1 : length - 1));
@@ -172,6 +168,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 }
         }
 
+        // TODO: Don't need to process these generators if the clock channel is not connected, they will be 0
         auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
         m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
 
@@ -262,6 +259,8 @@ void RareBreeds_Orbits_Polygene::syncParamsToActiveChannel()
 
 void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 {
+        // TOOD: Mechanically controlled parameters don't need to be polled every call
+        // Could have a timer to update them all 30 times a second or so
         m_active_channels = inputs[CLOCK_INPUT].getChannels();
         outputs[BEAT_OUTPUT].setChannels(m_active_channels);
         outputs[EOC_OUTPUT].setChannels(m_active_channels);
@@ -276,33 +275,10 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 m_previous_channel_id = m_active_channel_id;
         }
 
-        float length = params[LENGTH_KNOB_PARAM].getValue();
-        if(length != m_length)
-        {
-                m_active_channel->m_length = length;
-                m_length = length;
-        }
-
-        float hits = params[HITS_KNOB_PARAM].getValue();
-        if(hits != m_hits)
-        {
-                m_active_channel->m_hits = hits;
-                m_hits = hits;
-        }
-
-        float shift = params[SHIFT_KNOB_PARAM].getValue();
-        if(shift != m_shift)
-        {
-                m_active_channel->m_shift = shift;
-                m_shift = shift;
-        }
-
-        float variation = params[VARIATION_KNOB_PARAM].getValue();
-        if(variation != m_variation)
-        {
-                m_active_channel->m_variation = variation;
-                m_variation = variation;
-        }
+        m_active_channel->m_length = params[LENGTH_KNOB_PARAM].getValue();
+        m_active_channel->m_hits = params[HITS_KNOB_PARAM].getValue();
+        m_active_channel->m_shift = params[SHIFT_KNOB_PARAM].getValue();
+        m_active_channel->m_variation = params[VARIATION_KNOB_PARAM].getValue();
 
         m_reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
         m_active_channel->m_reverse = m_reverse_trigger.state;
