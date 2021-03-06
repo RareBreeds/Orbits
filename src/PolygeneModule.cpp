@@ -119,61 +119,62 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 }
         }
 
-        // A rising clock edge means first play the current beat
-        // then advance to the next step
-        if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel &&
-           m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
+        if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel)
         {
-                // Play the current beat
-                // If the channel is reversing we want to play the beat prior to this
-                // this ensures that a clock from the start of a rhythm plays the last
-                // note in the rhythm when reversed rather than the first.
-                auto length = readLength();
-                auto hits = readHits(length);
-                auto shift = readShift(length);
-                auto invert = readInvert();
-                auto variation = readVariation(length, hits);
-                auto reverse = readReverse();
-
-                // Avoid stepping out of bounds
-                m_current_step = readStep(length);
-
-                m_eoc_generator.update(m_module->m_eoc, m_current_step == 0,
-                                       m_current_step == (reverse ? 1 : length - 1));
-
-                if(reverse)
+                // A rising clock edge means first play the current beat
+                // then advance to the next step
+                if(m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
                 {
-                        if(m_current_step == 0)
+                        // Play the current beat
+                        // If the channel is reversing we want to play the beat prior to this
+                        // this ensures that a clock from the start of a rhythm plays the last
+                        // note in the rhythm when reversed rather than the first.
+                        auto length = readLength();
+                        auto hits = readHits(length);
+                        auto shift = readShift(length);
+                        auto invert = readInvert();
+                        auto variation = readVariation(length, hits);
+                        auto reverse = readReverse();
+
+                        // Avoid stepping out of bounds
+                        m_current_step = readStep(length);
+
+                        m_eoc_generator.update(m_module->m_eoc, m_current_step == 0,
+                                               m_current_step == (reverse ? 1 : length - 1));
+
+                        if(reverse)
                         {
-                                m_current_step = length - 1;
+                                if(m_current_step == 0)
+                                {
+                                        m_current_step = length - 1;
+                                }
+                                else
+                                {
+                                        --m_current_step;
+                                }
                         }
-                        else
+
+                        m_beat_generator.update(isOnBeat(length, hits, shift, variation, m_current_step, invert));
+
+                        if(!reverse)
                         {
-                                --m_current_step;
+                                if(m_current_step == length - 1)
+                                {
+                                        m_current_step = 0;
+                                }
+                                else
+                                {
+                                        ++m_current_step;
+                                }
                         }
                 }
 
-                m_beat_generator.update(isOnBeat(length, hits, shift, variation, m_current_step, invert));
+                auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
+                m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
 
-                if(!reverse)
-                {
-                        if(m_current_step == length - 1)
-                        {
-                                m_current_step = 0;
-                        }
-                        else
-                        {
-                                ++m_current_step;
-                        }
-                }
+                auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
+                m_module->outputs[EOC_OUTPUT].setVoltage(eoc_out, m_channel);
         }
-
-        // TODO: Don't need to process these generators if the clock channel is not connected, they will be 0
-        auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
-        m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
-
-        auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
-        m_module->outputs[EOC_OUTPUT].setVoltage(eoc_out, m_channel);
 }
 
 json_t *RareBreeds_Orbits_Polygene::Channel::dataToJson()
@@ -259,8 +260,6 @@ void RareBreeds_Orbits_Polygene::syncParamsToActiveChannel()
 
 void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 {
-        // TOOD: Mechanically controlled parameters don't need to be polled every call
-        // Could have a timer to update them all 30 times a second or so
         m_active_channels = inputs[CLOCK_INPUT].getChannels();
         outputs[BEAT_OUTPUT].setChannels(m_active_channels);
         outputs[EOC_OUTPUT].setChannels(m_active_channels);
