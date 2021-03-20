@@ -25,9 +25,9 @@ Rhythm rotate(Rhythm val, uint32_t size, uint32_t amount)
         return (val << amount | val >> (size - amount));
 }
 
-bool beat(uint32_t length, uint32_t on_beats, uint32_t shift, uint32_t num)
+bool beat(uint32_t length, uint32_t on_beats, uint32_t shift, uint32_t num, bool invert)
 {
-        return rhythm(length, on_beats, shift)[num];
+        return rhythm(length, on_beats, shift)[num] != invert;
 }
 
 uint32_t numNearEvenRhythms(uint32_t length, uint32_t density)

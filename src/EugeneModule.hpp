@@ -5,6 +5,23 @@
 
 struct RareBreeds_Orbits_EugeneWidget;
 
+struct EugeneDisplayData
+{
+        unsigned int length, hits, shift, current_step;
+        bool reverse, invert;
+
+        bool operator==(const EugeneDisplayData &rhs) const
+        {
+                return length == rhs.length && hits == rhs.hits && shift == rhs.shift &&
+                       current_step == rhs.current_step && reverse == rhs.reverse && invert == rhs.invert;
+        }
+
+        bool operator!=(const EugeneDisplayData &rhs) const
+        {
+                return !(*this == rhs);
+        }
+};
+
 struct RareBreeds_Orbits_Eugene : Module
 {
         enum ParamIds
@@ -52,12 +69,6 @@ struct RareBreeds_Orbits_Eugene : Module
         EOCGenerator m_eoc_generator;
 
         unsigned int m_current_step = 0;
-        rhythm::Rhythm m_rhythm;
-        unsigned int m_old_length = rhythm::max_length + 1;
-        unsigned int m_old_hits = rhythm::max_length + 1;
-        unsigned int m_old_shift = rhythm::max_length + 1;
-        bool m_old_reverse = false;
-        bool m_old_invert = false;
         RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
 
         RareBreeds_Orbits_Eugene();
@@ -67,14 +78,11 @@ struct RareBreeds_Orbits_Eugene : Module
         unsigned int readShift(unsigned int length);
         bool readReverse();
         bool readInvert();
-        void advanceIndex();
-        void updateOutput(const ProcessArgs &args);
-        void updateEuclideanRhythm(uint32_t length, uint32_t hits, uint32_t shift, bool invert);
-        void updateRhythm();
         void process(const ProcessArgs &args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
         void onReset() override;
         int getEOCMode(void);
         void setEOCMode(int eoc_mode);
+        EugeneDisplayData getDisplayData(void);
 };

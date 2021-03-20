@@ -5,30 +5,23 @@
 
 static OrbitsConfig config("res/eugene-layout.json");
 
-struct EugeneRhythmDisplay : TransparentWidget
+struct EugeneRhythmDisplayUnbuffered : Widget
 {
-        RareBreeds_Orbits_Eugene *module = NULL;
-        std::shared_ptr<Font> font;
-
-        EugeneRhythmDisplay();
+        std::shared_ptr<Font> m_font;
+        EugeneDisplayData m_data;
+        EugeneRhythmDisplayUnbuffered(Vec size);
         void draw(const DrawArgs &args) override;
 };
 
-EugeneRhythmDisplay::EugeneRhythmDisplay()
+EugeneRhythmDisplayUnbuffered::EugeneRhythmDisplayUnbuffered(Vec size)
 {
-        font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
+        box.pos = Vec(0.0, 0.0);
+        box.size = size;
+        m_font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
 }
 
-void EugeneRhythmDisplay::draw(const DrawArgs &args)
+void EugeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
 {
-        if(!module)
-        {
-                return;
-        }
-
-        const auto length = module->readLength();
-        const auto hits = module->readHits(length);
-        const auto shift = module->readShift(length);
         const auto foreground_color = color::WHITE;
 
         nvgSave(args.vg);
@@ -47,9 +40,9 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         nvgBeginPath(args.vg);
         nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
         nvgFontSize(args.vg, 20);
-        nvgFontFaceId(args.vg, font->handle);
-        nvgText(args.vg, 0.f, -7.f, std::to_string(hits).c_str(), NULL);
-        nvgText(args.vg, 0.f, 7.f, std::to_string(length).c_str(), NULL);
+        nvgFontFaceId(args.vg, m_font->handle);
+        nvgText(args.vg, 0.f, -7.f, std::to_string(m_data.hits).c_str(), NULL);
+        nvgText(args.vg, 0.f, 7.f, std::to_string(m_data.length).c_str(), NULL);
         // nvgFill(args.vg);
 
         // Scale to [-1, 1]
@@ -58,10 +51,8 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         // Flip x and y so we start at the top and positive angle increments go clockwise
         nvgScale(args.vg, -1.f, -1.f);
 
-        // Triangle showing direction
-        const bool reverse = module->readReverse();
         // nvgBeginPath(args.vg);
-        if(reverse)
+        if(m_data.reverse)
         {
                 nvgMoveTo(args.vg, 0.23f, -0.2f);
                 nvgLineTo(args.vg, 0.3f, 0.f);
@@ -94,26 +85,26 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         // Add a border of half a circle so we don't draw over the edge
         nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
-        const bool invert = module->readInvert();
-        for(unsigned int k = 0; k < length; ++k)
+        for(unsigned int k = 0; k < m_data.length; ++k)
         {
                 float y_pos = 1.f;
-                if(length > 16 and k % 2)
+                if(m_data.length > 16 and k % 2)
                 {
                         y_pos = inner_ring_scale;
                 }
 
                 float radius = off_radius;
-                if(module->m_rhythm[k])
+
+                if(rhythm::beat(m_data.length, m_data.hits, m_data.shift, k, m_data.invert))
                 {
                         radius = on_radius;
                 }
 
                 nvgSave(args.vg);
-                nvgRotate(args.vg, 2.f * k * M_PI / length);
+                nvgRotate(args.vg, 2.f * k * M_PI / m_data.length);
                 nvgBeginPath(args.vg);
                 nvgCircle(args.vg, 0.f, y_pos, radius);
-                if(invert)
+                if(m_data.invert)
                 {
                         nvgStroke(args.vg);
                 }
@@ -126,9 +117,9 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
                 // Highlight the beat that has just played
                 // For forward moving rhythms this is the previous index
                 // For reversed rhythms this is index
-                if((reverse && module->m_current_step == k) ||
-                   (!reverse &&
-                    ((k == length - 1) ? (0 == module->m_current_step) : (k + 1 == module->m_current_step))))
+                if((m_data.reverse && m_data.current_step == k) ||
+                   (!m_data.reverse &&
+                    ((k == m_data.length - 1) ? (0 == m_data.current_step) : (k + 1 == m_data.current_step))))
                 {
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, outline_radius);
@@ -136,7 +127,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
                 }
 
                 // shift pointer
-                if(shift == k)
+                if(m_data.shift == k)
                 {
                         nvgBeginPath(args.vg);
                         nvgMoveTo(args.vg, 0.f, 0.5f);
@@ -151,6 +142,44 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
 
         nvgResetScissor(args.vg);
         nvgRestore(args.vg);
+}
+
+struct EugeneRhythmDisplay : Widget
+{
+        FramebufferWidget *m_fb;
+        EugeneRhythmDisplayUnbuffered *m_ub;
+        RareBreeds_Orbits_Eugene *m_module;
+
+        EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size);
+        void draw(const DrawArgs &args) override;
+};
+
+EugeneRhythmDisplay::EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size)
+{
+        m_module = module;
+        box.pos = pos;
+        box.size = size;
+        m_fb = new FramebufferWidget;
+        addChild(m_fb);
+        m_ub = new EugeneRhythmDisplayUnbuffered(size);
+        m_fb->addChild(m_ub);
+}
+
+void EugeneRhythmDisplay::draw(const DrawArgs &args)
+{
+        if(!m_module)
+        {
+                return;
+        }
+
+        EugeneDisplayData data = m_module->getDisplayData();
+        if(data != m_ub->m_data)
+        {
+                m_ub->m_data = data;
+                m_fb->dirty = true;
+        }
+
+        Widget::draw(args);
 }
 
 RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&config)
@@ -196,10 +225,8 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
         // clang-format on
 
-        EugeneRhythmDisplay *r = createWidget<EugeneRhythmDisplay>(m_config->getPos("display"));
-        r->module = module;
-        r->box.size = m_config->getSize("display");
-        addChild(r);
+        rhythm_display = new EugeneRhythmDisplay(module, m_config->getPos("display"), m_config->getSize("display"));
+        addChild(rhythm_display);
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
