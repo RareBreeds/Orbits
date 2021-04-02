@@ -108,9 +108,9 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
         return clampRounded(f_variation * (count - 1), 0, count - 1);
 }
 
-void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
+void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args, int sync_channels, int clock_channels)
 {
-        if(m_module->inputs[SYNC_INPUT].getChannels() > m_channel)
+        if(sync_channels > m_channel)
         {
                 // A rising edge of the sync input tells the module to set the current step to 0
                 if(m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getPolyVoltage(m_channel)))
@@ -119,7 +119,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 }
         }
 
-        if(m_module->inputs[CLOCK_INPUT].getChannels() > m_channel)
+        if(clock_channels > m_channel)
         {
                 // A rising clock edge means first play the current beat
                 // then advance to the next step
@@ -300,9 +300,11 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 }
         }
 
+        int sync_channels = inputs[SYNC_INPUT].getChannels();
+        int clock_channels = inputs[CLOCK_INPUT].getChannels();
         for(auto &chan : m_channels)
         {
-                chan.process(args);
+                chan.process(args, sync_channels, clock_channels);
         }
 }
 

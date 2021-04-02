@@ -83,7 +83,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
                 unsigned int readVariation(unsigned int length, unsigned int shift);
-                void process(const ProcessArgs &args);
+                void process(const ProcessArgs &args, int sync_channels, int clock_channels);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);
                 void onRandomize();
