@@ -7,7 +7,6 @@ struct RareBreeds_Orbits_PolygeneWidget;
 
 struct RareBreeds_Orbits_Polygene : Module
 {
-        static const auto max_channels = 16u;
         enum ParamIds
         {
                 CHANNEL_KNOB_PARAM,
@@ -46,7 +45,7 @@ struct RareBreeds_Orbits_Polygene : Module
 
         // The channel currently being displayed and controlled by the knobs
         int m_active_channel_id = 0;
-        int m_previous_channel_id = max_channels;
+        int m_previous_channel_id = PORT_MAX_CHANNELS;
 
         // Old knob values
         float m_length;
@@ -91,7 +90,7 @@ struct RareBreeds_Orbits_Polygene : Module
         };
 
         int m_active_channels = 1;
-        Channel m_channels[max_channels];
+        Channel m_channels[PORT_MAX_CHANNELS];
         Channel *m_active_channel;
         dsp::BooleanTrigger m_reverse_trigger;
         dsp::BooleanTrigger m_invert_trigger;

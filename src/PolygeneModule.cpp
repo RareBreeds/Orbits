@@ -4,7 +4,7 @@
 
 static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
-        return clamp(int(std::round(value)), min, max);
+        return clamp(int(value + 0.5f), min, max);
 }
 
 static void json_load_real(json_t *root, const char *param, float *result)
@@ -233,7 +233,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 
 void RareBreeds_Orbits_Polygene::reset()
 {
-        m_previous_channel_id = max_channels;
+        m_previous_channel_id = PORT_MAX_CHANNELS;
         m_active_channel_id = 0;
         m_active_channel = &m_channels[m_active_channel_id];
 
@@ -242,7 +242,7 @@ void RareBreeds_Orbits_Polygene::reset()
         m_shift = params[SHIFT_KNOB_PARAM].getValue();
         m_variation = params[VARIATION_KNOB_PARAM].getValue();
 
-        for(auto i = 0u; i < max_channels; ++i)
+        for(auto i = 0u; i < PORT_MAX_CHANNELS; ++i)
         {
                 m_channels[i].init(this, i);
         }
@@ -279,20 +279,20 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         m_active_channel->m_shift = params[SHIFT_KNOB_PARAM].getValue();
         m_active_channel->m_variation = params[VARIATION_KNOB_PARAM].getValue();
 
-        m_reverse_trigger.process(std::round(params[REVERSE_KNOB_PARAM].getValue()));
+        m_reverse_trigger.process(params[REVERSE_KNOB_PARAM].getValue() > 0.5f);
         m_active_channel->m_reverse = m_reverse_trigger.state;
 
-        m_invert_trigger.process(std::round(params[INVERT_KNOB_PARAM].getValue()));
+        m_invert_trigger.process(params[INVERT_KNOB_PARAM].getValue() > 0.5f);
         m_active_channel->m_invert = m_invert_trigger.state;
 
-        bool rnd = std::round(params[RANDOM_KNOB_PARAM].getValue());
+        bool rnd = params[RANDOM_KNOB_PARAM].getValue() > 0.5f;
         if(m_random_trigger.process(rnd, args.sampleTime))
         {
                 m_active_channel->onRandomize();
                 syncParamsToActiveChannel();
         }
 
-        if(m_sync_trigger.process(std::round(params[SYNC_KNOB_PARAM].getValue())))
+        if(m_sync_trigger.process(params[SYNC_KNOB_PARAM].getValue() > 0.5f))
         {
                 for(auto &chan : m_channels)
                 {
@@ -361,7 +361,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
                 {
-                        for(auto i = 0u; i < max_channels; ++i)
+                        for(auto i = 0u; i < PORT_MAX_CHANNELS; ++i)
                         {
                                 json_t *channel = json_array_get(channels, i);
                                 if(channel)
