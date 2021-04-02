@@ -2,6 +2,11 @@
 #include "EugeneWidget.hpp"
 #include "Rhythm.hpp"
 
+static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
+{
+        return clamp(int(value + 0.5f), min, max);
+}
+
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -35,7 +40,7 @@ unsigned int RareBreeds_Orbits_Eugene::readLength()
         float attenuation = params[LENGTH_CV_KNOB_PARAM].getValue();
         value += attenuation * normalized_input * (rhythm::max_length - 1);
 
-        return clamp(int(std::round(value)), 1, rhythm::max_length);
+        return clampRounded(value, 1, rhythm::max_length);
 }
 
 unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
@@ -46,7 +51,7 @@ unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
         float attenuation = params[HITS_CV_KNOB_PARAM].getValue();
         value += attenuation * normalized_input;
         float hits_float = value * length;
-        return clamp(int(std::round(hits_float)), 0, length);
+        return clampRounded(hits_float, 0, length);
 }
 
 unsigned int RareBreeds_Orbits_Eugene::readShift(unsigned int length)
@@ -56,7 +61,7 @@ unsigned int RareBreeds_Orbits_Eugene::readShift(unsigned int length)
         float normalized_input = input / 5.f;
         float attenuation = params[SHIFT_CV_KNOB_PARAM].getValue();
         value += attenuation * normalized_input * (rhythm::max_length - 1);
-        return clamp(int(std::round(value)), 0, rhythm::max_length - 1) % length;
+        return clampRounded(value, 0, rhythm::max_length - 1) % length;
 }
 
 bool RareBreeds_Orbits_Eugene::readReverse()
@@ -68,7 +73,7 @@ bool RareBreeds_Orbits_Eugene::readReverse()
         }
         else
         {
-                return std::round(params[REVERSE_KNOB_PARAM].getValue());
+                return params[REVERSE_KNOB_PARAM].getValue() > 0.5f;
         }
 }
 
@@ -81,7 +86,7 @@ bool RareBreeds_Orbits_Eugene::readInvert()
         }
         else
         {
-                return std::round(params[INVERT_KNOB_PARAM].getValue());
+                return params[INVERT_KNOB_PARAM].getValue() > 0.5f;
         }
 }
 
