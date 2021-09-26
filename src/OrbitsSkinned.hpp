@@ -11,16 +11,10 @@ struct OrbitsSkinned
         virtual void loadTheme(int theme) = 0;
 };
 
-struct OrbitsSkinnedKnob : RoundKnob, OrbitsSkinned
+struct OrbitsSkinnedKnob : SvgKnob, OrbitsSkinned
 {
         OrbitsSkinnedKnob(OrbitsConfig *config, std::string component);
         void loadTheme(int theme) override;
-};
-
-struct OrbitsNonRandomizedSkinnedKnob : OrbitsSkinnedKnob
-{
-        OrbitsNonRandomizedSkinnedKnob(OrbitsConfig *config, std::string component);
-        void randomize() override;
 };
 
 struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
@@ -59,9 +53,8 @@ TParamWidget *createOrbitsSkinnedParam(OrbitsConfig *config, std::string compone
 {
         TParamWidget *o = new TParamWidget(config, component);
         o->box.pos = config->getPos(component).minus(o->box.size.div(2));
-        if(module)
-        {
-                o->paramQuantity = module->paramQuantities[paramId];
-        }
+	o->app::ParamWidget::module = module;
+	o->app::ParamWidget::paramId = paramId;
+	o->initParamQuantity();
         return o;
 }

@@ -8,7 +8,6 @@ static OrbitsConfig config("res/polygene-layout.json");
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
         RareBreeds_Orbits_Polygene *module = NULL;
-        std::shared_ptr<Font> font;
         NVGcolor m_display_accent;
 
         PolygeneRhythmDisplay();
@@ -18,9 +17,7 @@ struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
-        font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
-        std::array<uint8_t, 3> colour = config.getColour("display_accent");
-        m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
+        loadTheme(config.getDefaultThemeId());
 }
 
 void PolygeneRhythmDisplay::loadTheme(int theme)
@@ -35,7 +32,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         {
                 return;
         }
-
+        nvgGlobalTint(args.vg, color::WHITE);
         const auto foreground_color = color::WHITE;
         nvgStrokeColor(args.vg, foreground_color);
         nvgSave(args.vg);
@@ -54,6 +51,7 @@ void PolygeneRhythmDisplay::draw(const DrawArgs &args)
         nvgBeginPath(args.vg);
         nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
         nvgFontSize(args.vg, 18);
+        std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
         nvgFontFaceId(args.vg, font->handle);
 
         const auto active_length = module->m_active_channel->readLength();
@@ -164,7 +162,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
         addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
 
-        addParam(createOrbitsSkinnedParam<OrbitsNonRandomizedSkinnedKnob>(m_config, "channel_knob", module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "channel_knob", module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "length_knob", module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_knob", module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "shift_knob", module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));

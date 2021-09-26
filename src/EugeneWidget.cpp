@@ -7,7 +7,6 @@ static OrbitsConfig config("res/eugene-layout.json");
 
 struct EugeneRhythmDisplayUnbuffered : Widget
 {
-        std::shared_ptr<Font> m_font;
         EugeneDisplayData m_data;
         EugeneRhythmDisplayUnbuffered(Vec size);
         void draw(const DrawArgs &args) override;
@@ -17,7 +16,6 @@ EugeneRhythmDisplayUnbuffered::EugeneRhythmDisplayUnbuffered(Vec size)
 {
         box.pos = Vec(0.0, 0.0);
         box.size = size;
-        m_font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
 }
 
 void EugeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
@@ -40,7 +38,8 @@ void EugeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
         nvgBeginPath(args.vg);
         nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
         nvgFontSize(args.vg, 20);
-        nvgFontFaceId(args.vg, m_font->handle);
+        std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
+        nvgFontFaceId(args.vg, font->handle);
         nvgText(args.vg, 0.f, -7.f, std::to_string(m_data.hits).c_str(), NULL);
         nvgText(args.vg, 0.f, 7.f, std::to_string(m_data.length).c_str(), NULL);
         // nvgFill(args.vg);
@@ -171,6 +170,7 @@ void EugeneRhythmDisplay::draw(const DrawArgs &args)
         {
                 return;
         }
+        nvgGlobalTint(args.vg, color::WHITE);
 
         EugeneDisplayData data = m_module->getDisplayData();
         if(data != m_ub->m_data)

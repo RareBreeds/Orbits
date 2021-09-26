@@ -4,6 +4,8 @@ OrbitsSkinnedKnob::OrbitsSkinnedKnob(OrbitsConfig *config, std::string component
 {
         m_config = config;
         m_component = component;
+        minAngle = -0.83 * M_PI;
+        maxAngle = 0.83 * M_PI;
         loadTheme(m_config->getDefaultThemeId());
 }
 
@@ -11,15 +13,6 @@ void OrbitsSkinnedKnob::loadTheme(int theme)
 {
         setSvg(APP->window->loadSvg(m_config->getSvg(m_component, theme)));
         fb->dirty = true;
-}
-
-OrbitsNonRandomizedSkinnedKnob::OrbitsNonRandomizedSkinnedKnob(OrbitsConfig *config, std::string component)
-        : OrbitsSkinnedKnob(config, component)
-{
-}
-
-void OrbitsNonRandomizedSkinnedKnob::randomize()
-{
 }
 
 OrbitsSkinnedScrew::OrbitsSkinnedScrew(OrbitsConfig *config, std::string component)
@@ -95,7 +88,7 @@ OrbitsSkinnedPort *createOrbitsSkinnedInput(OrbitsConfig *config, std::string co
                                             int inputId)
 {
         OrbitsSkinnedPort *o = createOrbitsSkinnedPort(config, component, module, inputId);
-        o->type = app::PortWidget::INPUT;
+        o->type = engine::Port::INPUT;
         return o;
 }
 
@@ -103,6 +96,6 @@ OrbitsSkinnedPort *createOrbitsSkinnedOutput(OrbitsConfig *config, std::string c
                                              int outputId)
 {
         OrbitsSkinnedPort *o = createOrbitsSkinnedPort(config, component, module, outputId);
-        o->type = app::PortWidget::OUTPUT;
+        o->type = engine::Port::OUTPUT;
         return o;
 }
