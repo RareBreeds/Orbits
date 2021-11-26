@@ -11,7 +11,7 @@ struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
         NVGcolor m_display_accent;
 
         PolygeneRhythmDisplay();
-        void draw(const DrawArgs &args) override;
+        void drawLayer(const DrawArgs &args, int layer) override;
         void loadTheme(int theme) override;
 };
 
@@ -26,116 +26,123 @@ void PolygeneRhythmDisplay::loadTheme(int theme)
         m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
 }
 
-void PolygeneRhythmDisplay::draw(const DrawArgs &args)
+void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 {
         if(!module)
         {
                 return;
         }
-        nvgGlobalTint(args.vg, color::WHITE);
-        const auto foreground_color = color::WHITE;
-        nvgStrokeColor(args.vg, foreground_color);
-        nvgSave(args.vg);
 
-        const Rect b = Rect(Vec(0, 0), box.size);
-        nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
-
-        // Everything drawn after here is in the foreground colour
-        nvgStrokeColor(args.vg, foreground_color);
-        nvgFillColor(args.vg, foreground_color);
-
-        // Translate so (0, 0) is the center of the screen
-        nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
-
-        // Draw length text center bottom and hits text center top
-        nvgBeginPath(args.vg);
-        nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-        nvgFontSize(args.vg, 18);
-        std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
-        nvgFontFaceId(args.vg, font->handle);
-
-        const auto active_length = module->m_active_channel->readLength();
-        const auto active_hits = module->m_active_channel->readHits(active_length);
-        nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
-        nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
-        nvgFill(args.vg);
-
-        // Scale to [-1, 1]
-        nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
-
-        // Flip x and y so we start at the top and positive angle
-        // increments go clockwise
-        nvgScale(args.vg, -1.f, -1.f);
-
-        // Inner circle radius
-        const auto inner_circle_radius = 0.17f;
-        const auto channel_width = (1.0f - inner_circle_radius) / 16.0f;
-        // Width of the line when drawing circles
-        const auto arc_stroke_width = channel_width / 2.0f;
-
-        // Add a border so we don't draw over the edge
-        nvgScale(args.vg, 1.0 - channel_width, 1.0 - channel_width);
-
-        nvgStrokeWidth(args.vg, arc_stroke_width);
-        int c = 0;
-        for(auto &channel : module->m_channels)
+        // Drawings to layer 1 don't dim when the room lights are dimmed
+        if(layer == 1)
         {
-                const auto length = channel.readLength();
-                const auto hits = channel.readHits(length);
-                const auto shift = channel.readShift(length);
-                const auto variation = channel.readVariation(length, hits);
-                const auto invert = channel.readInvert();
-                const auto radius = 1.0f - c * channel_width;
-                const auto pi2_len = 2.0f * M_PI / length;
-                const auto beat_gap = 0.06f;
-                const auto len = pi2_len - beat_gap;
+                nvgGlobalTint(args.vg, color::WHITE);
+                const auto foreground_color = color::WHITE;
+                nvgStrokeColor(args.vg, foreground_color);
+                nvgSave(args.vg);
 
-                NVGcolor dash_colour;
-                if(c == module->m_active_channel_id)
-                {
-                        dash_colour = m_display_accent;
-                }
-                else if(c < module->m_active_channels)
-                {
-                        dash_colour = nvgRGB(0xff, 0xff, 0xff);
-                }
-                else
-                {
-                        dash_colour = nvgRGB(0x50, 0x50, 0x50);
-                }
+                const Rect b = Rect(Vec(0, 0), box.size);
+                nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
 
-                nvgStrokeColor(args.vg, dash_colour);
-                nvgFillColor(args.vg, dash_colour);
-                // The engine is run in a different thread, m_current_step is only updated on each clock
-                // cycle so may not have been wrapped to a new length parameter yet. If the current step
-                // is out of bounds then display it at 0.
-                auto current_step = channel.readStep(length);
-                for(auto k = 0u; k < length; ++k)
-                {
-                        const auto a0 = k * pi2_len + M_PI_2;
-                        const auto a1 = a0 + len;
+                // Everything drawn after here is in the foreground colour
+                nvgStrokeColor(args.vg, foreground_color);
+                nvgFillColor(args.vg, foreground_color);
 
-                        if(current_step == k)
+                // Translate so (0, 0) is the center of the screen
+                nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+                // Draw length text center bottom and hits text center top
+                nvgBeginPath(args.vg);
+                nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+                nvgFontSize(args.vg, 18);
+                std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
+                nvgFontFaceId(args.vg, font->handle);
+
+                const auto active_length = module->m_active_channel->readLength();
+                const auto active_hits = module->m_active_channel->readHits(active_length);
+                nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
+                nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
+                nvgFill(args.vg);
+
+                // Scale to [-1, 1]
+                nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+                // Flip x and y so we start at the top and positive angle
+                // increments go clockwise
+                nvgScale(args.vg, -1.f, -1.f);
+
+                // Inner circle radius
+                const auto inner_circle_radius = 0.17f;
+                const auto channel_width = (1.0f - inner_circle_radius) / 16.0f;
+                // Width of the line when drawing circles
+                const auto arc_stroke_width = channel_width / 2.0f;
+
+                // Add a border so we don't draw over the edge
+                nvgScale(args.vg, 1.0 - channel_width, 1.0 - channel_width);
+
+                nvgStrokeWidth(args.vg, arc_stroke_width);
+                int c = 0;
+                for(auto &channel : module->m_channels)
+                {
+                        const auto length = channel.readLength();
+                        const auto hits = channel.readHits(length);
+                        const auto shift = channel.readShift(length);
+                        const auto variation = channel.readVariation(length, hits);
+                        const auto invert = channel.readInvert();
+                        const auto radius = 1.0f - c * channel_width;
+                        const auto pi2_len = 2.0f * M_PI / length;
+                        const auto beat_gap = 0.06f;
+                        const auto len = pi2_len - beat_gap;
+
+                        NVGcolor dash_colour;
+                        if(c == module->m_active_channel_id)
                         {
-                                const auto center = a0 - beat_gap / 2.f;
-                                nvgBeginPath(args.vg);
-                                nvgCircle(args.vg, radius * cos(center), radius * sin(center), arc_stroke_width / 2.0f);
-                                nvgFill(args.vg);
+                                dash_colour = m_display_accent;
+                        }
+                        else if(c < module->m_active_channels)
+                        {
+                                dash_colour = nvgRGB(0xff, 0xff, 0xff);
+                        }
+                        else
+                        {
+                                dash_colour = nvgRGB(0x50, 0x50, 0x50);
                         }
 
-                        auto on_beat = channel.isOnBeat(length, hits, shift, variation, k, invert);
-                        if(on_beat)
+                        nvgStrokeColor(args.vg, dash_colour);
+                        nvgFillColor(args.vg, dash_colour);
+                        // The engine is run in a different thread, m_current_step is only updated on each clock
+                        // cycle so may not have been wrapped to a new length parameter yet. If the current step
+                        // is out of bounds then display it at 0.
+                        auto current_step = channel.readStep(length);
+                        for(auto k = 0u; k < length; ++k)
                         {
-                                nvgBeginPath(args.vg);
-                                nvgArc(args.vg, 0.0f, 0.0f, radius, a0, a1, NVG_CW);
-                                nvgStroke(args.vg);
+                                const auto a0 = k * pi2_len + M_PI_2;
+                                const auto a1 = a0 + len;
+
+                                if(current_step == k)
+                                {
+                                        const auto center = a0 - beat_gap / 2.f;
+                                        nvgBeginPath(args.vg);
+                                        nvgCircle(args.vg, radius * cos(center), radius * sin(center), arc_stroke_width / 2.0f);
+                                        nvgFill(args.vg);
+                                }
+
+                                auto on_beat = channel.isOnBeat(length, hits, shift, variation, k, invert);
+                                if(on_beat)
+                                {
+                                        nvgBeginPath(args.vg);
+                                        nvgArc(args.vg, 0.0f, 0.0f, radius, a0, a1, NVG_CW);
+                                        nvgStroke(args.vg);
+                                }
                         }
+                        ++c;
                 }
-                ++c;
+
+                nvgResetScissor(args.vg);
+                nvgRestore(args.vg);
         }
 
-        nvgResetScissor(args.vg);
-        nvgRestore(args.vg);
+        Widget::drawLayer(args, layer);
 }
 
 RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module)

@@ -107,6 +107,6 @@ struct RareBreeds_Orbits_Polygene : Module
         void process(const ProcessArgs &args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
-        void onRandomize() override;
-        void onReset() override;
+        void onRandomize(const RandomizeEvent& e) override;
+        void onReset(const ResetEvent& e) override;
 };

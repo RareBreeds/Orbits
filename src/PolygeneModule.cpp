@@ -218,15 +218,30 @@ void RareBreeds_Orbits_Polygene::Channel::onRandomize()
 RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
         configParam(CHANNEL_KNOB_PARAM, 0.f, 15.f, 0.f, "Channel", "", 0.f, 1.f, 1.f);
         configParam(LENGTH_KNOB_PARAM, 1.f, rhythm::max_length, rhythm::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
         configParam(SHIFT_KNOB_PARAM, 0.f, rhythm::max_length - 1, 0.f, "Shift");
         configParam(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f, "Variation", "%", 0.f, 100.f);
-        configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
-        configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
-        configParam(RANDOM_KNOB_PARAM, 0.f, 1.f, 0.f, "Random");
-        configParam(SYNC_KNOB_PARAM, 0.f, 1.f, 0.f, "Sync");
+        configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"});
+        configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"});
+        configButton(RANDOM_KNOB_PARAM, "Randomize channel");
+        configButton(SYNC_KNOB_PARAM, "Sync");
+
+        configInput(CLOCK_INPUT, "Clock");
+        configInput(SYNC_INPUT, "Sync");
+        configInput(LENGTH_CV_INPUT, "Length CV");
+        configInput(HITS_CV_INPUT, "Hits CV");
+        configInput(SHIFT_CV_INPUT, "Shift CV");
+        configInput(VARIATION_CV_INPUT, "Variation CV");
+        configInput(REVERSE_CV_INPUT, "Reverse CV");
+        configInput(INVERT_CV_INPUT, "Invert CV");
+
+        configOutput(BEAT_OUTPUT, "Beat");
+        configOutput(EOC_OUTPUT, "End of cycle");
+
+        configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 
         reset();
 }
@@ -384,20 +399,19 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
         }
 }
 
-void RareBreeds_Orbits_Polygene::onRandomize()
+void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& e)
 {
         for(auto &chan : m_channels)
         {
                 chan.onRandomize();
         }
 
-        // Parameters have already been randomised by VCV rack
-        // But then the active channel controlled by those parameters has been randomised again
-        // Update the parameters so they reflect the active channels randomised parameters
+        // Update the parameters so they reflect the active channels randomized parameters
         syncParamsToActiveChannel();
 }
 
-void RareBreeds_Orbits_Polygene::onReset()
+void RareBreeds_Orbits_Polygene::onReset(const ResetEvent& e)
 {
+        Module::onReset(e);
         reset();
 }

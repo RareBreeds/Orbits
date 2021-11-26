@@ -10,14 +10,28 @@ static unsigned int clampRounded(float value, unsigned int min, unsigned int max
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+
         configParam(LENGTH_KNOB_PARAM, 1.f, rhythm::max_length, rhythm::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
         configParam(SHIFT_KNOB_PARAM, 0.f, rhythm::max_length - 1, 0.f, "Shift");
         configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV");
         configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV");
         configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
-        configParam(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse");
-        configParam(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert");
+        configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"});
+        configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"});
+
+        configInput(CLOCK_INPUT, "Clock");
+        configInput(SYNC_INPUT, "Sync");
+        configInput(LENGTH_CV_INPUT, "Length CV");
+        configInput(HITS_CV_INPUT, "Hits CV");
+        configInput(SHIFT_CV_INPUT, "Shift CV");
+        configInput(REVERSE_CV_INPUT, "Reverse CV");
+        configInput(INVERT_CV_INPUT, "Invert");
+
+        configOutput(BEAT_OUTPUT, "Beat");
+        configOutput(EOC_OUTPUT, "End of cycle");
+
+        configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 }
 
 EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(void)
