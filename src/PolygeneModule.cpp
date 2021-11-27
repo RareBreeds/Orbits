@@ -108,73 +108,61 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
         return clampRounded(f_variation * (count - 1), 0, count - 1);
 }
 
-void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args, int sync_channels, int clock_channels)
+void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 {
-        if(sync_channels > m_channel)
+        // A rising clock edge means first play the current beat
+        // then advance to the next step
+        if(m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
         {
-                // A rising edge of the sync input tells the module to set the current step to 0
-                if(m_sync_trigger.process(m_module->inputs[SYNC_INPUT].getPolyVoltage(m_channel)))
+                // Play the current beat
+                // If the channel is reversing we want to play the beat prior to this
+                // this ensures that a clock from the start of a rhythm plays the last
+                // note in the rhythm when reversed rather than the first.
+                auto length = readLength();
+                auto hits = readHits(length);
+                auto shift = readShift(length);
+                auto invert = readInvert();
+                auto variation = readVariation(length, hits);
+                auto reverse = readReverse();
+
+                // Avoid stepping out of bounds
+                m_current_step = readStep(length);
+
+                m_eoc_generator.update(m_module->m_eoc, m_current_step == 0,
+                                        m_current_step == (reverse ? 1 : length - 1));
+
+                if(reverse)
                 {
-                        m_current_step = 0;
-                }
-        }
-
-        if(clock_channels > m_channel)
-        {
-                // A rising clock edge means first play the current beat
-                // then advance to the next step
-                if(m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
-                {
-                        // Play the current beat
-                        // If the channel is reversing we want to play the beat prior to this
-                        // this ensures that a clock from the start of a rhythm plays the last
-                        // note in the rhythm when reversed rather than the first.
-                        auto length = readLength();
-                        auto hits = readHits(length);
-                        auto shift = readShift(length);
-                        auto invert = readInvert();
-                        auto variation = readVariation(length, hits);
-                        auto reverse = readReverse();
-
-                        // Avoid stepping out of bounds
-                        m_current_step = readStep(length);
-
-                        m_eoc_generator.update(m_module->m_eoc, m_current_step == 0,
-                                               m_current_step == (reverse ? 1 : length - 1));
-
-                        if(reverse)
+                        if(m_current_step == 0)
                         {
-                                if(m_current_step == 0)
-                                {
-                                        m_current_step = length - 1;
-                                }
-                                else
-                                {
-                                        --m_current_step;
-                                }
+                                m_current_step = length - 1;
                         }
-
-                        m_beat_generator.update(isOnBeat(length, hits, shift, variation, m_current_step, invert));
-
-                        if(!reverse)
+                        else
                         {
-                                if(m_current_step == length - 1)
-                                {
-                                        m_current_step = 0;
-                                }
-                                else
-                                {
-                                        ++m_current_step;
-                                }
+                                --m_current_step;
                         }
                 }
 
-                auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
-                m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
+                m_beat_generator.update(isOnBeat(length, hits, shift, variation, m_current_step, invert));
 
-                auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
-                m_module->outputs[EOC_OUTPUT].setVoltage(eoc_out, m_channel);
+                if(!reverse)
+                {
+                        if(m_current_step == length - 1)
+                        {
+                                m_current_step = 0;
+                        }
+                        else
+                        {
+                                ++m_current_step;
+                        }
+                }
         }
+
+        auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
+        m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
+
+        auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
+        m_module->outputs[EOC_OUTPUT].setVoltage(eoc_out, m_channel);
 }
 
 json_t *RareBreeds_Orbits_Polygene::Channel::dataToJson()
@@ -282,7 +270,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         m_active_channel_id = std::round(params[CHANNEL_KNOB_PARAM].getValue());
         m_active_channel = &m_channels[m_active_channel_id];
 
-        // Update the SVGs when the channel changes
+        // Update the knob positions when the channel changes
         if(m_previous_channel_id != m_active_channel_id)
         {
                 syncParamsToActiveChannel();
@@ -307,7 +295,19 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 syncParamsToActiveChannel();
         }
 
-        if(m_sync_trigger.process(params[SYNC_KNOB_PARAM].getValue() > 0.5f))
+        bool any_sync = false;
+        int sync_channels = inputs[SYNC_INPUT].getChannels();
+        for(int i = 0; i < sync_channels; ++i)
+        {
+                if(m_channels[i].m_sync_trigger.process(inputs[SYNC_INPUT].getPolyVoltage(i)))
+                {
+                        m_channels[i].m_current_step = 0;
+                        any_sync = true;
+                }
+        }
+
+        if(m_sync_trigger.process(params[SYNC_KNOB_PARAM].getValue() > 0.5f) ||
+          (SYNC_MODE_ALL_CHANNELS == m_sync_mode && any_sync))
         {
                 for(auto &chan : m_channels)
                 {
@@ -315,11 +315,10 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 }
         }
 
-        int sync_channels = inputs[SYNC_INPUT].getChannels();
         int clock_channels = inputs[CLOCK_INPUT].getChannels();
-        for(auto &chan : m_channels)
+        for(int i = 0; i < clock_channels; ++i)
         {
-                chan.process(args, sync_channels, clock_channels);
+                m_channels[i].process(args);
         }
 }
 
@@ -334,6 +333,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "variation", json_real(m_variation));
                 json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
+                json_object_set_new(root, "sync", json_integer(m_sync_mode));
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
                 json_t *channels = json_array();
@@ -374,6 +374,9 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_load_real(root, "variation", &m_variation);
                 m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
+                int sync_mode = SYNC_MODE_INDIVIDUAL_CHANNELS;
+                json_load_integer(root, "sync", &sync_mode);
+                m_sync_mode = (SyncMode) sync_mode;
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)

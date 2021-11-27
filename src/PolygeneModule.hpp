@@ -5,6 +5,12 @@
 
 struct RareBreeds_Orbits_PolygeneWidget;
 
+enum SyncMode
+{
+        SYNC_MODE_INDIVIDUAL_CHANNELS,
+        SYNC_MODE_ALL_CHANNELS
+};
+
 struct RareBreeds_Orbits_Polygene : Module
 {
         enum ParamIds
@@ -83,7 +89,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
                 unsigned int readVariation(unsigned int length, unsigned int shift);
-                void process(const ProcessArgs &args, int sync_channels, int clock_channels);
+                void process(const ProcessArgs &args);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);
                 void onRandomize();
@@ -99,6 +105,7 @@ struct RareBreeds_Orbits_Polygene : Module
         RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
         BeatMode m_beat;
         EOCMode m_eoc;
+        SyncMode m_sync_mode = SYNC_MODE_INDIVIDUAL_CHANNELS;
 
         RareBreeds_Orbits_Polygene();
 

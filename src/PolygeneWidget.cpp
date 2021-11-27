@@ -198,8 +198,35 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addChild(r);
 }
 
+
+struct SyncModeItem : MenuItem
+{
+        RareBreeds_Orbits_Polygene *m_module;
+        SyncMode m_id;
+
+        SyncModeItem(RareBreeds_Orbits_Polygene *module, SyncMode id, const char *name)
+        {
+                m_module = module;
+                m_id = id;
+                text = name;
+                rightText = CHECKMARK(module->m_sync_mode == id);
+        }
+
+        void onAction(const event::Action &e) override
+        {
+                m_module->m_sync_mode = m_id;
+        }
+};
+
 void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 {
         beat_widget.appendContextMenu(menu);
         eoc_widget.appendContextMenu(menu);
+
+        menu->addChild(new MenuSeparator);
+        MenuLabel *sync_label = new MenuLabel;
+        sync_label->text = "Sync CV Mode";
+        menu->addChild(sync_label);
+        menu->addChild(new SyncModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), SYNC_MODE_INDIVIDUAL_CHANNELS, "Individual Channels"));
+        menu->addChild(new SyncModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), SYNC_MODE_ALL_CHANNELS, "All Channels"));
 }
