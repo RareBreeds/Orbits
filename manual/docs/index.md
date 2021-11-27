@@ -110,6 +110,7 @@ Polygene is a polyphonic rhythm generator module.
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
  * 3 Beat modes that control the beat output behaviour (Unreleased \>v1.2.0)
+ * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (Unreleased \>v1.2.0)
 
 ### Panel
 
@@ -124,6 +125,10 @@ A rising edge advances the current beat for that channel.
 A rising edge on a channel resets the current beat to the first beat of the rhythm for that channel which is always 12 o'clock on the display.
 
 Pressing the sync button syncs all channels.
+
+#### Unreleased (\>v1.2.0)
+
+A context menu item lets you select between applying a trigger on a sync CV channel to the specific channel the trigger happened on (default) or applying it to all channels, similar to the behaviour of the sync button. Previously to get this behaviour you would have to broadcast your sync pulse to all channels on the CV input using the Fundamental Merge module or similar. 
 
 ### Channel Knob : Input
 
