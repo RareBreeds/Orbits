@@ -28,14 +28,11 @@ void PolygeneRhythmDisplay::loadTheme(int theme)
 
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 {
-        if(!module)
-        {
-                return;
-        }
-
         // Drawings to layer 1 don't dim when the room lights are dimmed
         if(layer == 1)
         {
+                PolygeneDisplayData data = RareBreeds_Orbits_Polygene::getDisplayData(module);
+
                 nvgGlobalTint(args.vg, color::WHITE);
                 const auto foreground_color = color::WHITE;
                 nvgStrokeColor(args.vg, foreground_color);
@@ -58,8 +55,8 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
                 nvgFontFaceId(args.vg, font->handle);
 
-                const auto active_length = module->m_active_channel->readLength();
-                const auto active_hits = module->m_active_channel->readHits(active_length);
+                const auto active_length = data.channels[data.active_channel_id].length;
+                const auto active_hits = data.channels[data.active_channel_id].hits;
                 nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
                 nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
                 nvgFill(args.vg);
@@ -81,25 +78,20 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgScale(args.vg, 1.0 - channel_width, 1.0 - channel_width);
 
                 nvgStrokeWidth(args.vg, arc_stroke_width);
-                int c = 0;
-                for(auto &channel : module->m_channels)
+                for(unsigned int c = 0; c < PORT_MAX_CHANNELS; ++c)
                 {
-                        const auto length = channel.readLength();
-                        const auto hits = channel.readHits(length);
-                        const auto shift = channel.readShift(length);
-                        const auto variation = channel.readVariation(length, hits);
-                        const auto invert = channel.readInvert();
+                        const auto length = data.channels[c].length;
                         const auto radius = 1.0f - c * channel_width;
                         const auto pi2_len = 2.0f * M_PI / length;
                         const auto beat_gap = 0.06f;
                         const auto len = pi2_len - beat_gap;
 
                         NVGcolor dash_colour;
-                        if(c == module->m_active_channel_id)
+                        if(c == data.active_channel_id)
                         {
                                 dash_colour = m_display_accent;
                         }
-                        else if(c < module->m_active_channels)
+                        else if(c < data.active_channels)
                         {
                                 dash_colour = nvgRGB(0xff, 0xff, 0xff);
                         }
@@ -113,7 +105,7 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                         // The engine is run in a different thread, m_current_step is only updated on each clock
                         // cycle so may not have been wrapped to a new length parameter yet. If the current step
                         // is out of bounds then display it at 0.
-                        auto current_step = channel.readStep(length);
+                        auto current_step = data.channels[c].current_step;
                         for(auto k = 0u; k < length; ++k)
                         {
                                 const auto a0 = k * pi2_len + M_PI_2;
@@ -127,7 +119,8 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                                         nvgFill(args.vg);
                                 }
 
-                                auto on_beat = channel.isOnBeat(length, hits, shift, variation, k, invert);
+                                auto on_beat = RareBreeds_Orbits_Polygene::Channel::isOnBeat(length, data.channels[c].hits, data.channels[c].shift,
+                                                                                   data.channels[c].variation, k, data.channels[c].invert);
                                 if(on_beat)
                                 {
                                         nvgBeginPath(args.vg);
@@ -135,7 +128,6 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                                         nvgStroke(args.vg);
                                 }
                         }
-                        ++c;
                 }
 
                 nvgResetScissor(args.vg);
@@ -149,13 +141,13 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         : OrbitsWidget(&config)
 {
         setModule(module);
-        beat_widget.m_module = &module->m_beat;
-        eoc_widget.m_module = &module->m_eoc;
 
         // Module may be NULL if this is the module selection screen
         if(module)
         {
                 module->m_widget = this;
+                beat_widget.m_module = &module->m_beat;
+                eoc_widget.m_module = &module->m_eoc;
         }
 
         m_theme = m_config->getDefaultThemeId();

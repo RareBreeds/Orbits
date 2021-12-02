@@ -46,6 +46,25 @@ EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(void)
         return data;
 }
 
+EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(RareBreeds_Orbits_Eugene *module)
+{
+        if(module)
+        {
+                return module->getDisplayData();
+        }
+        else
+        {
+                EugeneDisplayData data;
+                data.length = rhythm::max_length;
+                data.hits = rhythm::max_length / 2;
+                data.shift = 0;
+                data.current_step = 0;
+                data.reverse = false;
+                data.invert = false;
+                return data;
+        }
+}
+
 unsigned int RareBreeds_Orbits_Eugene::readLength()
 {
         float value = params[LENGTH_KNOB_PARAM].getValue();

@@ -203,6 +203,53 @@ void RareBreeds_Orbits_Polygene::Channel::onRandomize()
         m_invert = (random::uniform() < 0.5f);
 }
 
+PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(void)
+{
+        PolygeneDisplayData data;
+        data.active_channel_id = m_active_channel_id;
+        data.active_channels = m_active_channels;
+        for(int c = 0; c < PORT_MAX_CHANNELS; ++c)
+        {
+                auto ch = &data.channels[c];
+                ch->length = m_channels[c].readLength();
+                ch->hits = m_channels[c].readHits(ch->length);
+                ch->shift = m_channels[c].readShift(ch->length);
+                ch->variation = m_channels[c].readVariation(ch->length, ch->hits);
+                ch->invert = m_channels[c].readInvert();
+                ch->current_step = m_channels[c].readStep(ch->length);
+        }
+        return data;
+}
+
+PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits_Polygene *module)
+{
+        if(module)
+        {
+                return module->getDisplayData();
+        }
+        else
+        {
+                PolygeneDisplayData data = {3, PORT_MAX_CHANNELS,
+                        {{32, 6, 0, 0, 0, 4},
+                        {16, 9, 3, 0, 0, 0},
+                        {7, 3, 6, 0, 0, 5},
+                        {9, 7, 2, 0, 0, 3},
+                        {17, 4, 12, 0, 0, 14},
+                        {30, 20, 15, 0, 0, 20},
+                        {19, 4, 14, 0, 0, 10},
+                        {4, 2, 3, 0, 0, 2},
+                        {7, 1, 0, 0, 0, 6},
+                        {8, 5, 3, 0, 0, 1},
+                        {16, 10, 4, 0, 0, 4},
+                        {19, 16, 2, 0, 0, 18},
+                        {24, 20, 8, 0, 0, 14},
+                        {28, 14, 6, 0, 0, 20},
+                        {21, 12, 4, 0, 0, 4},
+                        {9, 3, 3, 0, 0, 7}}};
+                return data;
+        }
+}
+
 RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);

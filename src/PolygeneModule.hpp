@@ -11,6 +11,15 @@ enum SyncMode
         SYNC_MODE_ALL_CHANNELS
 };
 
+struct PolygeneDisplayData
+{
+        unsigned int active_channel_id, active_channels;
+        struct
+        {
+                unsigned int length, hits, shift, variation, invert, current_step;
+        } channels[PORT_MAX_CHANNELS];
+};
+
 struct RareBreeds_Orbits_Polygene : Module
 {
         enum ParamIds
@@ -79,8 +88,8 @@ struct RareBreeds_Orbits_Polygene : Module
                 void init(RareBreeds_Orbits_Polygene *module, int channel);
                 bool readReverse(void);
                 bool readInvert(void);
-                bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
-                              unsigned int beat, bool invert);
+                static bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
+                                     unsigned int beat, bool invert);
                 unsigned int readLength();
                 unsigned int readStep(unsigned int length)
                 {
@@ -116,4 +125,6 @@ struct RareBreeds_Orbits_Polygene : Module
         void dataFromJson(json_t *root) override;
         void onRandomize(const RandomizeEvent& e) override;
         void onReset(const ResetEvent& e) override;
+        PolygeneDisplayData getDisplayData(void);
+        static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
 };

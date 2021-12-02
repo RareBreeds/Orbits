@@ -85,4 +85,5 @@ struct RareBreeds_Orbits_Eugene : Module
         int getEOCMode(void);
         void setEOCMode(int eoc_mode);
         EugeneDisplayData getDisplayData(void);
+        static EugeneDisplayData getDisplayData(RareBreeds_Orbits_Eugene *module);
 };

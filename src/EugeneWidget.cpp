@@ -170,17 +170,12 @@ EugeneRhythmDisplay::EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec p
 
 void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 {
-        if(!m_module)
-        {
-                return;
-        }
-
         // Drawings to layer 1 don't dim when the room lights are dimmed
         if(layer == 1)
         {
                 nvgGlobalTint(args.vg, color::WHITE);
 
-                EugeneDisplayData data = m_module->getDisplayData();
+                EugeneDisplayData data = RareBreeds_Orbits_Eugene::getDisplayData(m_module);
                 if(data != m_ub->m_data)
                 {
                         m_ub->m_data = data;
@@ -194,13 +189,13 @@ void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&config)
 {
         setModule(module);
-        beat_widget.m_module = &module->m_beat;
-        eoc_widget.m_module = &module->m_eoc;
 
         // Module may be NULL if this is the module selection screen
         if(module)
         {
                 module->m_widget = this;
+                beat_widget.m_module = &module->m_beat;
+                eoc_widget.m_module = &module->m_eoc;
         }
 
         m_theme = m_config->getDefaultThemeId();
