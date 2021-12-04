@@ -1,9 +1,12 @@
-## [Unreleased]
+## [2.0.0] - 2021-12-04
 ### Added
  - 3 Beat mode options to Eugene and Polygene
    - Pulse - 1ms pulse on an on beat
    - Gate - Output held for the duration of the beat and retriggered
    - Hold - Output is held high if the beat is on and low if a beat is off
+ - 2 Sync modes added to Polygene
+   - Individual channels - Each channel synced independently
+   - All channels - Any trigger on any channel resets all channels
 
 ## [1.2.0] - 2021-02-27
 ### Added
@@ -29,7 +32,7 @@
 ## [1.1.0] - 2020-12-23
  - Initial Release
 
-[Unreleased]: https://github.com/RareBreeds/Orbits/compare/v1.2.0...HEAD
+[2.0.0]: https://github.com/RareBreeds/Orbits/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/RareBreeds/Orbits/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/RareBreeds/Orbits/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/RareBreeds/Orbits/releases/tag/v1.1.0

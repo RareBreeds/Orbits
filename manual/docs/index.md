@@ -24,7 +24,7 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
  * Shift knob for selecting the initial beat of the rhythm
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
- * 3 Beat modes that control the beat output behaviour (Unreleased \>v1.2.0)
+ * 3 Beat modes that control the beat output behaviour (since v2.0.0)
 
 ### Panel
 
@@ -37,7 +37,7 @@ A pulse is output when an on-beat (hit) is clocked.
 
 0-10V Unipolar CV.
 
-#### Unreleased (\>v1.2.0)
+#### Since v2.0.0
 When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
 
 - Pulse - A 1ms pulse is output on each on-beat
@@ -109,8 +109,8 @@ Polygene is a polyphonic rhythm generator module.
  * Shift knob for selecting the initial beat of the rhythm
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
- * 3 Beat modes that control the beat output behaviour (Unreleased \>v1.2.0)
- * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (Unreleased \>v1.2.0)
+ * 3 Beat modes that control the beat output behaviour (since v2.0.0)
+ * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (since v2.0.0)
 
 ### Panel
 
@@ -126,7 +126,7 @@ A rising edge on a channel resets the current beat to the first beat of the rhyt
 
 Pressing the sync button syncs all channels.
 
-#### Unreleased (\>v1.2.0)
+#### Since v2.0.0
 
 A context menu item lets you select between applying a trigger on a sync CV channel to the specific channel the trigger happened on (default) or applying it to all channels, similar to the behaviour of the sync button. Previously to get this behaviour you would have to broadcast your sync pulse to all channels on the CV input using the Fundamental Merge module or similar. 
 
@@ -194,7 +194,7 @@ The number of output channels matches the number of channels active on the clock
 
 0-10V Unipolar CV.
 
-#### Unreleased (\>v1.2.0)
+#### Since v2.0.0
 When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
 
 - Pulse - A 1ms pulse is output on each on-beat
