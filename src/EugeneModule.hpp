@@ -82,8 +82,6 @@ struct RareBreeds_Orbits_Eugene : Module
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
         void onReset() override;
-        int getEOCMode(void);
-        void setEOCMode(int eoc_mode);
         EugeneDisplayData getDisplayData(void);
         static EugeneDisplayData getDisplayData(RareBreeds_Orbits_Eugene *module);
 };
