@@ -126,17 +126,17 @@
 <h4 id="since-v200">Since v2.0.0</h4>
 <p>When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:</p>
 <ul>
-<li>Pulse - A 1ms pulse is output on each on-beat</li>
+<li>Pulse - A 1ms pulse is output on each on-beat (default)</li>
 <li>Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats</li>
 <li>Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats</li>
 </ul>
-<h3 id="eoc-output-yes">EOC : Output yes</h3>
+<h3 id="eoc-output">EOC : Output</h3>
 <p>A pulse is output when a new cycle starts.</p>
 <p>There's 3 behaviour options available when right clicking the module:</p>
 <ul>
-<li>On Repeat - On the first beat of the new cycle, only if a cycle has been completed.</li>
-<li>First - On the first beat of the cycle, even if a cycle hasn't been completed.</li>
-<li>Last - On the last beat of the cycle.</li>
+<li>On Repeat - On the first beat of the new cycle, only if a cycle has been completed (default)</li>
+<li>First - On the first beat of the cycle, even if a cycle hasn't been completed</li>
+<li>Last - On the last beat of the cycle</li>
 </ul>
 <p>0-10V Unipolar CV 1ms pulse duration.</p>
 <h3 id="clk-input-rising-edge-sensitive-schmitt-triggered">Clk : Input, Rising Edge Sensitive, Schmitt triggered</h3>
@@ -157,9 +157,11 @@
 <p><img alt="Invert" src="img/invert.png" /></p>
 <h3 id="cv-input">CV : Input</h3>
 <p>All manually controlled inputs are also CV controllable.</p>
-<p>Len, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The CV is summed with the current knob setting.</p>
+<p>Length, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The gain knob ranges from 0 to 1. After gain is applied to the control voltage input it is summed with the current knob setting.</p>
+<p><code>
+parameter value = knob value + (control voltage input X control voltage gain knob)
+</code></p>
 <p>Reverse and Invert have Schmitt triggered CV inputs that override the switch settings.</p>
-<p><img alt="CV" src="img/cv.png" /></p>
 <h2 id="polygene">Polygene</h2>
 <p>Polygene is a polyphonic rhythm generator module.</p>
 <p><img alt="Themes" src="img/polygene-themes.png" /></p>
@@ -223,7 +225,7 @@
 <h4 id="since-v200_2">Since v2.0.0</h4>
 <p>When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:</p>
 <ul>
-<li>Pulse - A 1ms pulse is output on each on-beat</li>
+<li>Pulse - A 1ms pulse is output on each on-beat (default)</li>
 <li>Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats</li>
 <li>Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats</li>
 </ul>
@@ -232,9 +234,9 @@
 <p>The number of output channels matches the number of channels active on the clock input.</p>
 <p>There's 3 behaviour options available when right clicking the module:</p>
 <ul>
-<li>On Repeat - On the first beat of the new cycle, only if a cycle has been completed.</li>
-<li>First - On the first beat of the cycle, even if a cycle hasn't been completed.</li>
-<li>Last - On the last beat of the cycle.</li>
+<li>On Repeat - On the first beat of the new cycle, only if a cycle has been completed (default)</li>
+<li>First - On the first beat of the cycle, even if a cycle hasn't been completed</li>
+<li>Last - On the last beat of the cycle</li>
 </ul>
 <p>0-10V Unipolar CV 1ms pulse duration.</p>
               
@@ -276,5 +278,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2021-12-04 09:18:01
+Build Date UTC : 2021-12-09 07:04:44
 -->
