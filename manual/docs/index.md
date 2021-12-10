@@ -40,18 +40,18 @@ A pulse is output when an on-beat (hit) is clocked.
 #### Since v2.0.0
 When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
 
-- Pulse - A 1ms pulse is output on each on-beat
+- Pulse - A 1ms pulse is output on each on-beat (default)
 - Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats
 - Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats
 
-### EOC : Output yes
+### EOC : Output
 A pulse is output when a new cycle starts.
 
 There's 3 behaviour options available when right clicking the module:
 
-- On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
-- First - On the first beat of the cycle, even if a cycle hasn't been completed.
-- Last - On the last beat of the cycle.
+- On Repeat - On the first beat of the new cycle, only if a cycle has been completed (default)
+- First - On the first beat of the cycle, even if a cycle hasn't been completed
+- Last - On the last beat of the cycle
 
 0-10V Unipolar CV 1ms pulse duration.
 
@@ -83,11 +83,13 @@ Inverts the Euclidean algorithm. When this switch is on on-beats become off-beat
 ### CV : Input
 All manually controlled inputs are also CV controllable.
 
-Len, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The CV is summed with the current knob setting.
+Length, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The gain knob ranges from 0 to 1. After gain is applied to the control voltage input it is summed with the current knob setting.
+
+<code>
+parameter value = knob value + (control voltage input X control voltage gain knob)
+</code>
 
 Reverse and Invert have Schmitt triggered CV inputs that override the switch settings.
-
-![CV](img/cv.png)
 
 ## Polygene
 
@@ -197,7 +199,7 @@ The number of output channels matches the number of channels active on the clock
 #### Since v2.0.0
 When the output is lowered depends on the beat mode. There's 3 behaviour options available when right clicking the module:
 
-- Pulse - A 1ms pulse is output on each on-beat
+- Pulse - A 1ms pulse is output on each on-beat (default)
 - Gate - The output is raised on each on-beat and lowered on each off-beat, the output is retriggered for successive on-beats
 - Hold - The output is raised on each on-beat and lowered on each off-beat, the output is held high for successive on-beats
 
@@ -208,8 +210,8 @@ The number of output channels matches the number of channels active on the clock
 
 There's 3 behaviour options available when right clicking the module:
 
-- On Repeat - On the first beat of the new cycle, only if a cycle has been completed.
-- First - On the first beat of the cycle, even if a cycle hasn't been completed.
-- Last - On the last beat of the cycle.
+- On Repeat - On the first beat of the new cycle, only if a cycle has been completed (default)
+- First - On the first beat of the cycle, even if a cycle hasn't been completed
+- Last - On the last beat of the cycle
 
 0-10V Unipolar CV 1ms pulse duration.
