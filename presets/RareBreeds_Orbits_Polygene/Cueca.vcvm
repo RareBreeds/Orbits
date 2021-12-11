@@ -1,0 +1,31 @@
+{
+  "plugin": "RareBreeds_Orbits",
+  "model": "RareBreeds_Orbits_Polygene",
+  "version": "2.0.0",
+  "params": [
+    {
+      "value": 2.9421696662902832,
+      "id": 1
+    },
+    {
+      "value": 0.57349395751953125,
+      "id": 2
+    },
+    {
+      "value": 1.7554217576980591,
+      "id": 3
+    },
+    {
+      "value": 0.0,
+      "id": 4
+    },
+    {
+      "value": 0.0,
+      "id": 5
+    },
+    {
+      "value": 0.0,
+      "id": 6
+    }
+  ]
+}

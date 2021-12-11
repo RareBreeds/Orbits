@@ -1,0 +1,27 @@
+{
+  "plugin": "RareBreeds_Orbits",
+  "model": "RareBreeds_Orbits_Eugene",
+  "version": "2.0.0",
+  "params": [
+    {
+      "value": 7.0879487991333008,
+      "id": 0
+    },
+    {
+      "value": 0.55421698093414307,
+      "id": 1
+    },
+    {
+      "value": 5.9385547637939453,
+      "id": 2
+    },
+    {
+      "value": 0.0,
+      "id": 6
+    },
+    {
+      "value": 0.0,
+      "id": 7
+    }
+  ]
+}
