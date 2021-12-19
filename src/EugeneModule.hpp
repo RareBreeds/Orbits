@@ -70,8 +70,9 @@ struct RareBreeds_Orbits_Eugene : Module
 
         unsigned int m_current_step = 0;
         RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
-
+        json_t *m_widget_config = NULL;
         RareBreeds_Orbits_Eugene();
+        virtual ~RareBreeds_Orbits_Eugene();
 
         unsigned int readLength();
         unsigned int readHits(unsigned int length);

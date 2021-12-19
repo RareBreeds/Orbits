@@ -112,12 +112,13 @@ struct RareBreeds_Orbits_Polygene : Module
         RepeatTrigger m_random_trigger;
         dsp::BooleanTrigger m_sync_trigger;
         RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
+        json_t *m_widget_config = NULL;
         BeatMode m_beat;
         EOCMode m_eoc;
         SyncMode m_sync_mode = SYNC_MODE_INDIVIDUAL_CHANNELS;
 
         RareBreeds_Orbits_Polygene();
-
+        virtual ~RareBreeds_Orbits_Polygene();
         void reset();
         void syncParamsToActiveChannel();
         void process(const ProcessArgs &args) override;

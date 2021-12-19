@@ -229,6 +229,7 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits
         }
         else
         {
+                // Default data shown in the module browser
                 PolygeneDisplayData data = {3, PORT_MAX_CHANNELS,
                         {{32, 6, 0, 0, 0, 4},
                         {16, 9, 3, 0, 0, 0},
@@ -438,12 +439,19 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                         }
                 }
 
-                if(m_widget)
+                json_t *obj = json_object_get(root, "widget");
+                if(obj)
                 {
-                        json_t *obj = json_object_get(root, "widget");
-                        if(obj)
+                        if(m_widget)
                         {
                                 m_widget->dataFromJson(obj);
+                        }
+                        else
+                        {
+                                // The widget isn't created before dataFromJson is called in Rack-2
+                                // Retain the JSON object, widget will ask for it during construction
+                                // Module must remember to decref this if the widget is never constructed
+                                m_widget_config = json_incref(obj);
                         }
                 }
         }
@@ -464,4 +472,9 @@ void RareBreeds_Orbits_Polygene::onReset(const ResetEvent& e)
 {
         Module::onReset(e);
         reset();
+}
+
+RareBreeds_Orbits_Polygene::~RareBreeds_Orbits_Polygene()
+{
+        json_decref(m_widget_config);
 }

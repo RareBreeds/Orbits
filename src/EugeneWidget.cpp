@@ -231,6 +231,15 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
 
         rhythm_display = new EugeneRhythmDisplay(module, m_config->getPos("display"), m_config->getSize("display"));
         addChild(rhythm_display);
+
+        // In Rack-2 dataFromJson is called on the module before the widget is created
+        // The module will remember the json object so we can initialise it here
+        if(module && module->m_widget_config)
+        {
+                dataFromJson(module->m_widget_config);
+                json_decref(module->m_widget_config);
+                module->m_widget_config = NULL;
+        }
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
