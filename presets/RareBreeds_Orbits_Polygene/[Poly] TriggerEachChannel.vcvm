@@ -1,0 +1,183 @@
+{
+  "plugin": "RareBreeds_Orbits",
+  "model": "RareBreeds_Orbits_Polygene",
+  "version": "2.0.0",
+  "params": [
+    {
+      "value": 1.7530120611190796,
+      "id": 0
+    },
+    {
+      "value": 32.0,
+      "id": 1
+    },
+    {
+      "value": 0.5,
+      "id": 2
+    },
+    {
+      "value": 0.0,
+      "id": 3
+    },
+    {
+      "value": 0.0,
+      "id": 4
+    },
+    {
+      "value": 0.0,
+      "id": 5
+    },
+    {
+      "value": 0.0,
+      "id": 6
+    },
+    {
+      "value": 0.0,
+      "id": 7
+    },
+    {
+      "value": 0.0,
+      "id": 8
+    }
+  ],
+  "data": {
+    "length": 32.0,
+    "hits": 0.5,
+    "shift": 0.0,
+    "variation": 0.0,
+    "beat": 0,
+    "eoc": 0,
+    "sync": 0,
+    "active_channel_id": 2,
+    "channels": [
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 0.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 2.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 4.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 6.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 8.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 10.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 12.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 14.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 16.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 18.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 20.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 22.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 24.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 26.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 28.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      },
+      {
+        "length": 32.0,
+        "hits": 0.03,
+        "shift": 30.0,
+        "variation": 0.0,
+        "reverse": false,
+        "invert": false
+      }
+    ]
+  }
+}
