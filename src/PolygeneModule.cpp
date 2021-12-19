@@ -288,11 +288,6 @@ void RareBreeds_Orbits_Polygene::reset()
         m_active_channel_id = 0;
         m_active_channel = &m_channels[m_active_channel_id];
 
-        m_length = params[LENGTH_KNOB_PARAM].getValue();
-        m_hits = params[HITS_KNOB_PARAM].getValue();
-        m_shift = params[SHIFT_KNOB_PARAM].getValue();
-        m_variation = params[VARIATION_KNOB_PARAM].getValue();
-
         for(auto i = 0u; i < PORT_MAX_CHANNELS; ++i)
         {
                 m_channels[i].init(this, i);
@@ -375,10 +370,6 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_object_set_new(root, "length", json_real(m_length));
-                json_object_set_new(root, "hits", json_real(m_hits));
-                json_object_set_new(root, "shift", json_real(m_shift));
-                json_object_set_new(root, "variation", json_real(m_variation));
                 json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
                 json_object_set_new(root, "sync", json_integer(m_sync_mode));
@@ -416,10 +407,6 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
 {
         if(root)
         {
-                json_load_real(root, "length", &m_length);
-                json_load_real(root, "hits", &m_hits);
-                json_load_real(root, "shift", &m_shift);
-                json_load_real(root, "variation", &m_variation);
                 m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
                 int sync_mode = SYNC_MODE_INDIVIDUAL_CHANNELS;

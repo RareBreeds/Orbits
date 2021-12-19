@@ -62,12 +62,6 @@ struct RareBreeds_Orbits_Polygene : Module
         int m_active_channel_id = 0;
         int m_previous_channel_id = PORT_MAX_CHANNELS;
 
-        // Old knob values
-        float m_length;
-        float m_hits;
-        float m_shift;
-        float m_variation;
-
         struct Channel
         {
                 unsigned int m_current_step = 0;
