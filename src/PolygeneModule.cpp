@@ -454,6 +454,8 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                                 m_widget_config = json_incref(obj);
                         }
                 }
+
+                syncParamsToActiveChannel();
         }
 }
 
