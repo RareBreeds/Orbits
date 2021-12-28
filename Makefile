@@ -17,6 +17,7 @@ SOURCES += $(wildcard src/*.cpp)
 # The compiled plugin and "plugin.json" are automatically added.
 DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
+DISTRIBUTABLES += presets
 
 dist-all:
 	./scripts/build-all.sh
