@@ -32,6 +32,12 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
 
 ![Display](img/display.png)
 
+### Links
+
+ * [Omri Cohen - 5 New Modules to experiment with in VCV Rack in January 2021](https://www.youtube.com/watch?v=LTSPj2sUYtg&t=1590s)
+ * [Omri Cohen - What do Euclidean Sequencers have to do with Polyrhythms and Polymeters?](https://youtu.be/TSYzCZTIFaY?t=360)
+ * [VCP Challenge #59: RareBreeds Eugene](https://community.vcvrack.com/t/vcp-challenge-59-rarebreeds-eugene/12350)
+
 ### Out : Output
 A pulse is output when an on-beat (hit) is clocked.
 
@@ -115,6 +121,13 @@ Polygene is a polyphonic rhythm generator module.
  * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (since v2.0.0)
 
 ### Panel
+TODO
+
+### Links
+
+ * [VCV Rack Ideas - PolyGene - powerful 16 track euclidean sequencer in VCV Rack | PatchFromScratch
+](https://www.youtube.com/watch?v=5q7ujPrInZo)
+
 
 ### Clk : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered
 
