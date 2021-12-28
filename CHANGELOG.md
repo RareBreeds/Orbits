@@ -1,3 +1,10 @@
+## [2.0.1] - 2021-12-28
+### Added
+ - Factory presets for Eugene and Polygene
+
+### Fixed
+ - Saved themes weren't loaded correctly after update to v2.0.0
+
 ## [2.0.0] - 2021-12-04
 ### Added
  - 3 Beat mode options to Eugene and Polygene
@@ -32,6 +39,7 @@
 ## [1.1.0] - 2020-12-23
  - Initial Release
 
+[2.0.1]: https://github.com/RareBreeds/Orbits/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/RareBreeds/Orbits/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/RareBreeds/Orbits/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/RareBreeds/Orbits/compare/v1.1.0...v1.1.1
