@@ -13,7 +13,7 @@
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="eugene-light-knob-large.svg">
+   sodipodi:docname="red-knob-large.svg">
   <defs
      id="defs289" />
   <sodipodi:namedview
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="40.757163"
-     inkscape:cx="23.885938"
-     inkscape:cy="6.8029571"
+     inkscape:zoom="10.189291"
+     inkscape:cx="30.205909"
+     inkscape:cy="20.92451"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -56,7 +56,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -72,7 +72,7 @@
        cy="11.749182"
        r="7.2680311" />
     <circle
-       style="fill:#00bbe1;fill-opacity:1;stroke-width:0.0179105;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#c00039;fill-opacity:1;stroke-width:0.0179105;stroke-miterlimit:4;stroke-dasharray:none"
        id="path313-9-1-5"
        cx="11.738372"
        cy="11.749182"

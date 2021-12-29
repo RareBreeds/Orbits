@@ -14,15 +14,15 @@
             "beat_port" : "dark-port.svg",
             "eoc_port" : "dark-port.svg",
 
-            "length_knob" : "eugene-dark-knob-large.svg",
+            "length_knob" : "red-knob-large.svg",
             "length_cv_knob" : "eugene-dark-knob-small.svg", 
             "length_cv_port" : "dark-port.svg",
 
-            "hits_knob" : "eugene-dark-knob-large.svg",
+            "hits_knob" : "red-knob-large.svg",
             "hits_cv_knob" : "eugene-dark-knob-small.svg",
             "hits_cv_port" : "dark-port.svg",
 
-            "shift_knob" : "eugene-dark-knob-large.svg",
+            "shift_knob" : "red-knob-large.svg",
             "shift_cv_knob" : "eugene-dark-knob-small.svg",
             "shift_cv_port" : "dark-port.svg",
 
@@ -48,15 +48,15 @@
             "beat_port" : "light-port.svg",
             "eoc_port" : "light-port.svg",
 
-            "length_knob" : "eugene-light-knob-large.svg",
+            "length_knob" : "blue-knob-large.svg",
             "length_cv_knob" : "eugene-light-knob-small.svg", 
             "length_cv_port" : "light-port.svg",
 
-            "hits_knob" : "eugene-light-knob-large.svg",
+            "hits_knob" : "blue-knob-large.svg",
             "hits_cv_knob" : "eugene-light-knob-small.svg",
             "hits_cv_port" : "light-port.svg",
 
-            "shift_knob" : "eugene-light-knob-large.svg",
+            "shift_knob" : "blue-knob-large.svg",
             "shift_cv_knob" : "eugene-light-knob-small.svg",
             "shift_cv_port" : "light-port.svg",
 
