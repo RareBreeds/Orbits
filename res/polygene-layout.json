@@ -56,7 +56,7 @@
             "sync_port" : "polygene-light-port.svg",
             "beat_port" : "polygene-light-port.svg",
             "eoc_port" : "polygene-light-port.svg",
-            "channel_knob" : "polygene-light-knob-small.svg",
+            "channel_knob" : "grey-knob-small.svg",
 
             "length_knob" : "polygene-light-knob-large.svg",
             "length_cv_port" : "polygene-light-port.svg",
