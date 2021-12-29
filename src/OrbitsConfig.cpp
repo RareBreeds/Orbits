@@ -13,6 +13,7 @@ float OrbitsConfig::rFindFloatAttribute(std::string &content, std::string attrib
         search = content.rfind(attribute + "=", search);
         if(search == std::string::npos)
         {
+                WARN("Unable to find attribute \"%s\"", attribute.c_str());
                 return 0.0f;
         }
 
@@ -20,6 +21,7 @@ float OrbitsConfig::rFindFloatAttribute(std::string &content, std::string attrib
         size_t float_end = content.find("\"", float_start);
         if(float_end == std::string::npos)
         {
+                WARN("Unable to find content for attribute \"%s\"", attribute.c_str());
                 return 0.0f;
         }
 
@@ -52,7 +54,19 @@ Vec OrbitsConfig::getPos(std::string component)
         std::ifstream ifs(getSvg("panel"));
         std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
         size_t search = content.find("inkscape:label=\"components\"");
+        if(search == std::string::npos)
+        {
+                WARN("Unable to find inkscape:label=\"components\"");
+                return mm2px(Vec(0.f, 0.f));
+        }
+
         search = content.find("inkscape:label=\"" + component, search);
+        if(search == std::string::npos)
+        {
+                WARN("Unable to find inkscape:label=\"%s\"", component.c_str());
+                return mm2px(Vec(0.f, 0.f));
+        }
+
         float x = rFindFloatAttribute(content, "x", search);
         float y = rFindFloatAttribute(content, "y", search);
         return mm2px(Vec(x, y));
