@@ -13,7 +13,7 @@
             "sync_port" : "polygene-dark-port.svg",
             "beat_port" : "polygene-dark-port.svg",
             "eoc_port" : "polygene-dark-port.svg",
-            "channel_knob" : "polygene-dark-knob-small.svg",
+            "channel_knob" : "grey-knob-small.svg",
 
             "length_knob" : "polygene-dark-knob-large.svg",
             "length_cv_port" : "polygene-dark-port.svg",
