@@ -30,8 +30,8 @@
             "reverse_switch_off" : "eugene-dark-rev-switch-off.svg",
             "reverse_cv_port" : "dark-port.svg",
 
-            "invert_switch_on" : "eugene-dark-inv-switch-on.svg",
-            "invert_switch_off" : "eugene-dark-inv-switch-off.svg",
+            "invert_switch_on" : "dark-inv-switch-on.svg",
+            "invert_switch_off" : "dark-inv-switch-off.svg",
             "invert_cv_port" : "dark-port.svg"
         },
         {
@@ -64,8 +64,8 @@
             "reverse_switch_off" : "eugene-light-rev-switch-off.svg",
             "reverse_cv_port" : "light-port.svg",
 
-            "invert_switch_on" : "eugene-light-inv-switch-on.svg",
-            "invert_switch_off" : "eugene-light-inv-switch-off.svg",
+            "invert_switch_on" : "light-inv-switch-on.svg",
+            "invert_switch_off" : "light-inv-switch-off.svg",
             "invert_cv_port" : "light-port.svg"
         }
     ],

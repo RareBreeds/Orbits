@@ -31,8 +31,8 @@
             "reverse_switch_off" : "polygene-dark-rev-switch-off.svg",
             "reverse_cv_port" : "dark-port.svg",
 
-            "invert_switch_on" : "polygene-dark-inv-switch-on.svg",
-            "invert_switch_off" : "polygene-dark-inv-switch-off.svg",
+            "invert_switch_on" : "dark-inv-switch-on.svg",
+            "invert_switch_off" : "dark-inv-switch-off.svg",
             "invert_cv_port" : "dark-port.svg",
 
             "random_button_on" : "polygene-dark-rnd-switch-on.svg",
@@ -74,8 +74,8 @@
             "reverse_switch_off" : "polygene-light-rev-switch-off.svg",
             "reverse_cv_port" : "light-port.svg",
 
-            "invert_switch_on" : "polygene-light-inv-switch-on.svg",
-            "invert_switch_off" : "polygene-light-inv-switch-off.svg",
+            "invert_switch_on" : "light-inv-switch-on.svg",
+            "invert_switch_off" : "light-inv-switch-off.svg",
             "invert_cv_port" : "light-port.svg",
 
             "random_button_on" : "polygene-light-rnd-switch-on.svg",

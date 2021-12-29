@@ -13,7 +13,7 @@
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="eugene-light-inv-switch-on.svg">
+   sodipodi:docname="light-inv-switch-off.svg">
   <defs
      id="defs289">
     <mask
@@ -34,9 +34,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="20.244214"
-     inkscape:cx="21.120858"
-     inkscape:cy="13.910025"
+     inkscape:zoom="22.103465"
+     inkscape:cx="22.535886"
+     inkscape:cy="4.0722617"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1-5"
      inkscape:document-rotation="0"
@@ -96,7 +96,7 @@
        transform="matrix(-0.03584035,0,0,-0.03584035,91.543423,90.867488)"
        style="display:inline;opacity:1">
       <rect
-         style="fill:#cf7608;fill-opacity:1;stroke:#2f2a22;stroke-width:3.38744;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#aaaaaa;fill-opacity:1;stroke:#1b1b1b;stroke-width:3.38744;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect864"
          width="307.82141"
          height="164.02162"
@@ -105,7 +105,7 @@
          transform="scale(-1)"
          ry="32.722984" />
       <rect
-         style="display:inline;opacity:1;fill:#f0d6ab;fill-opacity:1;stroke:#ff8f00;stroke-width:5.5803;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="display:inline;opacity:1;fill:#f7f7f7;fill-opacity:1;stroke:#f0f0f0;stroke-width:5.5803;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect864-8"
          width="277.2373"
          height="135.40656"
@@ -115,25 +115,25 @@
          transform="scale(-1)" />
       <path
          id="rect864-8-6"
-         style="display:inline;opacity:1;fill:#e4bd6e;fill-opacity:1;stroke:none;stroke-width:5.35088;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="M -185.68505,151.42701 H 85.466247 v -42.18314 c 0,-11.886151 -7.52147,-20.657049 -19.29943,-20.696119 l -229.528577,-0.76143 c -15.29642,-0.0507 -22.32329,9.571398 -22.32329,21.457549 z"
+         style="display:inline;opacity:1;fill:#d9d9d9;fill-opacity:1;stroke:none;stroke-width:5.35088;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M -185.96016,151.13705 H 85.19113 v -42.18314 c 0,-11.88615 -7.521467,-20.657048 -19.299432,-20.69612 L -163.63687,87.496363 c -15.29642,-0.05074 -22.32329,9.571397 -22.32329,21.457547 z"
          sodipodi:nodetypes="ccssssc" />
       <g
          aria-label="INV"
-         transform="rotate(-180,0.04820175,-0.4907675)"
+         transform="scale(-1)"
          id="text843"
-         style="font-style:normal;font-weight:normal;font-size:86.4411px;line-height:1.25;font-family:sans-serif;display:inline;opacity:1;fill:#8a4b00;fill-opacity:1;stroke:none;stroke-width:2.16104">
+         style="font-style:normal;font-weight:normal;font-size:86.4411px;line-height:1.25;font-family:sans-serif;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.16104">
         <path
            d="m -15.23008,-123.79654 v -57.22401 h 6.4830822 v 57.22401 z"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Questrial;-inkscape-font-specification:Questrial;fill:#8a4b00;fill-opacity:1;stroke-width:2.16104"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Questrial;-inkscape-font-specification:Questrial;stroke-width:2.16104;fill:#4d4d4d;fill-opacity:1"
            id="path845" />
         <path
            d="m 5.2564174,-123.79654 v -57.22401 h 7.5203756 l 35.354411,48.1477 v -48.1477 h 6.483082 v 57.22401 H 47.09391 L 11.7395,-172.11711 v 48.32057 z"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Questrial;-inkscape-font-specification:Questrial;fill:#8a4b00;fill-opacity:1;stroke-width:2.16104"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Questrial;-inkscape-font-specification:Questrial;stroke-width:2.16104;fill:#4d4d4d;fill-opacity:1"
            id="path847" />
         <path
            d="m 85.041538,-123.79654 -23.166215,-57.22401 h 7.08817 l 19.795012,49.87652 19.795015,-49.87652 h 7.08817 l -23.166218,57.22401 z"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Questrial;-inkscape-font-specification:Questrial;fill:#8a4b00;fill-opacity:1;stroke-width:2.16104"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Questrial;-inkscape-font-specification:Questrial;stroke-width:2.16104;fill:#4d4d4d;fill-opacity:1"
            id="path849" />
       </g>
     </g>
