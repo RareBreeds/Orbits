@@ -25,6 +25,7 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
  * 3 Beat modes that control the beat output behaviour (since v2.0.0)
+ * Factory presets (since v2.0.1)
 
 ### Panel
 
@@ -119,6 +120,7 @@ Polygene is a polyphonic rhythm generator module.
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
  * 3 Beat modes that control the beat output behaviour (since v2.0.0)
  * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (since v2.0.0)
+ * Factory presets (since v2.0.1)
 
 ### Panel
 TODO
