@@ -13,7 +13,7 @@
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="polygene-light-sync-switch-on.svg">
+   sodipodi:docname="dark-sync-switch-on.svg">
   <defs
      id="defs289">
     <mask
@@ -47,10 +47,10 @@
      inkscape:snap-center="true"
      inkscape:snap-text-baseline="true"
      inkscape:snap-page="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="2391"
-     inkscape:window-y="287"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
      inkscape:snap-to-guides="true"
@@ -81,7 +81,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -104,7 +104,7 @@
          rx="123.62119"
          ry="123.62118" />
       <ellipse
-         style="display:inline;opacity:1;fill:#f0d6ab;fill-opacity:1;stroke:#ff8f00;stroke-width:5.50231;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="display:inline;opacity:1;fill:#55452a;fill-opacity:1;stroke:#ff8f00;stroke-width:5.50231;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path856-7"
          cx="396.2561"
          cy="-138.22954"
@@ -113,22 +113,22 @@
          ry="104.13034" />
       <path
          id="path856-7-9"
-         style="display:inline;opacity:1;fill:#e4bd6e;fill-opacity:1;stroke:none;stroke-width:9.69436;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="display:inline;opacity:1;fill:#2b200b;fill-opacity:1;stroke:none;stroke-width:9.69436;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m -495.53401,148.49026 a 240.43466,239.69216 0 0 0 132.12576,21.37159 240.43466,239.69216 0 0 0 65.49885,-17.56466 99.6689,99.361096 0 0 0 0.37731,-26.71373 99.6689,99.361096 0 0 0 -110.99433,-86.617143 99.6689,99.361096 0 0 0 -87.00759,109.523943 z" />
       <g
          id="g6"
          transform="matrix(-0.60237358,0,0,-0.60237363,-262.37857,308.24949)"
-         style="display:inline;opacity:1;fill:#8a4b00;fill-opacity:1">
+         style="display:inline;opacity:1;fill:#ff8f00;fill-opacity:1">
         <path
            fill="#595651"
            d="m 123.3,265.8 58,-38.8 -21.1,-10.4 c 16.7,-15.8 38.6,-24.6 62,-24.6 21.5,0 42.4,7.7 58.7,21.7 16.1,13.8 26.9,32.9 30.4,53.8 L 331,264.2 C 326.8,238.7 313.6,215.4 293.9,198.5 274,181.4 248.5,172 222.3,172 c -31,0 -60,12.8 -80.9,35.3 l -22.6,-11.2 z"
            id="path2"
-           style="fill:#8a4b00;fill-opacity:1" />
+           style="fill:#ff8f00;fill-opacity:1" />
         <path
            fill="#595651"
            d="m 321.2,298.7 -58,38.8 21.1,10.4 c -16.7,15.8 -38.6,24.6 -62,24.6 -21.5,0 -42.4,-7.7 -58.7,-21.7 C 147.5,337 136.7,317.9 133.2,297 l -19.7,3.3 c 4.2,25.5 17.4,48.8 37.1,65.7 19.9,17.1 45.4,26.5 71.7,26.5 31,0 60,-12.8 80.9,-35.3 l 22.6,11.2 z"
            id="path4"
-           style="fill:#8a4b00;fill-opacity:1" />
+           style="fill:#ff8f00;fill-opacity:1" />
       </g>
     </g>
   </g>

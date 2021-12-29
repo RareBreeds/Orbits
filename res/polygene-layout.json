@@ -35,11 +35,11 @@
             "invert_switch_off" : "dark-inv-switch-off.svg",
             "invert_cv_port" : "dark-port.svg",
 
-            "random_button_on" : "polygene-dark-rnd-switch-on.svg",
-            "random_button_off" : "polygene-dark-rnd-switch-off.svg",
+            "random_button_on" : "dark-rnd-switch-on.svg",
+            "random_button_off" : "dark-rnd-switch-off.svg",
 
-            "sync_button_on" : "polygene-dark-sync-switch-on.svg",
-            "sync_button_off" : "polygene-dark-sync-switch-off.svg",
+            "sync_button_on" : "dark-sync-switch-on.svg",
+            "sync_button_off" : "dark-sync-switch-off.svg",
 
             "display_accent" : [192, 0, 57]
         },
@@ -78,11 +78,11 @@
             "invert_switch_off" : "light-inv-switch-off.svg",
             "invert_cv_port" : "light-port.svg",
 
-            "random_button_on" : "polygene-light-rnd-switch-on.svg",
-            "random_button_off" : "polygene-light-rnd-switch-off.svg",
+            "random_button_on" : "light-rnd-switch-on.svg",
+            "random_button_off" : "light-rnd-switch-off.svg",
 
-            "sync_button_on" : "polygene-light-sync-switch-on.svg",
-            "sync_button_off" : "polygene-light-sync-switch-off.svg",
+            "sync_button_on" : "light-sync-switch-on.svg",
+            "sync_button_off" : "light-sync-switch-off.svg",
 
             "display_accent" : [0, 187, 225]
         }
