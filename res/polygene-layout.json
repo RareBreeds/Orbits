@@ -16,19 +16,15 @@
             "channel_knob" : "polygene-dark-knob-small.svg",
 
             "length_knob" : "polygene-dark-knob-large.svg",
-            "length_cv_knob" : "polygene-dark-knob-small.svg",
             "length_cv_port" : "polygene-dark-port.svg",
 
             "hits_knob" : "polygene-dark-knob-large.svg",
-            "hits_cv_knob" : "polygene-dark-knob-small.svg",
             "hits_cv_port" : "polygene-dark-port.svg",
 
             "shift_knob" : "polygene-dark-knob-large.svg",
-            "shift_cv_knob" : "polygene-dark-knob-small.svg",
             "shift_cv_port" : "polygene-dark-port.svg",
 
             "variation_knob" : "polygene-dark-knob-large.svg",
-            "variation_cv_knob" : "polygene-dark-knob-small.svg",
             "variation_cv_port" : "polygene-dark-port.svg",
 
             "reverse_switch_on" : "polygene-dark-rev-switch-on.svg",
@@ -63,19 +59,15 @@
             "channel_knob" : "polygene-light-knob-small.svg",
 
             "length_knob" : "polygene-light-knob-large.svg",
-            "length_cv_knob" : "polygene-light-knob-small.svg",
             "length_cv_port" : "polygene-light-port.svg",
 
             "hits_knob" : "polygene-light-knob-large.svg",
-            "hits_cv_knob" : "polygene-light-knob-small.svg",
             "hits_cv_port" : "polygene-light-port.svg",
 
             "shift_knob" : "polygene-light-knob-large.svg",
-            "shift_cv_knob" : "polygene-light-knob-small.svg",
             "shift_cv_port" : "polygene-light-port.svg",
 
             "variation_knob" : "polygene-light-knob-large.svg",
-            "variation_cv_knob" : "polygene-light-knob-small.svg",
             "variation_cv_port" : "polygene-light-port.svg",
 
             "reverse_switch_on" : "polygene-light-rev-switch-on.svg",
