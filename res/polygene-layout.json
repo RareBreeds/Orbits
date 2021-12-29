@@ -4,10 +4,10 @@
             "name" : "Dark",
             "panel" : "polygene-dark-panel.svg",
 
-            "screw_top_left" : "polygene-dark-screw.svg",
-            "screw_top_right" : "polygene-dark-screw.svg",
-            "screw_bottom_left" : "polygene-dark-screw.svg",
-            "screw_bottom_right" : "polygene-dark-screw.svg",
+            "screw_top_left" : "dark-hex-screw.svg",
+            "screw_top_right" : "dark-hex-screw.svg",
+            "screw_bottom_left" : "dark-hex-screw.svg",
+            "screw_bottom_right" : "dark-hex-screw.svg",
 
             "clock_port" : "polygene-dark-port.svg",
             "sync_port" : "polygene-dark-port.svg",
@@ -47,10 +47,10 @@
             "name" : "Light",
             "panel" : "polygene-light-panel.svg",
 
-            "screw_top_left" : "polygene-light-screw.svg",
-            "screw_top_right" : "polygene-light-screw.svg",
-            "screw_bottom_left" : "polygene-light-screw.svg",
-            "screw_bottom_right" : "polygene-light-screw.svg",
+            "screw_top_left" : "light-hex-screw.svg",
+            "screw_top_right" : "light-hex-screw.svg",
+            "screw_bottom_left" : "light-hex-screw.svg",
+            "screw_bottom_right" : "light-hex-screw.svg",
 
             "clock_port" : "polygene-light-port.svg",
             "sync_port" : "polygene-light-port.svg",

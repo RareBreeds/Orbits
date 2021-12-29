@@ -13,7 +13,7 @@
    version="1.1"
    id="svg295"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="eugene-light-screw.svg">
+   sodipodi:docname="dark-hex-screw.svg">
   <defs
      id="defs289">
     <mask
@@ -34,7 +34,7 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="35.603781"
+     inkscape:zoom="33.21579"
      inkscape:cx="11.451206"
      inkscape:cy="8.4842683"
      inkscape:document-units="mm"
@@ -79,7 +79,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -89,7 +89,7 @@
      id="layer1"
      transform="translate(-90.139078,-92.137231)">
     <circle
-       style="display:inline;opacity:1;fill:#c7c7c7;fill-opacity:1;stroke:#919191;stroke-width:0.0824495;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;opacity:1;fill:#232323;fill-opacity:1;stroke:#5e5e5e;stroke-width:0.0824495;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path31"
        cx="91.8461"
        cy="93.844254"
@@ -98,19 +98,19 @@
        inkscape:transform-center-y="-0.14601872" />
     <path
        id="path31-2"
-       style="display:inline;opacity:1;fill:#9a9a9a;fill-opacity:0.78542501;stroke:#5e5e5e;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;opacity:1;fill:#414141;fill-opacity:0.78542501;stroke:#5e5e5e;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:transform-center-x="0.13559553"
        inkscape:transform-center-y="0.48095743"
        d="m 90.299214,93.844254 a 1.5468936,1.5435046 0 0 0 1.546645,1.543258 1.5468936,1.5435046 0 0 0 1.547128,-1.543258 z" />
     <g
        id="g79"
        transform="matrix(0.00986039,0.00986039,-0.00986039,0.00986039,91.314486,91.478455)"
-       style="display:inline;opacity:1;fill:#5c5c5c;fill-opacity:1"
+       style="display:inline;opacity:1;fill:#000000;fill-opacity:1"
        inkscape:transform-center-x="0.49166585"
        inkscape:transform-center-y="-0.076166577">
       <path
          sodipodi:type="star"
-         style="fill:#5c5c5c;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
          id="path1425"
          sodipodi:sides="6"
          sodipodi:cx="7.5070171"

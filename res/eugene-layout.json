@@ -4,10 +4,10 @@
             "name" : "Dark",
             "panel" : "eugene-dark-panel.svg",
 
-            "screw_top_left" : "eugene-dark-screw.svg",
-            "screw_top_right" : "eugene-dark-screw.svg",
-            "screw_bottom_left" : "eugene-dark-screw.svg",
-            "screw_bottom_right" : "eugene-dark-screw.svg",
+            "screw_top_left" : "dark-hex-screw.svg",
+            "screw_top_right" : "dark-hex-screw.svg",
+            "screw_bottom_left" : "dark-hex-screw.svg",
+            "screw_bottom_right" : "dark-hex-screw.svg",
 
             "clock_port" : "eugene-dark-port.svg",
             "sync_port" : "eugene-dark-port.svg",
@@ -38,10 +38,10 @@
             "name" : "Light",
             "panel" : "eugene-light-panel.svg",
 
-            "screw_top_left" : "eugene-light-screw.svg",
-            "screw_top_right" : "eugene-light-screw.svg",
-            "screw_bottom_left" : "eugene-light-screw.svg",
-            "screw_bottom_right" : "eugene-light-screw.svg",
+            "screw_top_left" : "light-hex-screw.svg",
+            "screw_top_right" : "light-hex-screw.svg",
+            "screw_bottom_left" : "light-hex-screw.svg",
+            "screw_bottom_right" : "light-hex-screw.svg",
 
             "clock_port" : "eugene-light-port.svg",
             "sync_port" : "eugene-light-port.svg",
