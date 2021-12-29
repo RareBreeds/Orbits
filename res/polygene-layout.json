@@ -9,31 +9,31 @@
             "screw_bottom_left" : "dark-hex-screw.svg",
             "screw_bottom_right" : "dark-hex-screw.svg",
 
-            "clock_port" : "polygene-dark-port.svg",
-            "sync_port" : "polygene-dark-port.svg",
-            "beat_port" : "polygene-dark-port.svg",
-            "eoc_port" : "polygene-dark-port.svg",
+            "clock_port" : "dark-port.svg",
+            "sync_port" : "dark-port.svg",
+            "beat_port" : "dark-port.svg",
+            "eoc_port" : "dark-port.svg",
             "channel_knob" : "grey-knob-small.svg",
 
             "length_knob" : "polygene-dark-knob-large.svg",
-            "length_cv_port" : "polygene-dark-port.svg",
+            "length_cv_port" : "dark-port.svg",
 
             "hits_knob" : "polygene-dark-knob-large.svg",
-            "hits_cv_port" : "polygene-dark-port.svg",
+            "hits_cv_port" : "dark-port.svg",
 
             "shift_knob" : "polygene-dark-knob-large.svg",
-            "shift_cv_port" : "polygene-dark-port.svg",
+            "shift_cv_port" : "dark-port.svg",
 
             "variation_knob" : "polygene-dark-knob-large.svg",
-            "variation_cv_port" : "polygene-dark-port.svg",
+            "variation_cv_port" : "dark-port.svg",
 
             "reverse_switch_on" : "polygene-dark-rev-switch-on.svg",
             "reverse_switch_off" : "polygene-dark-rev-switch-off.svg",
-            "reverse_cv_port" : "polygene-dark-port.svg",
+            "reverse_cv_port" : "dark-port.svg",
 
             "invert_switch_on" : "polygene-dark-inv-switch-on.svg",
             "invert_switch_off" : "polygene-dark-inv-switch-off.svg",
-            "invert_cv_port" : "polygene-dark-port.svg",
+            "invert_cv_port" : "dark-port.svg",
 
             "random_button_on" : "polygene-dark-rnd-switch-on.svg",
             "random_button_off" : "polygene-dark-rnd-switch-off.svg",
@@ -52,31 +52,31 @@
             "screw_bottom_left" : "light-hex-screw.svg",
             "screw_bottom_right" : "light-hex-screw.svg",
 
-            "clock_port" : "polygene-light-port.svg",
-            "sync_port" : "polygene-light-port.svg",
-            "beat_port" : "polygene-light-port.svg",
-            "eoc_port" : "polygene-light-port.svg",
+            "clock_port" : "light-port.svg",
+            "sync_port" : "light-port.svg",
+            "beat_port" : "light-port.svg",
+            "eoc_port" : "light-port.svg",
             "channel_knob" : "grey-knob-small.svg",
 
             "length_knob" : "polygene-light-knob-large.svg",
-            "length_cv_port" : "polygene-light-port.svg",
+            "length_cv_port" : "light-port.svg",
 
             "hits_knob" : "polygene-light-knob-large.svg",
-            "hits_cv_port" : "polygene-light-port.svg",
+            "hits_cv_port" : "light-port.svg",
 
             "shift_knob" : "polygene-light-knob-large.svg",
-            "shift_cv_port" : "polygene-light-port.svg",
+            "shift_cv_port" : "light-port.svg",
 
             "variation_knob" : "polygene-light-knob-large.svg",
-            "variation_cv_port" : "polygene-light-port.svg",
+            "variation_cv_port" : "light-port.svg",
 
             "reverse_switch_on" : "polygene-light-rev-switch-on.svg",
             "reverse_switch_off" : "polygene-light-rev-switch-off.svg",
-            "reverse_cv_port" : "polygene-light-port.svg",
+            "reverse_cv_port" : "light-port.svg",
 
             "invert_switch_on" : "polygene-light-inv-switch-on.svg",
             "invert_switch_off" : "polygene-light-inv-switch-off.svg",
-            "invert_cv_port" : "polygene-light-port.svg",
+            "invert_cv_port" : "light-port.svg",
 
             "random_button_on" : "polygene-light-rnd-switch-on.svg",
             "random_button_off" : "polygene-light-rnd-switch-off.svg",

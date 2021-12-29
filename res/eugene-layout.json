@@ -9,30 +9,30 @@
             "screw_bottom_left" : "dark-hex-screw.svg",
             "screw_bottom_right" : "dark-hex-screw.svg",
 
-            "clock_port" : "eugene-dark-port.svg",
-            "sync_port" : "eugene-dark-port.svg",
-            "beat_port" : "eugene-dark-port.svg",
-            "eoc_port" : "eugene-dark-port.svg",
+            "clock_port" : "dark-port.svg",
+            "sync_port" : "dark-port.svg",
+            "beat_port" : "dark-port.svg",
+            "eoc_port" : "dark-port.svg",
 
             "length_knob" : "eugene-dark-knob-large.svg",
             "length_cv_knob" : "eugene-dark-knob-small.svg", 
-            "length_cv_port" : "eugene-dark-port.svg",
+            "length_cv_port" : "dark-port.svg",
 
             "hits_knob" : "eugene-dark-knob-large.svg",
             "hits_cv_knob" : "eugene-dark-knob-small.svg",
-            "hits_cv_port" : "eugene-dark-port.svg",
+            "hits_cv_port" : "dark-port.svg",
 
             "shift_knob" : "eugene-dark-knob-large.svg",
             "shift_cv_knob" : "eugene-dark-knob-small.svg",
-            "shift_cv_port" : "eugene-dark-port.svg",
+            "shift_cv_port" : "dark-port.svg",
 
             "reverse_switch_on" : "eugene-dark-rev-switch-on.svg",
             "reverse_switch_off" : "eugene-dark-rev-switch-off.svg",
-            "reverse_cv_port" : "eugene-dark-port.svg",
+            "reverse_cv_port" : "dark-port.svg",
 
             "invert_switch_on" : "eugene-dark-inv-switch-on.svg",
             "invert_switch_off" : "eugene-dark-inv-switch-off.svg",
-            "invert_cv_port" : "eugene-dark-port.svg"
+            "invert_cv_port" : "dark-port.svg"
         },
         {
             "name" : "Light",
@@ -43,30 +43,30 @@
             "screw_bottom_left" : "light-hex-screw.svg",
             "screw_bottom_right" : "light-hex-screw.svg",
 
-            "clock_port" : "eugene-light-port.svg",
-            "sync_port" : "eugene-light-port.svg",
-            "beat_port" : "eugene-light-port.svg",
-            "eoc_port" : "eugene-light-port.svg",
+            "clock_port" : "light-port.svg",
+            "sync_port" : "light-port.svg",
+            "beat_port" : "light-port.svg",
+            "eoc_port" : "light-port.svg",
 
             "length_knob" : "eugene-light-knob-large.svg",
             "length_cv_knob" : "eugene-light-knob-small.svg", 
-            "length_cv_port" : "eugene-light-port.svg",
+            "length_cv_port" : "light-port.svg",
 
             "hits_knob" : "eugene-light-knob-large.svg",
             "hits_cv_knob" : "eugene-light-knob-small.svg",
-            "hits_cv_port" : "eugene-light-port.svg",
+            "hits_cv_port" : "light-port.svg",
 
             "shift_knob" : "eugene-light-knob-large.svg",
             "shift_cv_knob" : "eugene-light-knob-small.svg",
-            "shift_cv_port" : "eugene-light-port.svg",
+            "shift_cv_port" : "light-port.svg",
 
             "reverse_switch_on" : "eugene-light-rev-switch-on.svg",
             "reverse_switch_off" : "eugene-light-rev-switch-off.svg",
-            "reverse_cv_port" : "eugene-light-port.svg",
+            "reverse_cv_port" : "light-port.svg",
 
             "invert_switch_on" : "eugene-light-inv-switch-on.svg",
             "invert_switch_off" : "eugene-light-inv-switch-off.svg",
-            "invert_cv_port" : "eugene-light-port.svg"
+            "invert_cv_port" : "light-port.svg"
         }
     ],
     "default" : "Dark"
