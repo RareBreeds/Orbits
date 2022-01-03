@@ -9,6 +9,7 @@
   "manualUrl": "https://rarebreeds.github.io/Orbits",
   "sourceUrl": "https://github.com/RareBreeds/Orbits",
   "donateUrl": "https://ko-fi.com/RareBreeds",
+  "changelogUrl": "https://github.com/RareBreeds/Orbits/blob/v2/CHANGELOG.md",
   "modules": [
     {
       "slug": "RareBreeds_Orbits_Eugene",
