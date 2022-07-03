@@ -20,6 +20,12 @@ struct PolygeneDisplayData
         } channels[PORT_MAX_CHANNELS];
 };
 
+struct PolygeneChannelState
+{
+        float length, hits, shift, variation;
+        bool reverse, invert;
+};
+
 struct RareBreeds_Orbits_Polygene : Module
 {
         enum ParamIds
@@ -72,11 +78,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_invert_trigger;
                 BeatGenerator m_beat_generator;
                 EOCGenerator m_eoc_generator;
-                float m_length;
-                float m_hits;
-                float m_shift;
-                float m_variation;
-                bool m_reverse, m_invert;
+                PolygeneChannelState m_state;
                 RareBreeds_Orbits_Polygene *m_module;
 
                 void init(RareBreeds_Orbits_Polygene *module, int channel);
