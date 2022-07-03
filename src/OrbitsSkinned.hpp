@@ -53,8 +53,8 @@ TParamWidget *createOrbitsSkinnedParam(OrbitsConfig *config, std::string compone
 {
         TParamWidget *o = new TParamWidget(config, component);
         o->box.pos = config->getPos(component).minus(o->box.size.div(2));
-	o->app::ParamWidget::module = module;
-	o->app::ParamWidget::paramId = paramId;
-	o->initParamQuantity();
+        o->app::ParamWidget::module = module;
+        o->app::ParamWidget::paramId = paramId;
+        o->initParamQuantity();
         return o;
 }

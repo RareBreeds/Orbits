@@ -95,6 +95,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 void process(const ProcessArgs &args);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);
+                void onRandomizeWithHistory();
                 void onRandomize();
         };
 

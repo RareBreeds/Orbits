@@ -2,6 +2,53 @@
 #include "PolygeneWidget.hpp"
 #include "Rhythm.hpp"
 
+struct RandomizeChannelAction : rack::history::ModuleAction
+{
+    float length_old, length_new;
+    float hits_old, hits_new;
+    float shift_old, shift_new;
+    float variation_old, variation_new;
+    bool reverse_old, reverse_new;
+    bool invert_old, invert_new;
+
+    void undo() override
+    {
+            RareBreeds_Orbits_Polygene* module = static_cast<RareBreeds_Orbits_Polygene *>(APP->engine->getModule(moduleId));
+            if (module)
+            {
+                    module->m_active_channel->m_length = length_old;
+                    module->m_active_channel->m_hits = hits_old;
+                    module->m_active_channel->m_shift = shift_old;
+                    module->m_active_channel->m_variation = variation_old;
+                    module->m_active_channel->m_reverse = reverse_old;
+                    module->m_active_channel->m_invert = invert_old;
+
+                    module->syncParamsToActiveChannel();
+            }
+    }
+
+    void redo() override
+    {
+            RareBreeds_Orbits_Polygene* module = static_cast<RareBreeds_Orbits_Polygene *>(APP->engine->getModule(moduleId));
+            if (module)
+            {
+                    module->m_active_channel->m_length = length_new;
+                    module->m_active_channel->m_hits = hits_new;
+                    module->m_active_channel->m_shift = shift_new;
+                    module->m_active_channel->m_variation = variation_new;
+                    module->m_active_channel->m_reverse = reverse_new;
+                    module->m_active_channel->m_invert = invert_new;
+
+                    module->syncParamsToActiveChannel();
+            }
+    }
+
+    RandomizeChannelAction()
+    {
+            name = "randomize channel";
+    }
+};
+
 static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
         return clamp(int(value + 0.5f), min, max);
@@ -193,6 +240,30 @@ void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
         }
 }
 
+void RareBreeds_Orbits_Polygene::Channel::onRandomizeWithHistory()
+{
+        RandomizeChannelAction* action = new RandomizeChannelAction;
+        action->moduleId = m_module->id;
+
+        action->length_old = m_length;
+        action->hits_old = m_hits;
+        action->shift_old = m_shift;
+        action->variation_old = m_variation;
+        action->reverse_old = m_reverse;
+        action->invert_old = m_invert;
+
+        onRandomize();
+
+        action->length_new = m_length;
+        action->hits_new = m_hits;
+        action->shift_new = m_shift;
+        action->variation_new = m_variation;
+        action->reverse_new = m_reverse;
+        action->invert_new = m_invert;
+
+        APP->history->push(action);
+}
+
 void RareBreeds_Orbits_Polygene::Channel::onRandomize()
 {
         m_length = random::uniform() * rhythm::max_length;
@@ -334,7 +405,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         bool rnd = params[RANDOM_KNOB_PARAM].getValue() > 0.5f;
         if(m_random_trigger.process(rnd, args.sampleTime))
         {
-                m_active_channel->onRandomize();
+                m_active_channel->onRandomizeWithHistory();
                 syncParamsToActiveChannel();
         }
 

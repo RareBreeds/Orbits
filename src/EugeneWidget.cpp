@@ -233,7 +233,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addChild(rhythm_display);
 
         // In Rack-2 dataFromJson is called on the module before the widget is created
-        // The module will remember the json object so we can initialise it here
+        // The module remembers the json object so we can initialise it here
         if(module && module->m_widget_config)
         {
                 dataFromJson(module->m_widget_config);
