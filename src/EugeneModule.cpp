@@ -206,17 +206,13 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
                 json_t *obj = json_object_get(root, "widget");
                 if(obj)
                 {
-                        if(m_widget)
-                        {
-                                m_widget->dataFromJson(obj);
-                        }
-                        else
-                        {
-                                // The widget isn't created before dataFromJson is called in Rack-2
-                                // Retain the JSON object, widget will ask for it during construction
-                                // Module must remember to decref this if the widget is never constructed
-                                m_widget_config = json_incref(obj);
-                        }
+                        // Always defer the widget config to the widget draw method for 2 reasons
+                        // 1. The widget isn't created before dataFromJson is called in Rack-2
+                        //    so store the config and initialize when it's first used.
+                        // 2. EightFaceMk2 calls dataFromJson from a different thread than the
+                        //    main thread which may cause GL operations to fail.
+                        // Note the module must remember to decref this if the widget is never created
+                        m_widget_config = json_incref(obj);
                 }
         }
 }

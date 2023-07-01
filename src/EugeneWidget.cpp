@@ -68,7 +68,7 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
                 }
                 nvgFill(args.vg);
 
-                // set the on beat radius so 8 can fix on the screen
+                // set the on beat radius so 8 can fit on the screen
                 const auto on_radius = 1.f / 8.f;
 
                 // set outline radius so it's bigger than the on_radius
@@ -231,19 +231,29 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
 
         rhythm_display = new EugeneRhythmDisplay(module, m_config->getPos("display"), m_config->getSize("display"));
         addChild(rhythm_display);
-
-        // In Rack-2 dataFromJson is called on the module before the widget is created
-        // The module remembers the json object so we can initialise it here
-        if(module && module->m_widget_config)
-        {
-                dataFromJson(module->m_widget_config);
-                json_decref(module->m_widget_config);
-                module->m_widget_config = NULL;
-        }
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
 {
         beat_widget.appendContextMenu(menu);
         eoc_widget.appendContextMenu(menu);
+}
+
+void RareBreeds_Orbits_EugeneWidget::draw(const DrawArgs& args)
+{
+        RareBreeds_Orbits_Eugene *module = static_cast<RareBreeds_Orbits_Eugene *>(getModule());
+
+        // In Rack-2 dataFromJson is called on the module before the widget is created
+        // The module remembers the json object so we can initialise it here
+        if(module)
+        {
+                json_t *config = module->m_widget_config.exchange(nullptr);
+                if(config)
+                {
+                        dataFromJson(config);
+                        json_decref(config);
+                }
+        }
+
+        OrbitsWidget::draw(args);
 }

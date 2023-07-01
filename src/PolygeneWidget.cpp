@@ -188,15 +188,6 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         r->module = module;
         r->box.size = m_config->getSize("display");
         addChild(r);
-
-        // In Rack-2 dataFromJson is called on the module before the widget is created
-        // The module will remember the json object so we can initialise it here
-        if(module && module->m_widget_config)
-        {
-                dataFromJson(module->m_widget_config);
-                json_decref(module->m_widget_config);
-                module->m_widget_config = NULL;
-        }
 }
 
 
@@ -230,4 +221,23 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
         menu->addChild(sync_label);
         menu->addChild(new SyncModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), SYNC_MODE_INDIVIDUAL_CHANNELS, "Individual Channels"));
         menu->addChild(new SyncModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), SYNC_MODE_ALL_CHANNELS, "All Channels"));
+}
+
+void RareBreeds_Orbits_PolygeneWidget::draw(const DrawArgs& args)
+{
+        RareBreeds_Orbits_Polygene *module = static_cast<RareBreeds_Orbits_Polygene *>(getModule());
+
+        // In Rack-2 dataFromJson is called on the module before the widget is created
+        // The module remembers the json object so we can initialise it here
+        if(module)
+        {
+                json_t *config = module->m_widget_config.exchange(nullptr);
+                if(config)
+                {
+                        dataFromJson(config);
+                        json_decref(config);
+                }
+        }
+
+        OrbitsWidget::draw(args);
 }

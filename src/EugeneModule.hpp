@@ -3,6 +3,8 @@
 #include "OrbitsModule.hpp"
 #include "Rhythm.hpp"
 
+#include <atomic>
+
 struct RareBreeds_Orbits_EugeneWidget;
 
 struct EugeneDisplayData
@@ -70,7 +72,7 @@ struct RareBreeds_Orbits_Eugene : Module
 
         unsigned int m_current_step = 0;
         RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
-        json_t *m_widget_config = NULL;
+        std::atomic<json_t *> m_widget_config{nullptr};
         RareBreeds_Orbits_Eugene();
         virtual ~RareBreeds_Orbits_Eugene();
 
