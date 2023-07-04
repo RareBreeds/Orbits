@@ -34,7 +34,7 @@ struct RandomizeChannelAction : rack::history::ModuleAction
 
 static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
-        return clamp(int(value + 0.5f), min, max);
+        return std::max(std::min((unsigned int)(value + 0.5f), max), min);
 }
 
 static void json_load_real(json_t *root, const char *param, float *result)
@@ -42,7 +42,7 @@ static void json_load_real(json_t *root, const char *param, float *result)
         json_t *obj = json_object_get(root, param);
         if(obj)
         {
-                *result = json_real_value(obj);
+                *result = (float) json_real_value(obj);
         }
 }
 
@@ -350,7 +350,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         outputs[BEAT_OUTPUT].setChannels(m_active_channels);
         outputs[EOC_OUTPUT].setChannels(m_active_channels);
 
-        m_active_channel_id = std::round(params[CHANNEL_KNOB_PARAM].getValue());
+        m_active_channel_id = (int)std::round(params[CHANNEL_KNOB_PARAM].getValue());
         m_active_channel = &m_channels[m_active_channel_id];
 
         // Update the knob positions when the channel changes
@@ -484,6 +484,8 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& e)
 {
+        (void) e;
+
         for(auto &chan : m_channels)
         {
                 chan.onRandomize();

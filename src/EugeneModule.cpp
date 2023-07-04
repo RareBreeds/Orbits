@@ -4,7 +4,7 @@
 
 static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
-        return clamp(int(value + 0.5f), min, max);
+        return std::max(std::min((unsigned int)(value + 0.5f), max), min);
 }
 
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()

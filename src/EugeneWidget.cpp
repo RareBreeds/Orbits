@@ -3,7 +3,7 @@
 #include "OrbitsConfig.hpp"
 #include "OrbitsSkinned.hpp"
 
-static OrbitsConfig config("res/eugene-layout.json");
+static OrbitsConfig g_config("res/eugene-layout.json");
 
 struct EugeneRhythmDisplayUnbuffered : Widget
 {
@@ -103,7 +103,7 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
                         }
 
                         nvgSave(args.vg);
-                        nvgRotate(args.vg, 2.f * k * M_PI / m_data.length);
+                        nvgRotate(args.vg, 2.f * k * (float)M_PI / m_data.length);
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, radius);
                         if(m_data.invert)
@@ -186,7 +186,7 @@ void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
         Widget::drawLayer(args, layer);
 }
 
-RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&config)
+RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&g_config)
 {
         setModule(module);
 

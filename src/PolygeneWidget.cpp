@@ -3,7 +3,7 @@
 #include "OrbitsSkinned.hpp"
 #include "PolygeneModule.hpp"
 
-static OrbitsConfig config("res/polygene-layout.json");
+static OrbitsConfig g_config("res/polygene-layout.json");
 
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
@@ -17,12 +17,12 @@ struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
-        loadTheme(config.getDefaultThemeId());
+        loadTheme(g_config.getDefaultThemeId());
 }
 
 void PolygeneRhythmDisplay::loadTheme(int theme)
 {
-        std::array<uint8_t, 3> colour = config.getColour("display_accent", theme);
+        std::array<uint8_t, 3> colour = g_config.getColour("display_accent", theme);
         m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
 }
 
@@ -69,22 +69,22 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgScale(args.vg, -1.f, -1.f);
 
                 // Inner circle radius
-                const auto inner_circle_radius = 0.17f;
-                const auto channel_width = (1.0f - inner_circle_radius) / 16.0f;
+                const float inner_circle_radius = 0.17f;
+                const float channel_width = (1.0f - inner_circle_radius) / 16.0f;
                 // Width of the line when drawing circles
-                const auto arc_stroke_width = channel_width / 2.0f;
+                const float arc_stroke_width = channel_width / 2.0f;
 
                 // Add a border so we don't draw over the edge
-                nvgScale(args.vg, 1.0 - channel_width, 1.0 - channel_width);
+                nvgScale(args.vg, 1.0f - channel_width, 1.0f - channel_width);
 
                 nvgStrokeWidth(args.vg, arc_stroke_width);
                 for(unsigned int c = 0; c < PORT_MAX_CHANNELS; ++c)
                 {
-                        const auto length = data.channels[c].length;
-                        const auto radius = 1.0f - c * channel_width;
-                        const auto pi2_len = 2.0f * M_PI / length;
-                        const auto beat_gap = 0.06f;
-                        const auto len = pi2_len - beat_gap;
+                        const unsigned int length = data.channels[c].length;
+                        const float radius = 1.0f - c * channel_width;
+                        const float pi2_len = 2.0f * (float)M_PI / length;
+                        const float beat_gap = 0.06f;
+                        const float len = pi2_len - beat_gap;
 
                         NVGcolor dash_colour;
                         if(c == data.active_channel_id)
@@ -105,17 +105,20 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                         // The engine is run in a different thread, m_current_step is only updated on each clock
                         // cycle so may not have been wrapped to a new length parameter yet. If the current step
                         // is out of bounds then display it at 0.
-                        auto current_step = data.channels[c].current_step;
-                        for(auto k = 0u; k < length; ++k)
+                        unsigned int current_step = data.channels[c].current_step;
+                        for(unsigned int k = 0; k < length; ++k)
                         {
-                                const auto a0 = k * pi2_len + M_PI_2;
-                                const auto a1 = a0 + len;
+                                const float a0 = k * pi2_len + (float)M_PI_2;
+                                const float a1 = a0 + len;
 
                                 if(current_step == k)
                                 {
                                         const auto center = a0 - beat_gap / 2.f;
                                         nvgBeginPath(args.vg);
-                                        nvgCircle(args.vg, radius * cos(center), radius * sin(center), arc_stroke_width / 2.0f);
+                                        nvgCircle(args.vg,
+                                                  radius * cosf(center),
+                                                  radius * sinf(center),
+                                                  arc_stroke_width / 2.0f);
                                         nvgFill(args.vg);
                                 }
 
@@ -138,7 +141,7 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 }
 
 RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module)
-        : OrbitsWidget(&config)
+        : OrbitsWidget(&g_config)
 {
         setModule(module);
 
@@ -206,6 +209,7 @@ struct SyncModeItem : MenuItem
 
         void onAction(const event::Action &e) override
         {
+                (void) e;
                 m_module->m_sync_mode = m_id;
         }
 };

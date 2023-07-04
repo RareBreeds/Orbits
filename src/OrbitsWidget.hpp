@@ -41,6 +41,7 @@ struct EOCModeItem : MenuItem
 
         void onAction(const event::Action &e) override
         {
+                (void) e;
                 m_module->setMode(m_id);
         }
 };
@@ -66,6 +67,7 @@ struct BeatModeItem : MenuItem
 
         void onAction(const event::Action &e) override
         {
+                (void) e;
                 m_module->setMode(m_id);
         }
 };

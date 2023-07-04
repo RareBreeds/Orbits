@@ -11,6 +11,7 @@ OrbitsThemeChoiceItem::OrbitsThemeChoiceItem(OrbitsWidget *widget, int id, const
 
 void OrbitsThemeChoiceItem::onAction(const event::Action &e)
 {
+        (void) e;
         m_widget->loadTheme(m_id);
 }
 

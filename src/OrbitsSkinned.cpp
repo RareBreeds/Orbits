@@ -4,8 +4,8 @@ OrbitsSkinnedKnob::OrbitsSkinnedKnob(OrbitsConfig *config, std::string component
 {
         m_config = config;
         m_component = component;
-        minAngle = -0.83 * M_PI;
-        maxAngle = 0.83 * M_PI;
+        minAngle = -0.83f * (float)M_PI;
+        maxAngle = 0.83f * (float)M_PI;
         loadTheme(m_config->getDefaultThemeId());
 }
 
@@ -58,13 +58,17 @@ OrbitsSkinnedPort::OrbitsSkinnedPort(OrbitsConfig *config, std::string component
         m_config = config;
         m_component = component;
         loadTheme(m_config->getDefaultThemeId());
-        shadow->opacity = 0.07;
+        shadow->opacity = 0.07f;
 }
 
 void OrbitsSkinnedPort::loadTheme(int theme)
 {
         setSvg(APP->window->loadSvg(m_config->getSvg(m_component, theme)));
         // fb->dirty = true; // Already set by setSvg for SvgPorts
+}
+
+OrbitsSkinned::~OrbitsSkinned()
+{
 }
 
 OrbitsSkinnedScrew *createOrbitsSkinnedScrew(OrbitsConfig *config, std::string component, math::Vec pos)

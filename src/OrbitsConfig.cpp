@@ -25,7 +25,6 @@ float OrbitsConfig::rFindFloatAttribute(std::string &content, std::string attrib
                 return 0.0f;
         }
 
-        search = float_end;
         float value = std::stof(content.substr(float_start, float_end - float_start));
         return value;
 }
