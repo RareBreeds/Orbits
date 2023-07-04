@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D25F21BD2A537F9600400635 /* OrbitsWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */; };
+		D25F21BF2A537F9600400635 /* Rhythm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B42A5379A40010944C /* Rhythm.cpp */; };
+		D25F21C22A537F9600400635 /* OrbitsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B72A5379A40010944C /* OrbitsModule.cpp */; };
+		D25F21C82A537F9600400635 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49BD2A5379A40010944C /* plugin.cpp */; };
+		D25F21C92A537F9600400635 /* EugeneModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49BE2A5379A40010944C /* EugeneModule.cpp */; };
+		D25F21CA2A537F9600400635 /* OrbitsConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49BF2A5379A40010944C /* OrbitsConfig.cpp */; };
+		D25F21CB2A537F9600400635 /* PolygeneModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C02A5379A40010944C /* PolygeneModule.cpp */; };
+		D25F21CC2A537F9600400635 /* Eugene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C12A5379A40010944C /* Eugene.cpp */; };
+		D25F21CE2A537F9600400635 /* OrbitsSkinned.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C32A5379A40010944C /* OrbitsSkinned.cpp */; };
+		D25F21D02A537F9600400635 /* EugeneWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C52A5379A40010944C /* EugeneWidget.cpp */; };
+		D25F21D22A537F9600400635 /* Polygene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C72A5379A40010944C /* Polygene.cpp */; };
+		D25F21D32A537F9600400635 /* PolygeneWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */; };
+		D2C0CEB42A5410850038808E /* libRack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2C0CEB32A5410850038808E /* libRack.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D2C0CEB32A5410850038808E /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../../libRack.dylib; sourceTree = "<group>"; };
+		D2CAD8B22A53798100613E5A /* libOrbits.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libOrbits.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsWidget.cpp; sourceTree = "<group>"; };
+		D2FD49B32A5379A40010944C /* OrbitsSkinned.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsSkinned.hpp; sourceTree = "<group>"; };
+		D2FD49B42A5379A40010944C /* Rhythm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rhythm.cpp; sourceTree = "<group>"; };
+		D2FD49B52A5379A40010944C /* EugeneWidget.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EugeneWidget.hpp; sourceTree = "<group>"; };
+		D2FD49B62A5379A40010944C /* PolygeneWidget.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PolygeneWidget.hpp; sourceTree = "<group>"; };
+		D2FD49B72A5379A40010944C /* OrbitsModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsModule.cpp; sourceTree = "<group>"; };
+		D2FD49B82A5379A40010944C /* plugin.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = plugin.hpp; sourceTree = "<group>"; };
+		D2FD49B92A5379A40010944C /* EugeneModule.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EugeneModule.hpp; sourceTree = "<group>"; };
+		D2FD49BA2A5379A40010944C /* OrbitsConfig.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsConfig.hpp; sourceTree = "<group>"; };
+		D2FD49BB2A5379A40010944C /* PolygeneModule.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PolygeneModule.hpp; sourceTree = "<group>"; };
+		D2FD49BC2A5379A40010944C /* OrbitsModule.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsModule.hpp; sourceTree = "<group>"; };
+		D2FD49BD2A5379A40010944C /* plugin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plugin.cpp; sourceTree = "<group>"; };
+		D2FD49BE2A5379A40010944C /* EugeneModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EugeneModule.cpp; sourceTree = "<group>"; };
+		D2FD49BF2A5379A40010944C /* OrbitsConfig.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsConfig.cpp; sourceTree = "<group>"; };
+		D2FD49C02A5379A40010944C /* PolygeneModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolygeneModule.cpp; sourceTree = "<group>"; };
+		D2FD49C12A5379A40010944C /* Eugene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Eugene.cpp; sourceTree = "<group>"; };
+		D2FD49C22A5379A40010944C /* OrbitsWidget.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsWidget.hpp; sourceTree = "<group>"; };
+		D2FD49C32A5379A40010944C /* OrbitsSkinned.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsSkinned.cpp; sourceTree = "<group>"; };
+		D2FD49C42A5379A40010944C /* Rhythm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Rhythm.hpp; sourceTree = "<group>"; };
+		D2FD49C52A5379A40010944C /* EugeneWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EugeneWidget.cpp; sourceTree = "<group>"; };
+		D2FD49C62A5379A40010944C /* rhythm_table.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rhythm_table.h; sourceTree = "<group>"; };
+		D2FD49C72A5379A40010944C /* Polygene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Polygene.cpp; sourceTree = "<group>"; };
+		D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolygeneWidget.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2C0CEB12A5410750038808E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2C0CEB42A5410850038808E /* libRack.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D2C0CEB22A5410850038808E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D2C0CEB32A5410850038808E /* libRack.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D2CAD8A92A53798100613E5A = {
+			isa = PBXGroup;
+			children = (
+				D2FD49B12A5379A40010944C /* src */,
+				D2CAD8B32A53798100613E5A /* Products */,
+				D2C0CEB22A5410850038808E /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D2CAD8B32A53798100613E5A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2CAD8B22A53798100613E5A /* libOrbits.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D2FD49B12A5379A40010944C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D2FD49C12A5379A40010944C /* Eugene.cpp */,
+				D2FD49BE2A5379A40010944C /* EugeneModule.cpp */,
+				D2FD49B92A5379A40010944C /* EugeneModule.hpp */,
+				D2FD49C52A5379A40010944C /* EugeneWidget.cpp */,
+				D2FD49B52A5379A40010944C /* EugeneWidget.hpp */,
+				D2FD49BF2A5379A40010944C /* OrbitsConfig.cpp */,
+				D2FD49BA2A5379A40010944C /* OrbitsConfig.hpp */,
+				D2FD49B72A5379A40010944C /* OrbitsModule.cpp */,
+				D2FD49BC2A5379A40010944C /* OrbitsModule.hpp */,
+				D2FD49C32A5379A40010944C /* OrbitsSkinned.cpp */,
+				D2FD49B32A5379A40010944C /* OrbitsSkinned.hpp */,
+				D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */,
+				D2FD49C22A5379A40010944C /* OrbitsWidget.hpp */,
+				D2FD49BD2A5379A40010944C /* plugin.cpp */,
+				D2FD49B82A5379A40010944C /* plugin.hpp */,
+				D2FD49C72A5379A40010944C /* Polygene.cpp */,
+				D2FD49C02A5379A40010944C /* PolygeneModule.cpp */,
+				D2FD49BB2A5379A40010944C /* PolygeneModule.hpp */,
+				D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */,
+				D2FD49B62A5379A40010944C /* PolygeneWidget.hpp */,
+				D2FD49B42A5379A40010944C /* Rhythm.cpp */,
+				D2FD49C42A5379A40010944C /* Rhythm.hpp */,
+				D2FD49C62A5379A40010944C /* rhythm_table.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D2CAD8B12A53798100613E5A /* Orbits */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2CAD8B62A53798100613E5A /* Build configuration list for PBXNativeTarget "Orbits" */;
+			buildPhases = (
+				D25F21BC2A537F8800400635 /* Sources */,
+				D2C0CEB12A5410750038808E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Orbits;
+			productName = Orbits;
+			productReference = D2CAD8B22A53798100613E5A /* libOrbits.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2CAD8AA2A53798100613E5A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					D2CAD8B12A53798100613E5A = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
+				};
+			};
+			buildConfigurationList = D2CAD8AD2A53798100613E5A /* Build configuration list for PBXProject "Orbits" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D2CAD8A92A53798100613E5A;
+			productRefGroup = D2CAD8B32A53798100613E5A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2CAD8B12A53798100613E5A /* Orbits */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D25F21BC2A537F8800400635 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D25F21BD2A537F9600400635 /* OrbitsWidget.cpp in Sources */,
+				D25F21BF2A537F9600400635 /* Rhythm.cpp in Sources */,
+				D25F21C22A537F9600400635 /* OrbitsModule.cpp in Sources */,
+				D25F21C82A537F9600400635 /* plugin.cpp in Sources */,
+				D25F21C92A537F9600400635 /* EugeneModule.cpp in Sources */,
+				D25F21CA2A537F9600400635 /* OrbitsConfig.cpp in Sources */,
+				D25F21CB2A537F9600400635 /* PolygeneModule.cpp in Sources */,
+				D25F21CC2A537F9600400635 /* Eugene.cpp in Sources */,
+				D25F21CE2A537F9600400635 /* OrbitsSkinned.cpp in Sources */,
+				D25F21D02A537F9600400635 /* EugeneWidget.cpp in Sources */,
+				D25F21D22A537F9600400635 /* Polygene.cpp in Sources */,
+				D25F21D32A537F9600400635 /* PolygeneWidget.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D2CAD8B42A53798100613E5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D2CAD8B52A53798100613E5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D2CAD8B72A53798100613E5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_STATIC_ANALYZER_MODE = deep;
+				CLANG_TIDY_BUGPRONE_REDUNDANT_BRANCH_CONDITION = YES;
+				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST = YES;
+				CLANG_WARN_COMPLETION_HANDLER_MISUSE = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_FLOAT_CONVERSION = YES;
+				CLANG_WARN_FRAMEWORK_INCLUDE_PRIVATE_FROM_PUBLIC = YES;
+				CLANG_WARN_IMPLICIT_FALLTHROUGH = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_INTERFACE_IVARS = YES;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../dep/include,
+				);
+				LIBRARY_SEARCH_PATHS = ../../;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D2CAD8B82A53798100613E5A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_STATIC_ANALYZER_MODE = deep;
+				CLANG_TIDY_BUGPRONE_REDUNDANT_BRANCH_CONDITION = YES;
+				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST = YES;
+				CLANG_WARN_COMPLETION_HANDLER_MISUSE = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_FLOAT_CONVERSION = YES;
+				CLANG_WARN_FRAMEWORK_INCLUDE_PRIVATE_FROM_PUBLIC = YES;
+				CLANG_WARN_IMPLICIT_FALLTHROUGH = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_INTERFACE_IVARS = YES;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					../../dep/include,
+				);
+				LIBRARY_SEARCH_PATHS = ../../;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D2CAD8AD2A53798100613E5A /* Build configuration list for PBXProject "Orbits" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2CAD8B42A53798100613E5A /* Debug */,
+				D2CAD8B52A53798100613E5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2CAD8B62A53798100613E5A /* Build configuration list for PBXNativeTarget "Orbits" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2CAD8B72A53798100613E5A /* Debug */,
+				D2CAD8B82A53798100613E5A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D2CAD8AA2A53798100613E5A /* Project object */;
+}
