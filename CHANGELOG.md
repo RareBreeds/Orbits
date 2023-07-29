@@ -1,3 +1,7 @@
+## [2.0.2] - 2023-07-09
+### Fixed
+ - [#3](/../../issues/3) - Support for using Eugene and Polygene with 8FaceMk2
+
 ## [2.0.1] - 2021-12-28
 ### Added
  - Factory presets for Eugene and Polygene
@@ -39,6 +43,7 @@
 ## [1.1.0] - 2020-12-23
  - Initial Release
 
+[2.0.2]: https://github.com/RareBreeds/Orbits/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/RareBreeds/Orbits/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/RareBreeds/Orbits/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/RareBreeds/Orbits/compare/v1.1.1...v1.2.0
