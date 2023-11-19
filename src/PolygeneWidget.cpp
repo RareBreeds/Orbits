@@ -55,10 +55,16 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
                 nvgFontFaceId(args.vg, font->handle);
 
-                const auto active_length = data.channels[data.active_channel_id].length;
                 const auto active_hits = data.channels[data.active_channel_id].hits;
                 nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
+
+                const auto active_length = data.channels[data.active_channel_id].length;
                 nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
+
+                const auto active_channel = data.active_channel_id + 1;
+                nvgFontSize(args.vg, 12);
+                nvgText(args.vg, -b.size.x / 2. + 23.f, b.size.y / 2. - 9.f, std::to_string(active_channel).c_str(), NULL);
+
                 nvgFill(args.vg);
 
                 // Scale to [-1, 1]
