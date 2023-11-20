@@ -15,6 +15,11 @@ void OrbitsSkinnedKnob::loadTheme(int theme)
         fb->dirty = true;
 }
 
+OrbitsSkinnedSnappyKnob::OrbitsSkinnedSnappyKnob(OrbitsConfig *config, std::string component) : OrbitsSkinnedKnob(config, component)
+{
+        snap = true;
+}
+
 OrbitsSkinnedScrew::OrbitsSkinnedScrew(OrbitsConfig *config, std::string component)
 {
         m_config = config;

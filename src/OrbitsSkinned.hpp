@@ -18,6 +18,11 @@ struct OrbitsSkinnedKnob : SvgKnob, OrbitsSkinned
         void loadTheme(int theme) override;
 };
 
+struct OrbitsSkinnedSnappyKnob : OrbitsSkinnedKnob
+{
+        OrbitsSkinnedSnappyKnob(OrbitsConfig *config, std::string component);
+};
+
 struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
 {
         OrbitsSkinnedScrew(OrbitsConfig *config, std::string component);
