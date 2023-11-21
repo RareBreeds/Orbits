@@ -120,7 +120,7 @@ Polygene is a polyphonic rhythm generator module.
  * Lots of CV controllable parameters
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
  * 3 Beat modes that control the beat output behaviour (since v2.0.0)
- * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (since v2.0.0)
+ * 2 CV modes allowing mono cables to either control all channels (default) or just the first (since v2.0.4)
  * Factory presets (since v2.0.1)
 
 ### Links
@@ -153,6 +153,10 @@ Always ranges from 1 to 16 channels, inactive channels are greyed out and are en
 ### RND : Input
 
 Pressing the RND button randomises the length, hits, shift, variation, invert and reverse values for the selected channel.
+
+#### Since v2.0.4
+
+A context menu item lets you select which parameters are randomized when this button is pressed.
 
 ### Length : Input, Polyphonic
 
