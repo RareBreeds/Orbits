@@ -1,20 +1,6 @@
 #include "OrbitsWidget.hpp"
 #include "OrbitsSkinned.hpp"
 
-OrbitsThemeChoiceItem::OrbitsThemeChoiceItem(OrbitsWidget *widget, int id, const char *name)
-{
-        m_widget = widget;
-        m_id = id;
-        text = name;
-        rightText = CHECKMARK(widget->m_theme == id);
-}
-
-void OrbitsThemeChoiceItem::onAction(const event::Action &e)
-{
-        (void) e;
-        m_widget->loadTheme(m_id);
-}
-
 OrbitsWidget::OrbitsWidget(OrbitsConfig *config)
 {
         m_config = config;
@@ -23,14 +9,12 @@ OrbitsWidget::OrbitsWidget(OrbitsConfig *config)
 void OrbitsWidget::appendContextMenu(Menu *menu)
 {
         menu->addChild(new MenuSeparator);
-        MenuLabel *theme_label = new MenuLabel;
-        theme_label->text = "Theme";
-        menu->addChild(theme_label);
 
-        for(size_t i = 0; i < m_config->numThemes(); ++i)
-        {
-                menu->addChild(new OrbitsThemeChoiceItem(this, i, m_config->getThemeName(i).c_str()));
-        }
+        menu->addChild(createIndexSubmenuItem("Theme",
+                m_config->getThemeNames(),
+                [=]() {return m_theme;},
+                [=](int mode) {loadTheme(mode);}
+        ));
 
         appendModuleContextMenu(menu);
 }
@@ -91,26 +75,16 @@ void OrbitsWidget::dataFromJson(json_t *root)
 
 void EOCWidget::appendContextMenu(Menu *menu)
 {
-        menu->addChild(new MenuSeparator);
-        MenuLabel *eoc_label = new MenuLabel;
-        eoc_label->text = "EOC Mode";
-        menu->addChild(eoc_label);
-        std::vector<std::string> options = m_module->getOptions();
-        for(size_t i = 0; i < options.size(); ++i)
-        {
-                menu->addChild(new EOCModeItem(m_module, i, options[i].c_str()));
-        }
+        menu->addChild(createIndexPtrSubmenuItem("EOC Mode",
+                m_module->getOptions(),
+                &m_module->m_mode
+        ));
 }
 
 void BeatWidget::appendContextMenu(Menu *menu)
 {
-        menu->addChild(new MenuSeparator);
-        MenuLabel *beat_label = new MenuLabel;
-        beat_label->text = "Beat Mode";
-        menu->addChild(beat_label);
-        std::vector<std::string> options = m_module->getOptions();
-        for(size_t i = 0; i < options.size(); ++i)
-        {
-                menu->addChild(new BeatModeItem(m_module, i, options[i].c_str()));
-        }
+        menu->addChild(createIndexPtrSubmenuItem("Beat Mode",
+                m_module->getOptions(),
+                &m_module->m_mode
+        ));
 }

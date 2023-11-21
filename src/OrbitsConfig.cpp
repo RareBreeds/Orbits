@@ -146,6 +146,28 @@ std::string OrbitsConfig::getThemeName()
         return getThemeName(getDefaultThemeId());
 }
 
+std::vector<std::string> OrbitsConfig::getThemeNames()
+{
+        std::vector<std::string> names;
+
+        json_error_t error;
+        std::string path = asset::plugin(pluginInstance, m_path);
+        json_t *root = orbits_json_load_file(path.c_str(), 0, &error);
+        json_t *themes = json_object_get(root, "themes");
+        size_t index;
+        json_t *value;
+        json_array_foreach(themes, index, value)
+        {
+                json_t *name = json_object_get(value, "name");
+                const char *theme_name = json_string_value(name);
+                names.push_back(theme_name);
+
+        }
+        json_decref(root);
+
+        return names;
+}
+
 int OrbitsConfig::getDefaultThemeId()
 {
         int default_theme_id = 0;

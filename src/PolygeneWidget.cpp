@@ -199,38 +199,47 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addChild(r);
 }
 
-
-struct SyncModeItem : MenuItem
+static void ToggleInputMode(InputMode *mode)
 {
-        RareBreeds_Orbits_Polygene *m_module;
-        SyncMode m_id;
-
-        SyncModeItem(RareBreeds_Orbits_Polygene *module, SyncMode id, const char *name)
+        switch(*mode)
         {
-                m_module = module;
-                m_id = id;
-                text = name;
-                rightText = CHECKMARK(module->m_sync_mode == id);
+                case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
+                        *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
+                        break;
+                case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
+                default:
+                        *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                        break;
         }
-
-        void onAction(const event::Action &e) override
-        {
-                (void) e;
-                m_module->m_sync_mode = m_id;
-        }
-};
+}
 
 void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 {
         beat_widget.appendContextMenu(menu);
         eoc_widget.appendContextMenu(menu);
 
-        menu->addChild(new MenuSeparator);
-        MenuLabel *sync_label = new MenuLabel;
-        sync_label->text = "Sync CV Mode";
-        menu->addChild(sync_label);
-        menu->addChild(new SyncModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), SYNC_MODE_INDIVIDUAL_CHANNELS, "Individual Channels"));
-        menu->addChild(new SyncModeItem(static_cast<RareBreeds_Orbits_Polygene *>(module), SYNC_MODE_ALL_CHANNELS, "All Channels"));
+	menu->addChild(createSubmenuItem("Input Behavior", "",
+                [=](Menu* menu) {
+                        InputMode *input_mode_array = static_cast<RareBreeds_Orbits_Polygene *>(module)->m_input_mode;
+                        std::vector<std::pair<std::string, size_t>> items = {
+                                std::make_pair("Sync", RareBreeds_Orbits_Polygene::SYNC_INPUT),
+                                std::make_pair("Length", RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT),
+                                std::make_pair("Hits", RareBreeds_Orbits_Polygene::HITS_CV_INPUT),
+                                std::make_pair("Shift", RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT),
+                                std::make_pair("Variation", RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT)
+                        };
+
+                        menu->addChild(createMenuLabel("Disable mono input channel copying"));
+
+                        for(auto i : items)
+                        {
+                                menu->addChild(createCheckMenuItem(i.first, "",
+                                        [=]() {return input_mode_array[i.second];},
+                                        [=]() {ToggleInputMode(&input_mode_array[i.second]);}
+                                ));
+                        }
+		}
+	));
 }
 
 void RareBreeds_Orbits_PolygeneWidget::draw(const DrawArgs& args)

@@ -111,28 +111,28 @@ bool RareBreeds_Orbits_Polygene::Channel::isOnBeat(unsigned int length, unsigned
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
 {
-        auto cv = m_module->inputs[LENGTH_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+        auto cv = m_module->getParameterizedVoltage(LENGTH_CV_INPUT, m_channel) / 5.f;
         auto f_length = m_state.length + cv * (rhythm::max_length - 1);
         return clampRounded(f_length, 1, rhythm::max_length);
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readHits(unsigned int length)
 {
-        auto cv = m_module->inputs[HITS_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+        auto cv = m_module->getParameterizedVoltage(HITS_CV_INPUT, m_channel) / 5.f;
         auto f_hits = m_state.hits + cv;
         return clampRounded(f_hits * length, 0, length);
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
 {
-        auto cv = m_module->inputs[SHIFT_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+        auto cv = m_module->getParameterizedVoltage(SHIFT_CV_INPUT, m_channel) / 5.f;
         auto f_shift = m_state.shift + cv * (rhythm::max_length - 1);
         return clampRounded(f_shift, 0, rhythm::max_length - 1) % length;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int length, unsigned int hits)
 {
-        auto cv = m_module->inputs[VARIATION_CV_INPUT].getNormalPolyVoltage(0.0f, m_channel) / 5.f;
+        auto cv = m_module->getParameterizedVoltage(VARIATION_CV_INPUT, m_channel) / 5.f;
         auto f_variation = m_state.variation + cv;
         auto count = rhythm::numNearEvenRhythms(length, hits);
         return clampRounded(f_variation * (count - 1), 0, count - 1);
@@ -319,6 +319,11 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 
         configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 
+        for(int i = 0; i < NUM_INPUTS; ++i)
+        {
+                m_input_mode[i] = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+        }
+
         reset();
 }
 
@@ -342,6 +347,24 @@ void RareBreeds_Orbits_Polygene::syncParamsToActiveChannel()
         params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_state.variation);
         params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_state.reverse);
         params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_state.invert);
+}
+
+InputMode RareBreeds_Orbits_Polygene::getInputMode(int input_id)
+{
+        return m_input_mode[input_id];
+}
+
+float RareBreeds_Orbits_Polygene::getParameterizedVoltage(int input_id, int channel)
+{
+        Input input = getInput(input_id);
+        switch(getInputMode(input_id))
+        {
+                case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
+                        return input.getNormalPolyVoltage(0.0f, channel);
+                case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
+                default:
+                        return input.getNormalVoltage(0.0f, channel);
+        }
 }
 
 void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
@@ -378,19 +401,15 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 syncParamsToActiveChannel();
         }
 
-        bool any_sync = false;
-        int sync_channels = inputs[SYNC_INPUT].getChannels();
-        for(int i = 0; i < sync_channels; ++i)
+        for(int i = 0; i < PORT_MAX_CHANNELS; ++i)
         {
-                if(m_channels[i].m_sync_trigger.process(inputs[SYNC_INPUT].getPolyVoltage(i)))
+                if(m_channels[i].m_sync_trigger.process(getParameterizedVoltage(SYNC_INPUT, i)))
                 {
                         m_channels[i].m_current_step = 0;
-                        any_sync = true;
                 }
         }
 
-        if(m_sync_trigger.process(params[SYNC_KNOB_PARAM].getValue() > 0.5f) ||
-          (SYNC_MODE_ALL_CHANNELS == m_sync_mode && any_sync))
+        if(m_sync_trigger.process(params[SYNC_KNOB_PARAM].getValue() > 0.5f))
         {
                 for(auto &chan : m_channels)
                 {
@@ -412,7 +431,13 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
         {
                 json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
-                json_object_set_new(root, "sync", json_integer(m_sync_mode));
+
+                json_object_set_new(root, "sync", json_integer(m_input_mode[SYNC_INPUT]));
+                json_object_set_new(root, "length_cv", json_integer(m_input_mode[LENGTH_CV_INPUT]));
+                json_object_set_new(root, "hits_cv", json_integer(m_input_mode[HITS_CV_INPUT]));
+                json_object_set_new(root, "shift_cv", json_integer(m_input_mode[SHIFT_CV_INPUT]));
+                json_object_set_new(root, "variation_cv", json_integer(m_input_mode[VARIATION_CV_INPUT]));
+
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
                 json_t *channels = json_array();
@@ -449,9 +474,27 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
         {
                 m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
-                int sync_mode = SYNC_MODE_INDIVIDUAL_CHANNELS;
-                json_load_integer(root, "sync", &sync_mode);
-                m_sync_mode = (SyncMode) sync_mode;
+
+                int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                json_load_integer(root, "sync", &mode);
+                m_input_mode[SYNC_INPUT] = (InputMode) mode;
+
+                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                json_load_integer(root, "length_cv", &mode);
+                m_input_mode[LENGTH_CV_INPUT] = (InputMode) mode;
+
+                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                json_load_integer(root, "hits_cv", &mode);
+                m_input_mode[HITS_CV_INPUT] = (InputMode) mode;
+
+                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                json_load_integer(root, "shift_cv", &mode);
+                m_input_mode[SHIFT_CV_INPUT] = (InputMode) mode;
+
+                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                json_load_integer(root, "variation_cv", &mode);
+                m_input_mode[VARIATION_CV_INPUT] = (InputMode) mode;
+
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)

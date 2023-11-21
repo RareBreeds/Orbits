@@ -7,10 +7,16 @@
 
 struct RareBreeds_Orbits_PolygeneWidget;
 
-enum SyncMode
+enum InputMode
 {
-        SYNC_MODE_INDIVIDUAL_CHANNELS,
-        SYNC_MODE_ALL_CHANNELS
+        // Default behavior, as specified by polyphonic voltage standards
+        // https://vcvrack.com/manual/VoltageStandards#Polyphony
+        // "If monophonic (M = 1), its voltage should be copied to all engines."
+        INPUT_MODE_MONOPHONIC_COPIES_TO_ALL,
+
+        // The behavior a lot of people expect, only the first channel is
+        // modulated by a monophonic cable.
+        INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST
 };
 
 struct PolygeneDisplayData
@@ -114,7 +120,7 @@ struct RareBreeds_Orbits_Polygene : Module
         std::atomic<json_t *> m_widget_config{nullptr};
         BeatMode m_beat;
         EOCMode m_eoc;
-        SyncMode m_sync_mode = SYNC_MODE_INDIVIDUAL_CHANNELS;
+        InputMode m_input_mode[NUM_INPUTS];
 
         RareBreeds_Orbits_Polygene();
         virtual ~RareBreeds_Orbits_Polygene();
@@ -127,4 +133,6 @@ struct RareBreeds_Orbits_Polygene : Module
         void onReset(const ResetEvent& e) override;
         PolygeneDisplayData getDisplayData(void);
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
+        float getParameterizedVoltage(int input_id, int channel);
+        InputMode getInputMode(int input_id);
 };

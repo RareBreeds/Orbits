@@ -123,9 +123,6 @@ Polygene is a polyphonic rhythm generator module.
  * 2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (since v2.0.0)
  * Factory presets (since v2.0.1)
 
-### Panel
-TODO
-
 ### Links
 
  * [VCV Rack Ideas - PolyGene - powerful 16 track euclidean sequencer in VCV Rack | PatchFromScratch](https://www.youtube.com/watch?v=5q7ujPrInZo)
