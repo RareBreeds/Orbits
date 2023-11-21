@@ -218,9 +218,12 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
         beat_widget.appendContextMenu(menu);
         eoc_widget.appendContextMenu(menu);
 
-	menu->addChild(createSubmenuItem("Input Behavior", "",
+        RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(module);
+        menu->addChild(createSubmenuItem("CV Input Behavior", "",
                 [=](Menu* menu) {
-                        InputMode *input_mode_array = static_cast<RareBreeds_Orbits_Polygene *>(module)->m_input_mode;
+                        menu->addChild(createMenuLabel("Disable mono input channel copying"));
+
+                        InputMode *input_mode_array = polygene->m_input_mode;
                         std::vector<std::pair<std::string, size_t>> items = {
                                 std::make_pair("Sync", RareBreeds_Orbits_Polygene::SYNC_INPUT),
                                 std::make_pair("Length", RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT),
@@ -229,13 +232,34 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
                                 std::make_pair("Variation", RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT)
                         };
 
-                        menu->addChild(createMenuLabel("Disable mono input channel copying"));
-
                         for(auto i : items)
                         {
                                 menu->addChild(createCheckMenuItem(i.first, "",
                                         [=]() {return input_mode_array[i.second];},
                                         [=]() {ToggleInputMode(&input_mode_array[i.second]);}
+                                ));
+                        }
+		}
+	));
+
+	menu->addChild(createSubmenuItem("Randomize Button", "",
+                [=](Menu* menu) {
+                        menu->addChild(createMenuLabel("Active channel parameters to randomize"));
+
+                        std::vector<std::pair<std::string, size_t>> items = {
+                                std::make_pair("Length", RareBreeds_Orbits_Polygene::RANDOMIZE_LENGTH),
+                                std::make_pair("Hits", RareBreeds_Orbits_Polygene::RANDOMIZE_HITS),
+                                std::make_pair("Shift", RareBreeds_Orbits_Polygene::RANDOMIZE_SHIFT),
+                                std::make_pair("Variation", RareBreeds_Orbits_Polygene::RANDOMIZE_VARIATION),
+                                std::make_pair("Reverse", RareBreeds_Orbits_Polygene::RANDOMIZE_REVERSE),
+                                std::make_pair("Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT)
+                        };
+
+                        for(auto i : items)
+                        {
+                                menu->addChild(createCheckMenuItem(i.first, "",
+                                        [=]() {return polygene->m_randomization_mask & (1 << i.second);},
+                                        [=]() {polygene->m_randomization_mask ^= (1 << i.second);}
                                 ));
                         }
 		}

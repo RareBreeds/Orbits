@@ -223,24 +223,47 @@ void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
         }
 }
 
-void RareBreeds_Orbits_Polygene::Channel::onRandomizeWithHistory()
+void RareBreeds_Orbits_Polygene::Channel::onRandomizeWithHistory(int randomization_mask)
 {
         RandomizeChannelAction* action = new RandomizeChannelAction;
         action->moduleId = m_module->id;
         action->old_state = m_state;
-        onRandomize();
+        onRandomize(randomization_mask);
         action->new_state = m_state;
         APP->history->push(action);
 }
 
-void RareBreeds_Orbits_Polygene::Channel::onRandomize()
+void RareBreeds_Orbits_Polygene::Channel::onRandomize(int randomization_mask)
 {
-        m_state.length = random::uniform() * rhythm::max_length;
-        m_state.hits = random::uniform();
-        m_state.shift = random::uniform() * (rhythm::max_length - 1);
-        m_state.variation = random::uniform();
-        m_state.reverse = (random::uniform() < 0.5f);
-        m_state.invert = (random::uniform() < 0.5f);
+        if (randomization_mask & (1 << RANDOMIZE_LENGTH))
+        {
+                m_state.length = random::uniform() * rhythm::max_length;
+        }
+
+        if (randomization_mask & (1 << RANDOMIZE_HITS))
+        {
+                m_state.hits = random::uniform();
+        }
+
+        if (randomization_mask & (1 << RANDOMIZE_SHIFT))
+        {
+                m_state.shift = random::uniform() * (rhythm::max_length - 1);
+        }
+
+        if (randomization_mask & (1 << RANDOMIZE_VARIATION))
+        {
+                m_state.variation = random::uniform();
+        }
+
+        if (randomization_mask & (1 << RANDOMIZE_REVERSE))
+        {
+                m_state.reverse = (random::uniform() < 0.5f);
+        }
+
+        if (randomization_mask & (1 << RANDOMIZE_INVERT))
+        {
+                m_state.invert = (random::uniform() < 0.5f);
+        }
 }
 
 PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(void)
@@ -397,7 +420,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         bool rnd = params[RANDOM_KNOB_PARAM].getValue() > 0.5f;
         if(m_random_trigger.process(rnd, args.sampleTime))
         {
-                m_active_channel->onRandomizeWithHistory();
+                m_active_channel->onRandomizeWithHistory(m_randomization_mask);
                 syncParamsToActiveChannel();
         }
 
@@ -437,6 +460,8 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "hits_cv", json_integer(m_input_mode[HITS_CV_INPUT]));
                 json_object_set_new(root, "shift_cv", json_integer(m_input_mode[SHIFT_CV_INPUT]));
                 json_object_set_new(root, "variation_cv", json_integer(m_input_mode[VARIATION_CV_INPUT]));
+
+                json_object_set_new(root, "randomization_mask", json_integer(m_randomization_mask));
 
                 json_object_set_new(root, "active_channel_id", json_integer(m_active_channel_id));
 
@@ -495,6 +520,9 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_load_integer(root, "variation_cv", &mode);
                 m_input_mode[VARIATION_CV_INPUT] = (InputMode) mode;
 
+                m_randomization_mask = RANDOMIZE_ALL;
+                json_load_integer(root, "randomization_mask", &m_randomization_mask);
+
                 json_load_integer(root, "active_channel_id", &m_active_channel_id);
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
@@ -531,7 +559,7 @@ void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& e)
 
         for(auto &chan : m_channels)
         {
-                chan.onRandomize();
+                chan.onRandomize(RANDOMIZE_ALL);
         }
 
         // Update the parameters so they reflect the active channels randomized parameters

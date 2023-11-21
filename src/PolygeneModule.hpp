@@ -71,6 +71,17 @@ struct RareBreeds_Orbits_Polygene : Module
         {
                 NUM_LIGHTS
         };
+        enum RandomizationMaskBits
+        {
+                RANDOMIZE_LENGTH,
+                RANDOMIZE_HITS,
+                RANDOMIZE_SHIFT,
+                RANDOMIZE_VARIATION,
+                RANDOMIZE_REVERSE,
+                RANDOMIZE_INVERT,
+                RANDOMIZE_COUNT
+        };
+        const unsigned int RANDOMIZE_ALL = (1 << RANDOMIZE_COUNT) - 1;
 
         // The channel currently being displayed and controlled by the knobs
         int m_active_channel_id = 0;
@@ -105,8 +116,8 @@ struct RareBreeds_Orbits_Polygene : Module
                 void process(const ProcessArgs &args);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);
-                void onRandomizeWithHistory();
-                void onRandomize();
+                void onRandomizeWithHistory(int randomization_mask);
+                void onRandomize(int randomization_mask);
         };
 
         int m_active_channels = 1;
@@ -121,6 +132,7 @@ struct RareBreeds_Orbits_Polygene : Module
         BeatMode m_beat;
         EOCMode m_eoc;
         InputMode m_input_mode[NUM_INPUTS];
+        int m_randomization_mask = RANDOMIZE_ALL;
 
         RareBreeds_Orbits_Polygene();
         virtual ~RareBreeds_Orbits_Polygene();
