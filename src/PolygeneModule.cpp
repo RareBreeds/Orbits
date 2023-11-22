@@ -69,19 +69,19 @@ void RareBreeds_Orbits_Polygene::Channel::init(RareBreeds_Orbits_Polygene *modul
         m_current_step = 0;
         m_module = module;
         m_channel = channel;
-        m_state.length = m_module->params[LENGTH_KNOB_PARAM].getValue();
-        m_state.hits = m_module->params[HITS_KNOB_PARAM].getValue();
-        m_state.shift = m_module->params[SHIFT_KNOB_PARAM].getValue();
-        m_state.variation = m_module->params[VARIATION_KNOB_PARAM].getValue();
+        m_state.length = m_module->getParam(LENGTH_KNOB_PARAM).getValue();
+        m_state.hits = m_module->getParam(HITS_KNOB_PARAM).getValue();
+        m_state.shift = m_module->getParam(SHIFT_KNOB_PARAM).getValue();
+        m_state.variation = m_module->getParam(VARIATION_KNOB_PARAM).getValue();
         m_state.reverse = false;
         m_state.invert = false;
 }
 
 bool RareBreeds_Orbits_Polygene::Channel::readReverse(void)
 {
-        if(m_module->inputs[REVERSE_CV_INPUT].isConnected())
+        if(m_module->getInput(REVERSE_CV_INPUT).isConnected())
         {
-                m_reverse_trigger.process(m_module->inputs[REVERSE_CV_INPUT].getPolyVoltage(m_channel));
+                m_reverse_trigger.process(m_module->getInput(REVERSE_CV_INPUT).getPolyVoltage(m_channel));
                 return m_reverse_trigger.isHigh();
         }
         else
@@ -92,9 +92,9 @@ bool RareBreeds_Orbits_Polygene::Channel::readReverse(void)
 
 bool RareBreeds_Orbits_Polygene::Channel::readInvert(void)
 {
-        if(m_module->inputs[INVERT_CV_INPUT].isConnected())
+        if(m_module->getInput(INVERT_CV_INPUT).isConnected())
         {
-                m_invert_trigger.process(m_module->inputs[INVERT_CV_INPUT].getPolyVoltage(m_channel));
+                m_invert_trigger.process(m_module->getInput(INVERT_CV_INPUT).getPolyVoltage(m_channel));
                 return m_invert_trigger.isHigh();
         }
         else
@@ -142,7 +142,7 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 {
         // A rising clock edge means first play the current beat
         // then advance to the next step
-        if(m_clock_trigger.process(m_module->inputs[CLOCK_INPUT].getPolyVoltage(m_channel)))
+        if(m_clock_trigger.process(m_module->getInput(CLOCK_INPUT).getPolyVoltage(m_channel)))
         {
                 // Play the current beat
                 // If the channel is reversing we want to play the beat prior to this
@@ -189,10 +189,10 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
         }
 
         auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
-        m_module->outputs[BEAT_OUTPUT].setVoltage(out, m_channel);
+        m_module->getOutput(BEAT_OUTPUT).setVoltage(out, m_channel);
 
         auto eoc_out = m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f;
-        m_module->outputs[EOC_OUTPUT].setVoltage(eoc_out, m_channel);
+        m_module->getOutput(EOC_OUTPUT).setVoltage(eoc_out, m_channel);
 }
 
 json_t *RareBreeds_Orbits_Polygene::Channel::dataToJson()
@@ -364,12 +364,12 @@ void RareBreeds_Orbits_Polygene::reset()
 
 void RareBreeds_Orbits_Polygene::syncParamsToActiveChannel()
 {
-        params[LENGTH_KNOB_PARAM].setValue(m_active_channel->m_state.length);
-        params[HITS_KNOB_PARAM].setValue(m_active_channel->m_state.hits);
-        params[SHIFT_KNOB_PARAM].setValue(m_active_channel->m_state.shift);
-        params[VARIATION_KNOB_PARAM].setValue(m_active_channel->m_state.variation);
-        params[REVERSE_KNOB_PARAM].setValue(m_active_channel->m_state.reverse);
-        params[INVERT_KNOB_PARAM].setValue(m_active_channel->m_state.invert);
+        getParam(LENGTH_KNOB_PARAM).setValue(m_active_channel->m_state.length);
+        getParam(HITS_KNOB_PARAM).setValue(m_active_channel->m_state.hits);
+        getParam(SHIFT_KNOB_PARAM).setValue(m_active_channel->m_state.shift);
+        getParam(VARIATION_KNOB_PARAM).setValue(m_active_channel->m_state.variation);
+        getParam(REVERSE_KNOB_PARAM).setValue(m_active_channel->m_state.reverse);
+        getParam(INVERT_KNOB_PARAM).setValue(m_active_channel->m_state.invert);
 }
 
 InputMode RareBreeds_Orbits_Polygene::getInputMode(int input_id)
@@ -392,11 +392,11 @@ float RareBreeds_Orbits_Polygene::getParameterizedVoltage(int input_id, int chan
 
 void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
 {
-        m_active_channels = inputs[CLOCK_INPUT].getChannels();
-        outputs[BEAT_OUTPUT].setChannels(m_active_channels);
-        outputs[EOC_OUTPUT].setChannels(m_active_channels);
+        m_active_channels = getInput(CLOCK_INPUT).getChannels();
+        getOutput(BEAT_OUTPUT).setChannels(m_active_channels);
+        getOutput(EOC_OUTPUT).setChannels(m_active_channels);
 
-        m_active_channel_id = (int)std::round(params[CHANNEL_KNOB_PARAM].getValue());
+        m_active_channel_id = (int)std::round(getParam(CHANNEL_KNOB_PARAM).getValue());
         m_active_channel = &m_channels[m_active_channel_id];
 
         // Update the knob positions when the channel changes
@@ -406,18 +406,18 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 m_previous_channel_id = m_active_channel_id;
         }
 
-        m_active_channel->m_state.length = params[LENGTH_KNOB_PARAM].getValue();
-        m_active_channel->m_state.hits = params[HITS_KNOB_PARAM].getValue();
-        m_active_channel->m_state.shift = params[SHIFT_KNOB_PARAM].getValue();
-        m_active_channel->m_state.variation = params[VARIATION_KNOB_PARAM].getValue();
+        m_active_channel->m_state.length = getParam(LENGTH_KNOB_PARAM).getValue();
+        m_active_channel->m_state.hits = getParam(HITS_KNOB_PARAM).getValue();
+        m_active_channel->m_state.shift = getParam(SHIFT_KNOB_PARAM).getValue();
+        m_active_channel->m_state.variation = getParam(VARIATION_KNOB_PARAM).getValue();
 
-        m_reverse_trigger.process(params[REVERSE_KNOB_PARAM].getValue() > 0.5f);
+        m_reverse_trigger.process(getParam(REVERSE_KNOB_PARAM).getValue() > 0.5f);
         m_active_channel->m_state.reverse = m_reverse_trigger.state;
 
-        m_invert_trigger.process(params[INVERT_KNOB_PARAM].getValue() > 0.5f);
+        m_invert_trigger.process(getParam(INVERT_KNOB_PARAM).getValue() > 0.5f);
         m_active_channel->m_state.invert = m_invert_trigger.state;
 
-        bool rnd = params[RANDOM_KNOB_PARAM].getValue() > 0.5f;
+        bool rnd = getParam(RANDOM_KNOB_PARAM).getValue() > 0.5f;
         if(m_random_trigger.process(rnd, args.sampleTime))
         {
                 m_active_channel->onRandomizeWithHistory(m_randomization_mask);
@@ -432,7 +432,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 }
         }
 
-        if(m_sync_trigger.process(params[SYNC_KNOB_PARAM].getValue() > 0.5f))
+        if(m_sync_trigger.process(getParam(SYNC_KNOB_PARAM).getValue() > 0.5f))
         {
                 for(auto &chan : m_channels)
                 {
@@ -440,7 +440,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
                 }
         }
 
-        int clock_channels = inputs[CLOCK_INPUT].getChannels();
+        int clock_channels = getInput(CLOCK_INPUT).getChannels();
         for(int i = 0; i < clock_channels; ++i)
         {
                 m_channels[i].process(args);

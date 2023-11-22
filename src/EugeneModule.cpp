@@ -67,10 +67,10 @@ EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(RareBreeds_Orbits_Eug
 
 unsigned int RareBreeds_Orbits_Eugene::readLength()
 {
-        float value = params[LENGTH_KNOB_PARAM].getValue();
-        float input = inputs[LENGTH_CV_INPUT].getVoltage();
+        float value = getParam(LENGTH_KNOB_PARAM).getValue();
+        float input = getInput(LENGTH_CV_INPUT).getVoltage();
         float normalized_input = input / 5.f;
-        float attenuation = params[LENGTH_CV_KNOB_PARAM].getValue();
+        float attenuation = getParam(LENGTH_CV_KNOB_PARAM).getValue();
         value += attenuation * normalized_input * (rhythm::max_length - 1);
 
         return clampRounded(value, 1, rhythm::max_length);
@@ -78,10 +78,10 @@ unsigned int RareBreeds_Orbits_Eugene::readLength()
 
 unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
 {
-        float value = params[HITS_KNOB_PARAM].getValue();
-        float input = inputs[HITS_CV_INPUT].getVoltage();
+        float value = getParam(HITS_KNOB_PARAM).getValue();
+        float input = getInput(HITS_CV_INPUT).getVoltage();
         float normalized_input = input / 5.f;
-        float attenuation = params[HITS_CV_KNOB_PARAM].getValue();
+        float attenuation = getParam(HITS_CV_KNOB_PARAM).getValue();
         value += attenuation * normalized_input;
         float hits_float = value * length;
         return clampRounded(hits_float, 0, length);
@@ -89,48 +89,48 @@ unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
 
 unsigned int RareBreeds_Orbits_Eugene::readShift(unsigned int length)
 {
-        float value = params[SHIFT_KNOB_PARAM].getValue();
-        float input = inputs[SHIFT_CV_INPUT].getVoltage();
+        float value = getParam(SHIFT_KNOB_PARAM).getValue();
+        float input = getInput(SHIFT_CV_INPUT).getVoltage();
         float normalized_input = input / 5.f;
-        float attenuation = params[SHIFT_CV_KNOB_PARAM].getValue();
+        float attenuation = getParam(SHIFT_CV_KNOB_PARAM).getValue();
         value += attenuation * normalized_input * (rhythm::max_length - 1);
         return clampRounded(value, 0, rhythm::max_length - 1) % length;
 }
 
 bool RareBreeds_Orbits_Eugene::readReverse()
 {
-        if(inputs[REVERSE_CV_INPUT].isConnected())
+        if(getInput(REVERSE_CV_INPUT).isConnected())
         {
-                m_reverse_trigger.process(inputs[REVERSE_CV_INPUT].getVoltage());
+                m_reverse_trigger.process(getInput(REVERSE_CV_INPUT).getVoltage());
                 return m_reverse_trigger.isHigh();
         }
         else
         {
-                return params[REVERSE_KNOB_PARAM].getValue() > 0.5f;
+                return getParam(REVERSE_KNOB_PARAM).getValue() > 0.5f;
         }
 }
 
 bool RareBreeds_Orbits_Eugene::readInvert()
 {
-        if(inputs[INVERT_CV_INPUT].isConnected())
+        if(getInput(INVERT_CV_INPUT).isConnected())
         {
-                m_invert_trigger.process(inputs[INVERT_CV_INPUT].getVoltage());
+                m_invert_trigger.process(getInput(INVERT_CV_INPUT).getVoltage());
                 return m_invert_trigger.isHigh();
         }
         else
         {
-                return params[INVERT_KNOB_PARAM].getValue() > 0.5f;
+                return getParam(INVERT_KNOB_PARAM).getValue() > 0.5f;
         }
 }
 
 void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
 {
-        if(m_sync_trigger.process(inputs[SYNC_INPUT].getVoltage()))
+        if(m_sync_trigger.process(getInput(SYNC_INPUT).getVoltage()))
         {
                 m_current_step = 0;
         }
 
-        if(m_clock_trigger.process(inputs[CLOCK_INPUT].getVoltage()))
+        if(m_clock_trigger.process(getInput(CLOCK_INPUT).getVoltage()))
         {
                 auto length = readLength();
                 auto hits = readHits(length);
@@ -172,8 +172,8 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
                 }
         }
 
-        outputs[BEAT_OUTPUT].setVoltage(m_beat_generator.process(m_beat, args.sampleTime) ? 10.f : 0.f);
-        outputs[EOC_OUTPUT].setVoltage(m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f);
+        getOutput(BEAT_OUTPUT).setVoltage(m_beat_generator.process(m_beat, args.sampleTime) ? 10.f : 0.f);
+        getOutput(EOC_OUTPUT).setVoltage(m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f);
 }
 
 json_t *RareBreeds_Orbits_Eugene::dataToJson()
