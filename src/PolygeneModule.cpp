@@ -455,7 +455,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
 
-                json_object_set_new(root, "sync", json_integer(m_input_mode[SYNC_INPUT]));
+                json_object_set_new(root, "sync_cv", json_integer(m_input_mode[SYNC_INPUT]));
                 json_object_set_new(root, "length_cv", json_integer(m_input_mode[LENGTH_CV_INPUT]));
                 json_object_set_new(root, "hits_cv", json_integer(m_input_mode[HITS_CV_INPUT]));
                 json_object_set_new(root, "shift_cv", json_integer(m_input_mode[SHIFT_CV_INPUT]));
@@ -500,11 +500,41 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
 
-                int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                json_load_integer(root, "sync", &mode);
-                m_input_mode[SYNC_INPUT] = (InputMode) mode;
+                // v2.0.0 added "sync" to allow selection of the sync CV behavior when
+                // the cable is monophonic.
+                //
+                // SYNC_MODE_INDIVIDUAL_CHANNELS 0 only first channel is synced [default]
+                // SYNC_MODE_ALL_CHANNELS        1 all channels synced
+                //
+                // This is backwards to the v2.0.4 behavior. The default there is to
+                // use VCV racks voltage standards, where mono cables have channel 1 copied
+                // to all other channels (INPUT_MODE_MONOPHONIC_COPIES_TO_ALL). Then
+                // optionally you can make it only control the first channel using
+                // INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST.
+                //
+                // So that patches saved with v2.0.0 behave the same with newer versions we
+                // use a new key name "sync_cv" and map the old value to the new one.
+                json_t *obj = json_object_get(root, "sync");
+                if(obj)
+                {
+                        int old_sync = json_integer_value(obj);
+                        if (old_sync == /*SYNC_MODE_INDIVIDUAL_CHANNELS*/0)
+                        {
+                                m_input_mode[SYNC_INPUT] = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
+                        }
+                        else
+                        {
+                                m_input_mode[SYNC_INPUT] = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                        }
+                }
+                else
+                {
+                        int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                        json_load_integer(root, "sync_cv", &mode);
+                        m_input_mode[SYNC_INPUT] = (InputMode) mode;
+                }
 
-                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
                 json_load_integer(root, "length_cv", &mode);
                 m_input_mode[LENGTH_CV_INPUT] = (InputMode) mode;
 
@@ -537,7 +567,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                         }
                 }
 
-                json_t *obj = json_object_get(root, "widget");
+                obj = json_object_get(root, "widget");
                 if(obj)
                 {
                         // Always defer the widget config to the widget draw method for 2 reasons
