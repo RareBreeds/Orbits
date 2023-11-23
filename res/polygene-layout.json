@@ -37,6 +37,7 @@
 
             "random_button_on" : "rnd-switch-on.svg",
             "random_button_off" : "rnd-switch-off.svg",
+            "random_cv_port" : "dark-port.svg",
 
             "sync_button_on" : "dark-sync-switch-on.svg",
             "sync_button_off" : "dark-sync-switch-off.svg",
@@ -80,6 +81,7 @@
 
             "random_button_on" : "rnd-switch-on.svg",
             "random_button_off" : "rnd-switch-off.svg",
+            "random_cv_port" : "light-port.svg",
 
             "sync_button_on" : "light-sync-switch-on.svg",
             "sync_button_off" : "light-sync-switch-off.svg",

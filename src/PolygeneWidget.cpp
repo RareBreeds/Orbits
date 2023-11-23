@@ -188,6 +188,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addInput(createOrbitsSkinnedInput(m_config, "variation_cv_port", module, RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "random_cv_port", module, RareBreeds_Orbits_Polygene::RANDOM_CV_INPUT));
 
         addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
         addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Polygene::EOC_OUTPUT));
@@ -219,9 +220,9 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
         eoc_widget.appendContextMenu(menu);
 
         RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(module);
-        menu->addChild(createSubmenuItem("CV Input Behavior", "",
+        menu->addChild(createSubmenuItem("Mono Input Behavior", "",
                 [=](Menu* menu) {
-                        menu->addChild(createMenuLabel("Disable mono input channel copying"));
+                        menu->addChild(createMenuLabel("Make mono cables only control the first channel"));
 
                         InputMode *input_mode_array = polygene->m_input_mode;
                         std::vector<std::pair<std::string, size_t>> items = {
@@ -229,7 +230,9 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
                                 std::make_pair("Length", RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT),
                                 std::make_pair("Hits", RareBreeds_Orbits_Polygene::HITS_CV_INPUT),
                                 std::make_pair("Shift", RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT),
-                                std::make_pair("Variation", RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT)
+                                std::make_pair("Variation", RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT),
+                                std::make_pair("Random", RareBreeds_Orbits_Polygene::RANDOM_CV_INPUT)
+
                         };
 
                         for(auto i : items)
@@ -242,9 +245,9 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 		}
 	));
 
-	menu->addChild(createSubmenuItem("Randomize Button", "",
+	menu->addChild(createSubmenuItem("Randomize Filter", "",
                 [=](Menu* menu) {
-                        menu->addChild(createMenuLabel("Active channel parameters to randomize"));
+                        menu->addChild(createMenuLabel("Parameters that are randomized"));
 
                         std::vector<std::pair<std::string, size_t>> items = {
                                 std::make_pair("Length", RareBreeds_Orbits_Polygene::RANDOMIZE_LENGTH),

@@ -336,6 +336,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configInput(VARIATION_CV_INPUT, "Variation CV");
         configInput(REVERSE_CV_INPUT, "Reverse CV");
         configInput(INVERT_CV_INPUT, "Invert CV");
+        configInput(RANDOM_CV_INPUT, "Random CV");
 
         configOutput(BEAT_OUTPUT, "Beat");
         configOutput(EOC_OUTPUT, "End of cycle");
@@ -422,6 +423,15 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         {
                 m_active_channel->onRandomizeWithHistory(m_randomization_mask);
                 syncParamsToActiveChannel();
+        }
+
+        for(int i = 0; i < PORT_MAX_CHANNELS; ++i)
+        {
+                if(m_channels[i].m_random_trigger.process(getParameterizedVoltage(RANDOM_CV_INPUT, i)))
+                {
+                        m_channels[i].onRandomizeWithHistory(m_randomization_mask);
+                        syncParamsToActiveChannel();
+                }
         }
 
         for(int i = 0; i < PORT_MAX_CHANNELS; ++i)
@@ -589,7 +599,7 @@ void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& e)
 
         for(auto &chan : m_channels)
         {
-                chan.onRandomize(RANDOMIZE_ALL);
+                chan.onRandomize(m_randomization_mask);
         }
 
         // Update the parameters so they reflect the active channels randomized parameters

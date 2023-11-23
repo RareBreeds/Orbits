@@ -59,6 +59,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 VARIATION_CV_INPUT,
                 REVERSE_CV_INPUT,
                 INVERT_CV_INPUT,
+                RANDOM_CV_INPUT,
                 NUM_INPUTS
         };
         enum OutputIds
@@ -95,6 +96,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 dsp::SchmittTrigger m_sync_trigger;
                 dsp::SchmittTrigger m_reverse_trigger;
                 dsp::SchmittTrigger m_invert_trigger;
+                dsp::SchmittTrigger m_random_trigger;
                 BeatGenerator m_beat_generator;
                 EOCGenerator m_eoc_generator;
                 PolygeneChannelState m_state;
