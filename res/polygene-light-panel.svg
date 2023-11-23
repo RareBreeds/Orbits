@@ -424,14 +424,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.384036"
      inkscape:cx="136.9184"
-     inkscape:cy="221.81504"
+     inkscape:cy="222.1763"
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1512"
-     inkscape:window-height="917"
-     inkscape:window-x="0"
-     inkscape:window-y="65"
+     inkscape:window-height="846"
+     inkscape:window-x="7"
+     inkscape:window-y="202"
      inkscape:window-maximized="0"
      inkscape:document-rotation="0"
      inkscape:snap-bbox="true"
@@ -1266,10 +1266,9 @@
     <circle
        style="display:inline;opacity:1;fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-6-7-9"
-       cx="83.139061"
-       cy="221.48206"
+       cx="79.435059"
+       cy="54.056061"
        r="4.8440619"
-       inkscape:label="random_cv_port"
-       transform="translate(0,-168.5)" />
+       inkscape:label="random_cv_port" />
   </g>
 </svg>
