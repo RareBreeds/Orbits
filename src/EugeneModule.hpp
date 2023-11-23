@@ -59,6 +59,19 @@ struct RareBreeds_Orbits_Eugene : Module
         {
                 NUM_LIGHTS
         };
+        enum RandomizationMaskBits
+        {
+                RANDOMIZE_LENGTH,
+                RANDOMIZE_LENGTH_CV,
+                RANDOMIZE_HITS,
+                RANDOMIZE_HITS_CV,
+                RANDOMIZE_SHIFT,
+                RANDOMIZE_SHIFT_CV,
+                RANDOMIZE_REVERSE,
+                RANDOMIZE_INVERT,
+                RANDOMIZE_COUNT
+        };
+        const unsigned int RANDOMIZE_ALL = (1 << RANDOMIZE_COUNT) - 1;
 
         dsp::SchmittTrigger m_clock_trigger;
         dsp::SchmittTrigger m_sync_trigger;
@@ -71,6 +84,8 @@ struct RareBreeds_Orbits_Eugene : Module
         EOCGenerator m_eoc_generator;
 
         unsigned int m_current_step = 0;
+        int m_randomization_mask = RANDOMIZE_ALL;
+
         RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
         std::atomic<json_t *> m_widget_config{nullptr};
         RareBreeds_Orbits_Eugene();
@@ -87,4 +102,5 @@ struct RareBreeds_Orbits_Eugene : Module
         void onReset() override;
         EugeneDisplayData getDisplayData(void);
         static EugeneDisplayData getDisplayData(RareBreeds_Orbits_Eugene *module);
+        void onRandomize(const RandomizeEvent& e) override;
 };

@@ -226,3 +226,53 @@ RareBreeds_Orbits_Eugene::~RareBreeds_Orbits_Eugene()
 {
         json_decref(m_widget_config);
 }
+
+void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& e)
+{
+        (void) e;
+
+        if (m_randomization_mask & (1 << RANDOMIZE_LENGTH))
+        {
+                float length = random::uniform() * rhythm::max_length;
+                getParam(LENGTH_KNOB_PARAM).setValue(length);
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_LENGTH_CV))
+        {
+                getParam(LENGTH_CV_KNOB_PARAM).setValue(random::uniform());
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_HITS))
+        {
+                float hits = random::uniform();
+                getParam(HITS_KNOB_PARAM).setValue(hits);
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_HITS_CV))
+        {
+                getParam(HITS_CV_KNOB_PARAM).setValue(random::uniform());
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_SHIFT))
+        {
+                float shift = random::uniform() * (rhythm::max_length - 1);
+                getParam(SHIFT_KNOB_PARAM).setValue(shift);
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_SHIFT_CV))
+        {
+                getParam(SHIFT_CV_KNOB_PARAM).setValue(random::uniform());
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_REVERSE))
+        {
+                bool reverse = (random::uniform() < 0.5f);
+                getParam(REVERSE_KNOB_PARAM).setValue(reverse);
+        }
+
+        if (m_randomization_mask & (1 << RANDOMIZE_INVERT))
+        {
+                bool invert = (random::uniform() < 0.5f);
+                getParam(INVERT_KNOB_PARAM).setValue(invert);
+        }
+}
