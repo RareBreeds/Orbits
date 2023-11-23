@@ -63,7 +63,7 @@ OrbitsSkinnedPort::OrbitsSkinnedPort(OrbitsConfig *config, std::string component
         m_config = config;
         m_component = component;
         loadTheme(m_config->getDefaultThemeId());
-        shadow->opacity = 0.07f;
+        shadow->opacity = 0.0f;
 }
 
 void OrbitsSkinnedPort::loadTheme(int theme)
