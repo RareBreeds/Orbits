@@ -7,6 +7,15 @@ static unsigned int clampRounded(float value, unsigned int min, unsigned int max
         return std::max(std::min((unsigned int)(value + 0.5f), max), min);
 }
 
+static void json_load_integer(json_t *root, const char *param, int *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = json_integer_value(obj);
+        }
+}
+
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -19,6 +28,7 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
         configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
         configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"});
         configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"});
+        configButton(SYNC_KNOB_PARAM, "Sync");
 
         configInput(CLOCK_INPUT, "Clock");
         configInput(SYNC_INPUT, "Sync");
@@ -27,6 +37,7 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
         configInput(SHIFT_CV_INPUT, "Shift CV");
         configInput(REVERSE_CV_INPUT, "Reverse CV");
         configInput(INVERT_CV_INPUT, "Invert");
+        configInput(RANDOM_CV_INPUT, "Random CV");
 
         configOutput(BEAT_OUTPUT, "Beat");
         configOutput(EOC_OUTPUT, "End of cycle");
@@ -130,6 +141,17 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
                 m_current_step = 0;
         }
 
+        if(m_sync_button_trigger.process(getParam(SYNC_KNOB_PARAM).getValue() > 0.5f))
+        {
+                m_current_step = 0;
+        }
+
+        if(m_random_trigger.process(getInput(RANDOM_CV_INPUT).getVoltage()))
+        {
+                RandomizeEvent e;
+                onRandomize(e);
+        }
+
         if(m_clock_trigger.process(getInput(CLOCK_INPUT).getVoltage()))
         {
                 auto length = readLength();
@@ -143,8 +165,6 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
                         m_current_step = 0;
                 }
 
-                m_eoc_generator.update(m_eoc, m_current_step == 0, m_current_step == (reverse ? 1 : length - 1));
-
                 if(reverse)
                 {
                         if(m_current_step == 0)
@@ -156,6 +176,12 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
                                 --m_current_step;
                         }
                 }
+
+                // If we're going forwards, first is 0, last is length - 1
+                // If we're going backwards, first is length - 1, last is 0
+                unsigned int first = reverse ? length - 1 : 0;
+                unsigned int last = reverse ? 0 : length - 1;
+                m_eoc_generator.update(m_eoc, m_current_step == first, m_current_step == last);
 
                 m_beat_generator.update(rhythm::beat(length, hits, shift, m_current_step, invert));
 
@@ -183,6 +209,7 @@ json_t *RareBreeds_Orbits_Eugene::dataToJson()
         {
                 json_object_set_new(root, "beat", m_beat.dataToJson());
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
+                json_object_set_new(root, "randomization_mask", json_integer(m_randomization_mask));
 
                 if(m_widget)
                 {
@@ -202,6 +229,8 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
         {
                 m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
+                m_randomization_mask = RANDOMIZE_ALL;
+                json_load_integer(root, "randomization_mask", &m_randomization_mask);
 
                 json_t *obj = json_object_get(root, "widget");
                 if(obj)

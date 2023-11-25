@@ -15,7 +15,7 @@
             "eoc_port" : "dark-port.svg",
 
             "length_knob" : "red-knob-large.svg",
-            "length_cv_knob" : "red-knob-small.svg", 
+            "length_cv_knob" : "red-knob-small.svg",
             "length_cv_port" : "dark-port.svg",
 
             "hits_knob" : "red-knob-large.svg",
@@ -32,7 +32,14 @@
 
             "invert_switch_on" : "dark-inv-switch-on.svg",
             "invert_switch_off" : "dark-inv-switch-off.svg",
-            "invert_cv_port" : "dark-port.svg"
+            "invert_cv_port" : "dark-port.svg",
+
+            "random_button_on" : "rnd-switch-on.svg",
+            "random_button_off" : "rnd-switch-off.svg",
+            "random_cv_port" : "dark-port.svg",
+
+            "sync_button_on" : "dark-sync-switch-on.svg",
+            "sync_button_off" : "dark-sync-switch-off.svg"
         },
         {
             "name" : "Light",
@@ -49,7 +56,7 @@
             "eoc_port" : "light-port.svg",
 
             "length_knob" : "blue-knob-large.svg",
-            "length_cv_knob" : "blue-knob-small.svg", 
+            "length_cv_knob" : "blue-knob-small.svg",
             "length_cv_port" : "light-port.svg",
 
             "hits_knob" : "blue-knob-large.svg",
@@ -66,7 +73,14 @@
 
             "invert_switch_on" : "light-inv-switch-on.svg",
             "invert_switch_off" : "light-inv-switch-off.svg",
-            "invert_cv_port" : "light-port.svg"
+            "invert_cv_port" : "light-port.svg",
+
+            "random_button_on" : "rnd-switch-on.svg",
+            "random_button_off" : "rnd-switch-off.svg",
+            "random_cv_port" : "light-port.svg",
+
+            "sync_button_on" : "light-sync-switch-on.svg",
+            "sync_button_off" : "light-sync-switch-off.svg"
         }
     ],
     "default" : "Dark"

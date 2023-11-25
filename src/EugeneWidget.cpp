@@ -216,6 +216,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "shift_cv_knob", module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "sync_button", module, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));
 
         addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
@@ -224,6 +225,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addInput(createOrbitsSkinnedInput(m_config, "shift_cv_port", module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(m_config, "random_cv_port", module, RareBreeds_Orbits_Eugene::RANDOM_CV_INPUT));
 
         addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
         addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));

@@ -36,6 +36,8 @@ struct RareBreeds_Orbits_Eugene : Module
                 SHIFT_CV_KNOB_PARAM,
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
+                RANDOM_KNOB_PARAM,
+                SYNC_KNOB_PARAM,
                 NUM_PARAMS
         };
         enum InputIds
@@ -47,6 +49,7 @@ struct RareBreeds_Orbits_Eugene : Module
                 SHIFT_CV_INPUT,
                 REVERSE_CV_INPUT,
                 INVERT_CV_INPUT,
+                RANDOM_CV_INPUT,
                 NUM_INPUTS
         };
         enum OutputIds
@@ -75,8 +78,10 @@ struct RareBreeds_Orbits_Eugene : Module
 
         dsp::SchmittTrigger m_clock_trigger;
         dsp::SchmittTrigger m_sync_trigger;
+        dsp::SchmittTrigger m_sync_button_trigger;
         dsp::SchmittTrigger m_reverse_trigger;
         dsp::SchmittTrigger m_invert_trigger;
+        dsp::SchmittTrigger m_random_trigger;
         BeatMode m_beat;
         BeatGenerator m_beat_generator;
 
