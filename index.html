@@ -1,101 +1,159 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Manual for the Orbits VCV Rack Plugin by RareBreeds.">
-  
-  <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Orbits Manual - Orbits VCV Rack Plugin Manual</title>
-  <link rel="stylesheet" href="css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "Orbits Manual";
-    var mkdocs_page_input_path = "index.md";
-    var mkdocs_page_url = null;
-  </script>
-  
-  <script src="js/jquery-2.1.1.min.js" defer></script>
-  <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
-  
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Manual for the Orbits VCV Rack Plugin by RareBreeds." />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Orbits VCV Rack Plugin Manual</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Orbits Manual";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> Orbits VCV Rack Plugin Manual</a>
-        <div role="search">
+          <a href="." class="icon icon-home"> Orbits VCV Rack Plugin Manual
+        </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1 current">
-		
-    <a class="current" href=".">Orbits Manual</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#orbits-manual">Orbits Manual</a></li>
-    
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Orbits Manual</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#eugene">Eugene</a>
         <ul>
-        
-            <li><a class="toctree-l3" href="#eugene">Eugene</a></li>
-        
-            <li><a class="toctree-l3" href="#polygene">Polygene</a></li>
-        
+    <li class="toctree-l3"><a class="reference internal" href="#example-patch">Example Patch</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#specifications">Specifications</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#panel">Panel</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#links">Links</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#out-output">Out : Output</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#since-v200">Since v2.0.0</a>
+    </li>
         </ul>
-    
-
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#eoc-output">EOC : Output</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#clk-input-rising-edge-sensitive-schmitt-triggered">Clk : Input, Rising Edge Sensitive, Schmitt triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-input-rising-edge-sensitive-schmitt-triggered">Sync : Input, Rising Edge Sensitive, Schmitt triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#length-input">Length : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hits-input">Hits : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#shift-input">Shift : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reverse-input-level-sensitive-schmitt-triggered">Reverse : Input, Level Sensitive, Schmitt triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#invert-input-level-sensitive-schmitt-triggered">Invert : Input, Level Sensitive, Schmitt triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rnd-input-rising-edge-sensitive-schmitt-triggered-since-v204">RND : Input, Rising Edge Sensitive, Schmitt triggered (Since v2.0.4)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-input-since-v204">Sync : Input (Since v2.0.4)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cv-input">CV : Input</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#polygene">Polygene</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example-patch_1">Example Patch</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#specifications_1">Specifications</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#links_1">Links</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#clk-input-polyphonic-rising-edge-sensitive-schmitt-triggered">Clk : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-input-polyphonic-rising-edge-sensitive-schmitt-triggered">Sync : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#since-v200_1">Since v2.0.0</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#channel-knob-input">Channel Knob : Input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rnd-input">RND : Input</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#since-v204">Since v2.0.4</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#length-input-polyphonic">Length : Input, Polyphonic</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hits-input-polyphonic">Hits : Input, Polyphonic</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#shift-input-polyphonic">Shift : Input, Polyphonic</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#variation-input-polyphonic">Variation : Input, Polyphonic</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reverse-input-polyphonic-level-sensitive-schmitt-triggered">Reverse : Input, Polyphonic, Level Sensitive, Schmitt Triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#invert-input-polyphonic-level-sensitive-schmitt-triggered">Invert : Input, Polyphonic, Level Sensitive, Schmitt Triggered</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#out-output-polyphonic">Out : Output, Polyphonic</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#since-v200_2">Since v2.0.0</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#eoc-output-polyphonic">EOC : Output, Polyphonic</a>
+    </li>
+        </ul>
+    </li>
     </ul>
-	    </li>
-          
-        </ul>
+                </li>
+              </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">Orbits VCV Rack Plugin Manual</a>
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">Orbits VCV Rack Plugin Manual</a>
+        
       </nav>
-
-      
       <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".">Docs</a> &raquo;</li>
-    
-      
-    
-    <li>Orbits Manual</li>
+    <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Orbits Manual</li>
     <li class="wy-breadcrumbs-aside">
-      
     </li>
   </ul>
   <hr/>
 </div>
-          <div role="main">
-            <div class="section">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
               
                 <h1 id="orbits-manual">Orbits Manual</h1>
 <p><a href='https://ko-fi.com/E1E63S8XF' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi5.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a></p>
@@ -117,6 +175,8 @@
 <li>End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)</li>
 <li>3 Beat modes that control the beat output behaviour (since v2.0.0)</li>
 <li>Factory presets (since v2.0.1)</li>
+<li>Randomize input port (since v2.0.4)</li>
+<li>Sync button (since v2.0.4)</li>
 </ul>
 <h3 id="panel">Panel</h3>
 <p><img alt="Controls" src="img/controls.png" /></p>
@@ -126,6 +186,7 @@
 <li><a href="https://www.youtube.com/watch?v=LTSPj2sUYtg&amp;t=1590s">Omri Cohen - 5 New Modules to experiment with in VCV Rack in January 2021</a></li>
 <li><a href="https://youtu.be/TSYzCZTIFaY?t=360">Omri Cohen - What do Euclidean Sequencers have to do with Polyrhythms and Polymeters?</a></li>
 <li><a href="https://community.vcvrack.com/t/vcp-challenge-59-rarebreeds-eugene/12350">VCP Challenge #59: RareBreeds Eugene</a></li>
+<li><a href="https://www.youtube.com/watch?v=hbN5FpP-Q7k">Your Pal Rob - Instant Rhythms: Eugene by RareBreeds</a></li>
 </ul>
 <h3 id="out-output">Out : Output</h3>
 <p>A pulse is output when an on-beat (hit) is clocked.</p>
@@ -162,6 +223,10 @@
 <h3 id="invert-input-level-sensitive-schmitt-triggered">Invert : Input, Level Sensitive, Schmitt triggered</h3>
 <p>Inverts the Euclidean algorithm. When this switch is on on-beats become off-beats and off-beats become on-beats. Visually you can tell this is enabled by the on-beats being represented as empty circles rather than whole ones.</p>
 <p><img alt="Invert" src="img/invert.png" /></p>
+<h3 id="rnd-input-rising-edge-sensitive-schmitt-triggered-since-v204">RND : Input, Rising Edge Sensitive, Schmitt triggered (Since v2.0.4)</h3>
+<p>When triggered randomizes the parameters selected by the Randomize Filter context menu item.</p>
+<h3 id="sync-input-since-v204">Sync : Input (Since v2.0.4)</h3>
+<p>The sync button lets you manually click to sync.</p>
 <h3 id="cv-input">CV : Input</h3>
 <p>All manually controlled inputs are also CV controllable.</p>
 <p>Length, Hits and Shift have +-5V bipolar CV inputs with a knob for adjusting CV gain. The gain knob ranges from 0 to 1. After gain is applied to the control voltage input it is summed with the current knob setting.</p>
@@ -186,15 +251,13 @@ parameter value = knob value + (control voltage input X control voltage gain kno
 <li>Lots of CV controllable parameters</li>
 <li>End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)</li>
 <li>3 Beat modes that control the beat output behaviour (since v2.0.0)</li>
-<li>2 Sync CV modes either giving sync control of individual channels (default) or applying sync to all channels (since v2.0.0)</li>
+<li>2 CV modes allowing mono cables to either control all channels (default) or just the first (since v2.0.4)</li>
 <li>Factory presets (since v2.0.1)</li>
 </ul>
-<h3 id="panel_1">Panel</h3>
-<p>TODO</p>
 <h3 id="links_1">Links</h3>
 <ul>
-<li><a href="https://www.youtube.com/watch?v=5q7ujPrInZo">VCV Rack Ideas - PolyGene - powerful 16 track euclidean sequencer in VCV Rack | PatchFromScratch
-</a></li>
+<li><a href="https://www.youtube.com/watch?v=5q7ujPrInZo">VCV Rack Ideas - PolyGene - powerful 16 track euclidean sequencer in VCV Rack | PatchFromScratch</a></li>
+<li><a href="https://www.youtube.com/watch?v=R40nj87Iscs">Your Pal Rob - Instant Rhythms 2: Polygene by RareBreeds</a></li>
 </ul>
 <h3 id="clk-input-polyphonic-rising-edge-sensitive-schmitt-triggered">Clk : Input, Polyphonic, Rising Edge Sensitive, Schmitt Triggered</h3>
 <p>The number of active channels on this input sets the number of channels active on the output.</p>
@@ -208,7 +271,10 @@ parameter value = knob value + (control voltage input X control voltage gain kno
 <p>The channel knob selects the current active channel. The selected channel is highlighted on the display and is the channel that will be modified by any changes to the Length, Hits, Shift, Variation, Reverse or Invert manual controls.</p>
 <p>Always ranges from 1 to 16 channels, inactive channels are greyed out and are enabled by providing a clock input on that channel.</p>
 <h3 id="rnd-input">RND : Input</h3>
-<p>Pressing the RND button randomises the length, hits, shift, variation, invert and reverse values for the selected channel.</p>
+<p>Pressing the RND button randomizes the length, hits, shift, variation, invert and reverse values for the selected channel.</p>
+<h4 id="since-v204">Since v2.0.4</h4>
+<p>The context menu item lets you select which parameters are randomized when this button is pressed.</p>
+<p>The random input port lets you trigger randomization.</p>
 <h3 id="length-input-polyphonic">Length : Input, Polyphonic</h3>
 <p>The number of beats in the rhythm. Integer range between 1 to 32 inclusive.</p>
 <p>The voltage on the length CV input is divided by 5 and multiplied by the length knob setting for that channel to decide the final length value for a channel.</p>
@@ -255,20 +321,17 @@ parameter value = knob value + (control voltage input X control voltage gain kno
 <p>0-10V Unipolar CV 1ms pulse duration.</p>
               
             </div>
-          </div>
-          <footer>
-  
+          </div><footer>
 
   <hr/>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-    
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-      
+          
         </div>
       </div>
 
@@ -276,21 +339,27 @@ parameter value = knob value + (control voltage input X control voltage gain kno
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-      
-      
-    </span>
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
 </div>
     <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
     <script src="js/theme.js" defer></script>
       <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>
 
 <!--
-MkDocs version : 1.0.4
-Build Date UTC : 2021-12-29 17:59:52
+MkDocs version : 1.4.2
+Build Date UTC : 2023-12-21 15:51:59.296314+00:00
 -->
