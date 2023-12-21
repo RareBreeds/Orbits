@@ -1,7 +1,18 @@
+## [2.0.4] - 2023-12-21
+### Added
+ - Ability to filter what is randomized
+ - RND input
+ - Display current channel number in Polygene
+ - Snappy knobs (where max parameter value is known up front)
+ - Options for how CV inputs behave with mono connections
+
+### Fixed
+ - EOC behaviour when running in reverse
+
 ## [2.0.3] - 2023-07-29
 ### Fixed
  - [#4](/../../issues/4) - Support for UTF-8 paths on Windows
-   
+
 ## [2.0.2] - 2023-07-09
 ### Fixed
  - [#3](/../../issues/3) - Support for using Eugene and Polygene with 8FaceMk2
