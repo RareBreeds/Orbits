@@ -26,6 +26,8 @@ Eugene is a [Euclidean Rhythm](https://en.wikipedia.org/wiki/Euclidean_rhythm) g
  * End of cycle (EOC) pulse (configurable to trigger on repeat, first or last beat)
  * 3 Beat modes that control the beat output behaviour (since v2.0.0)
  * Factory presets (since v2.0.1)
+ * Randomize input port (since v2.0.4)
+ * Sync button (since v2.0.4)
 
 ### Panel
 
@@ -87,6 +89,13 @@ Sets the direction that the clock advances the beat. Clockwise when off, anticlo
 Inverts the Euclidean algorithm. When this switch is on on-beats become off-beats and off-beats become on-beats. Visually you can tell this is enabled by the on-beats being represented as empty circles rather than whole ones.
 
 ![Invert](img/invert.png)
+
+### RND : Input, Rising Edge Sensitive, Schmitt triggered (Since v2.0.4)
+When triggered randomizes the parameters selected by the Randomize Filter context menu item.
+
+### Sync : Input (Since v2.0.4)
+
+The sync button lets you manually click to sync.
 
 ### CV : Input
 All manually controlled inputs are also CV controllable.
@@ -152,11 +161,13 @@ Always ranges from 1 to 16 channels, inactive channels are greyed out and are en
 
 ### RND : Input
 
-Pressing the RND button randomises the length, hits, shift, variation, invert and reverse values for the selected channel.
+Pressing the RND button randomizes the length, hits, shift, variation, invert and reverse values for the selected channel.
 
 #### Since v2.0.4
 
-A context menu item lets you select which parameters are randomized when this button is pressed.
+The context menu item lets you select which parameters are randomized when this button is pressed.
+
+The random input port lets you trigger randomization.
 
 ### Length : Input, Polyphonic
 
