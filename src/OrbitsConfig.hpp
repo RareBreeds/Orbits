@@ -16,7 +16,7 @@ struct OrbitsConfig
         std::array<uint8_t, 3> getColour(std::string component, int theme);
         std::array<uint8_t, 3> getColour(std::string component);
         int getDefaultThemeId();
-        size_t numThemes();
+        int numThemes();
 private:
         std::string m_path;
         float rFindFloatAttribute(std::string &content, std::string attribute, size_t search);        

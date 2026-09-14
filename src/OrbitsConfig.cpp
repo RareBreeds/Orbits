@@ -194,7 +194,7 @@ int OrbitsConfig::getDefaultThemeId()
         return default_theme_id;
 }
 
-size_t OrbitsConfig::numThemes()
+int OrbitsConfig::numThemes()
 {
         json_error_t error;
         std::string path = asset::plugin(pluginInstance, m_path);

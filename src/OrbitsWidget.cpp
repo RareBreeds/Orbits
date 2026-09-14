@@ -12,8 +12,8 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 
         menu->addChild(createIndexSubmenuItem("Theme",
                 m_config->getThemeNames(),
-                [=]() {return m_theme;},
-                [=](int mode) {loadTheme(mode);}
+                [=, this]() {return this->m_theme;},
+                [=, this](int mode) {loadTheme(mode);}
         ));
 
         appendModuleContextMenu(menu);
@@ -21,7 +21,7 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 
 void OrbitsWidget::loadTheme(const char *theme)
 {
-        for(size_t i = 0; i < m_config->numThemes(); ++i)
+        for(int i = 0; i < m_config->numThemes(); ++i)
         {
                 if(m_config->getThemeName(i) == theme)
                 {
