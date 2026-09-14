@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D220D0FE305772EC007F356A /* libRack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D220D0FD305772EC007F356A /* libRack.dylib */; };
 		D25F21BD2A537F9600400635 /* OrbitsWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */; };
 		D25F21BF2A537F9600400635 /* Rhythm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B42A5379A40010944C /* Rhythm.cpp */; };
 		D25F21C22A537F9600400635 /* OrbitsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B72A5379A40010944C /* OrbitsModule.cpp */; };
@@ -19,10 +20,10 @@
 		D25F21D02A537F9600400635 /* EugeneWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C52A5379A40010944C /* EugeneWidget.cpp */; };
 		D25F21D22A537F9600400635 /* Polygene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C72A5379A40010944C /* Polygene.cpp */; };
 		D25F21D32A537F9600400635 /* PolygeneWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */; };
-		D2C0CEB42A5410850038808E /* libRack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2C0CEB32A5410850038808E /* libRack.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D220D0FD305772EC007F356A /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../Rack/libRack.dylib; sourceTree = "<group>"; };
 		D2C0CEB32A5410850038808E /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../../libRack.dylib; sourceTree = "<group>"; };
 		D2CAD8B22A53798100613E5A /* libOrbits.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libOrbits.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsWidget.cpp; sourceTree = "<group>"; };
@@ -55,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D2C0CEB42A5410850038808E /* libRack.dylib in Frameworks */,
+				D220D0FE305772EC007F356A /* libRack.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +66,7 @@
 		D2C0CEB22A5410850038808E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D220D0FD305772EC007F356A /* libRack.dylib */,
 				D2C0CEB32A5410850038808E /* libRack.dylib */,
 			);
 			name = Frameworks;
@@ -143,7 +145,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					D2CAD8B12A53798100613E5A = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -224,9 +226,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -246,6 +250,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Debug;
 		};
@@ -282,9 +287,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -297,6 +304,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Release;
 		};
@@ -326,6 +334,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -346,10 +355,10 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				HEADER_SEARCH_PATHS = (
-					../../include,
-					../../dep/include,
+					../Rack/include,
+					../Rack/dep/include,
 				);
-				LIBRARY_SEARCH_PATHS = ../../;
+				LIBRARY_SEARCH_PATHS = ../Rack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
@@ -382,6 +391,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -402,10 +412,10 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				HEADER_SEARCH_PATHS = (
-					../../include,
-					../../dep/include,
+					../Rack/include,
+					../Rack/dep/include,
 				);
-				LIBRARY_SEARCH_PATHS = ../../;
+				LIBRARY_SEARCH_PATHS = ../Rack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
