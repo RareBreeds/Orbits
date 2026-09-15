@@ -3,6 +3,10 @@
 #include "OrbitsConfig.hpp"
 #include "plugin.hpp"
 
+// TODO: Better place for this
+#define ORBITS_THEME_COUNT (2)
+#define ORBITS_THEME_DEFAULT (0)
+
 // Interface for components with the ability to change skins
 struct OrbitsSkinned
 {
@@ -12,20 +16,35 @@ struct OrbitsSkinned
         virtual ~OrbitsSkinned() = 0;
 };
 
+// TODO: Same as ScrewConfig
+struct OrbitsSkinnedKnobConfig
+{
+        std::array<std::string, ORBITS_THEME_COUNT> imagePaths;
+        Vec pos;
+};
+
 struct OrbitsSkinnedKnob : SvgKnob, OrbitsSkinned
 {
-        OrbitsSkinnedKnob(OrbitsConfig *config, std::string component);
+        OrbitsSkinnedKnobConfig m_config;
+        OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config);
         void loadTheme(int theme) override;
 };
 
 struct OrbitsSkinnedSnappyKnob : OrbitsSkinnedKnob
 {
-        OrbitsSkinnedSnappyKnob(OrbitsConfig *config, std::string component);
+        OrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& config);
+};
+
+struct OrbitsSkinnedScrewConfig
+{
+        std::array<std::string, ORBITS_THEME_COUNT> imagePaths;
+        Vec pos;
 };
 
 struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
 {
-        OrbitsSkinnedScrew(OrbitsConfig *config, std::string component);
+        OrbitsSkinnedScrewConfig m_config;
+        OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config);
         void loadTheme(int theme) override;
 };
 
@@ -46,13 +65,17 @@ struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
         void loadTheme(int theme) override;
 };
 
-OrbitsSkinnedScrew *createOrbitsSkinnedScrew(OrbitsConfig *config, std::string component, math::Vec pos);
+OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config);
+OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId);
+OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId);
+
 OrbitsSkinnedPort *createOrbitsSkinnedPort(OrbitsConfig *config, std::string component, engine::Module *module,
                                            int portId);
 OrbitsSkinnedPort *createOrbitsSkinnedInput(OrbitsConfig *config, std::string component, engine::Module *module,
                                             int inputId);
 OrbitsSkinnedPort *createOrbitsSkinnedOutput(OrbitsConfig *config, std::string component, engine::Module *module,
                                              int outputId);
+
 
 template <class TParamWidget>
 TParamWidget *createOrbitsSkinnedParam(OrbitsConfig *config, std::string component, engine::Module *module, int paramId)

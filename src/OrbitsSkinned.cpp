@@ -1,35 +1,34 @@
 #include "OrbitsSkinned.hpp"
 
-OrbitsSkinnedKnob::OrbitsSkinnedKnob(OrbitsConfig *config, std::string component)
+OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config)
 {
         m_config = config;
-        m_component = component;
         minAngle = -0.83f * (float)M_PI;
         maxAngle = 0.83f * (float)M_PI;
-        loadTheme(m_config->getDefaultThemeId());
+        loadTheme(ORBITS_THEME_DEFAULT);
 }
 
 void OrbitsSkinnedKnob::loadTheme(int theme)
 {
-        setSvg(APP->window->loadSvg(m_config->getSvg(m_component, theme)));
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[theme]);
+        setSvg(APP->window->loadSvg(imagePath));
         fb->dirty = true;
 }
 
-OrbitsSkinnedSnappyKnob::OrbitsSkinnedSnappyKnob(OrbitsConfig *config, std::string component) : OrbitsSkinnedKnob(config, component)
+OrbitsSkinnedSnappyKnob::OrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& config) : OrbitsSkinnedKnob(config)
 {
         snap = true;
 }
 
-OrbitsSkinnedScrew::OrbitsSkinnedScrew(OrbitsConfig *config, std::string component)
+OrbitsSkinnedScrew::OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config) : m_config(config)
 {
-        m_config = config;
-        m_component = component;
-        loadTheme(m_config->getDefaultThemeId());
+        loadTheme(ORBITS_THEME_DEFAULT);
 }
 
 void OrbitsSkinnedScrew::loadTheme(int theme)
 {
-        setSvg(APP->window->loadSvg(m_config->getSvg(m_component, theme)));
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[theme]);
+        setSvg(APP->window->loadSvg(imagePath));
         fb->dirty = true;
 }
 
@@ -76,10 +75,30 @@ OrbitsSkinned::~OrbitsSkinned()
 {
 }
 
-OrbitsSkinnedScrew *createOrbitsSkinnedScrew(OrbitsConfig *config, std::string component, math::Vec pos)
+OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config)
 {
-        OrbitsSkinnedScrew *o = new OrbitsSkinnedScrew(config, component);
-        o->box.pos = pos.minus(o->box.size.div(2));
+        OrbitsSkinnedScrew *o = new OrbitsSkinnedScrew(config);
+        o->box.pos = config.pos.minus(o->box.size.div(2));
+        return o;
+}
+
+OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId)
+{
+        OrbitsSkinnedSnappyKnob *o = new OrbitsSkinnedSnappyKnob(config);
+        o->box.pos = config.pos.minus(o->box.size.div(2));
+        o->app::ParamWidget::module = module;
+        o->app::ParamWidget::paramId = paramId;
+        o->initParamQuantity();
+        return o;
+}
+
+OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId)
+{
+        OrbitsSkinnedKnob *o = new OrbitsSkinnedKnob(config);
+        o->box.pos = config.pos.minus(o->box.size.div(2));
+        o->app::ParamWidget::module = module;
+        o->app::ParamWidget::paramId = paramId;
+        o->initParamQuantity();
         return o;
 }
 

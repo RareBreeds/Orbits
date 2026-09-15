@@ -198,22 +198,49 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
                 eoc_widget.m_module = &module->m_eoc;
         }
 
-        m_theme = m_config->getDefaultThemeId();
+        m_theme = ORBITS_THEME_DEFAULT;
 
         // clang-format off
-        setPanel(APP->window->loadSvg(m_config->getSvg("panel")));
+        setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-panel.svg")));
 
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        OrbitsSkinnedScrewConfig screw = {
+                {"res/dark-hex-screw.svg", "res/light-hex-screw.svg"},
+                Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)
+        };
+        addChild(createOrbitsSkinnedScrew(screw));
 
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "length_knob", module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_knob", module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "shift_knob", module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "length_cv_knob", module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_cv_knob", module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "shift_cv_knob", module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+        screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
+
+        screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
+
+        screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
+
+        OrbitsSkinnedKnobConfig knob = {
+                {"res/red-knob-large.svg", "res/blue-knob-large.svg"},
+                mm2px(Vec(10.6363f, 71.1292f))
+
+        };
+        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(30.48f, 71.1292f));
+        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(50.3238f, 71.1292f));
+        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+
+        knob.imagePaths = {"res/red-knob-small.svg", "res/blue-knob-small.svg"};
+        knob.pos = mm2px(Vec(13.2821f, 90.7083f));
+        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(30.48f, 90.7083f));
+        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(47.6779f, 90.7083f));
+        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "sync_button", module, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));

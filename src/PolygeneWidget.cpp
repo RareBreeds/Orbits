@@ -162,19 +162,44 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         m_theme = m_config->getDefaultThemeId();
 
         // clang-format off
-        setPanel(APP->window->loadSvg(m_config->getSvg("panel")));
+        setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/polygene-dark-panel.svg")));
 
-        // TODO: Screw positions are based on the panel size, could have a position for them in config based on panel size
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        OrbitsSkinnedScrewConfig screw = {
+                {"dark-hex-screw.svg", "light-hex-screw.svg"},
+                Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)
+        };
+        addChild(createOrbitsSkinnedScrew(screw));
 
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "channel_knob", module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "length_knob", module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_knob", module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "shift_knob", module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "variation_knob", module, RareBreeds_Orbits_Polygene::VARIATION_KNOB_PARAM));
+        screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
+
+        screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
+
+        screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
+
+
+        OrbitsSkinnedKnobConfig knob = {
+                {"res/grey-knob-large.svg", "res/grey-knob-small.svg"},
+                mm2px(Vec(18.4596f, 64.6065f))
+
+        };
+        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
+
+        knob.imagePaths = {"res/red-knob-large.svg", "res/blue-knob-large.svg"};
+        knob.pos = mm2px(Vec(13.97f, 86.475f));
+        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(35.1367f, 86.475f));
+        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(56.3033f, 86.475f));
+        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));
+
+        knob.pos = mm2px(Vec(77.47f, 86.475f));
+        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Polygene::VARIATION_KNOB_PARAM));
+
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
         addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "random_button", module, RareBreeds_Orbits_Polygene::RANDOM_KNOB_PARAM));
