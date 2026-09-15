@@ -12,8 +12,8 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 
         menu->addChild(createIndexSubmenuItem("Theme",
                 m_config->getThemeNames(),
-                [=, this]() {return this->m_theme;},
-                [=, this](int mode) {loadTheme(mode);}
+                [this]() { return this->m_theme; },
+                [this](int mode) { loadTheme(mode); }
         ));
 
         appendModuleContextMenu(menu);
