@@ -296,51 +296,21 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits
                         .active_channels = PORT_MAX_CHANNELS,
                         .channels = {
                                 {32, 6, 0, 0, 0, 4},
-#if PORT_MAX_CHANNELS > 1
                                 {16, 9, 3, 0, 0, 0},
-#endif
-#if PORT_MAX_CHANNELS > 2
                                 {7, 3, 6, 0, 0, 5},
-#endif
-#if PORT_MAX_CHANNELS > 3
                                 {9, 7, 2, 0, 0, 3},
-#endif
-#if PORT_MAX_CHANNELS > 4
                                 {17, 4, 12, 0, 0, 14},
-#endif
-#if PORT_MAX_CHANNELS > 5
                                 {30, 20, 15, 0, 0, 20},
-#endif
-#if PORT_MAX_CHANNELS > 6
                                 {19, 4, 14, 0, 0, 10},
-#endif
-#if PORT_MAX_CHANNELS > 7
                                 {4, 2, 3, 0, 0, 2},
-#endif
-#if PORT_MAX_CHANNELS > 8
                                 {7, 1, 0, 0, 0, 6},
-#endif
-#if PORT_MAX_CHANNELS > 9
                                 {8, 5, 3, 0, 0, 1},
-#endif
-#if PORT_MAX_CHANNELS > 10
                                 {16, 10, 4, 0, 0, 4},
-#endif
-#if PORT_MAX_CHANNELS > 11
                                 {19, 16, 2, 0, 0, 18},
-#endif
-#if PORT_MAX_CHANNELS > 12
                                 {24, 20, 8, 0, 0, 14},
-#endif
-#if PORT_MAX_CHANNELS > 13
                                 {28, 14, 6, 0, 0, 20},
-#endif
-#if PORT_MAX_CHANNELS > 14
                                 {21, 12, 4, 0, 0, 4},
-#endif
-#if PORT_MAX_CHANNELS > 15
                                 {9, 3, 3, 0, 0, 7},
-#endif
                         }
                 };
 
