@@ -181,7 +181,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
 
 
         OrbitsSkinnedKnobConfig knob = {
-                {"res/grey-knob-large.svg", "res/grey-knob-small.svg"},
+                {"res/grey-knob-small.svg", "res/grey-knob-small.svg"},
                 mm2px(Vec(18.4596f, 64.6065f))
 
         };
@@ -200,10 +200,27 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         knob.pos = mm2px(Vec(77.47f, 86.475f));
         addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Polygene::VARIATION_KNOB_PARAM));
 
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "random_button", module, RareBreeds_Orbits_Polygene::RANDOM_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "sync_button", module, RareBreeds_Orbits_Polygene::SYNC_KNOB_PARAM));
+        OrbitsSkinnedSwitchConfig swtch = {
+                {"res/dark-rev-switch-on.svg", "res/light-rev-switch-on.svg"},
+                {"res/dark-rev-switch-off.svg", "res/light-rev-switch-off.svg"},
+                mm2px(Vec(13.97f, 117.167f))
+        };
+        addParam(createOrbitsSkinnedSwitch(swtch, module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
+
+        swtch.onImagePaths = {"res/dark-inv-switch-on.svg", "res/light-inv-switch-on.svg"};
+        swtch.offImagePaths = {"res/dark-inv-switch-off.svg", "res/light-inv-switch-off.svg"};
+        swtch.pos = mm2px(Vec(77.47f, 117.167f));
+        addParam(createOrbitsSkinnedSwitch(swtch, module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
+
+        swtch.onImagePaths = {"res/rnd-switch-on.svg", "res/rnd-switch-on.svg"};
+        swtch.offImagePaths = {"res/rnd-switch-off.svg", "res/rnd-switch-off.svg"};
+        swtch.pos = mm2px(Vec(72.4101f, 64.8615f));
+        addParam(createOrbitsSkinnedButton(swtch, module, RareBreeds_Orbits_Polygene::RANDOM_KNOB_PARAM));
+
+        swtch.onImagePaths = {"res/dark-sync-switch-on.svg", "res/light-sync-switch-on.svg"};
+        swtch.offImagePaths = {"res/dark-sync-switch-off.svg", "res/light-sync-switch-off.svg"};
+        swtch.pos = mm2px(Vec(8.67833f, 48.375f));
+        addParam(createOrbitsSkinnedButton(swtch, module, RareBreeds_Orbits_Polygene::SYNC_KNOB_PARAM));
 
         addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Polygene::SYNC_INPUT));

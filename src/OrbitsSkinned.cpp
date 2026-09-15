@@ -1,8 +1,7 @@
 #include "OrbitsSkinned.hpp"
 
-OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config)
+OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config) : m_config(config)
 {
-        m_config = config;
         minAngle = -0.83f * (float)M_PI;
         maxAngle = 0.83f * (float)M_PI;
         loadTheme(ORBITS_THEME_DEFAULT);
@@ -32,27 +31,31 @@ void OrbitsSkinnedScrew::loadTheme(int theme)
         fb->dirty = true;
 }
 
-OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(OrbitsConfig *config, std::string component)
+OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config) : m_config(config)
 {
-        m_config = config;
-        m_component = component;
-        addFrame(APP->window->loadSvg(m_config->getSvg(m_component + "_off")));
-        addFrame(APP->window->loadSvg(m_config->getSvg(m_component + "_on")));
+        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[ORBITS_THEME_DEFAULT]);
+        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[ORBITS_THEME_DEFAULT]);
+
+        addFrame(APP->window->loadSvg(offImagePath));
+        addFrame(APP->window->loadSvg(onImagePath));
         shadow->opacity = 0.0;
 }
 
 void OrbitsSkinnedSwitch::loadTheme(int theme)
 {
-        frames[0] = APP->window->loadSvg(m_config->getSvg(m_component + "_off", theme));
-        frames[1] = APP->window->loadSvg(m_config->getSvg(m_component + "_on", theme));
+        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[theme]);
+        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[theme]);
+
+        frames[0] = APP->window->loadSvg(offImagePath);
+        frames[1] = APP->window->loadSvg(onImagePath);
 
         event::Change change;
         onChange(change);
         onChange(change);
 }
 
-OrbitsSkinnedButton::OrbitsSkinnedButton(OrbitsConfig *config, std::string component)
-        : OrbitsSkinnedSwitch(config, component)
+OrbitsSkinnedButton::OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config)
+        : OrbitsSkinnedSwitch(config)
 {
         momentary = true;
 }
@@ -95,6 +98,26 @@ OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobCo
 OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId)
 {
         OrbitsSkinnedKnob *o = new OrbitsSkinnedKnob(config);
+        o->box.pos = config.pos.minus(o->box.size.div(2));
+        o->app::ParamWidget::module = module;
+        o->app::ParamWidget::paramId = paramId;
+        o->initParamQuantity();
+        return o;
+}
+
+OrbitsSkinnedSwitch *createOrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config, engine::Module *module, int paramId)
+{
+        OrbitsSkinnedSwitch *o = new OrbitsSkinnedSwitch(config);
+        o->box.pos = config.pos.minus(o->box.size.div(2));
+        o->app::ParamWidget::module = module;
+        o->app::ParamWidget::paramId = paramId;
+        o->initParamQuantity();
+        return o;
+}
+
+OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config, engine::Module *module, int paramId)
+{
+        OrbitsSkinnedButton *o = new OrbitsSkinnedButton(config);
         o->box.pos = config.pos.minus(o->box.size.div(2));
         o->app::ParamWidget::module = module;
         o->app::ParamWidget::paramId = paramId;

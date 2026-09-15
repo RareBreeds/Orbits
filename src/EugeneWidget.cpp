@@ -241,9 +241,22 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         knob.pos = mm2px(Vec(47.6779f, 90.7083f));
         addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
 
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "sync_button", module, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));
+        OrbitsSkinnedSwitchConfig swtch = {
+                {"res/dark-rev-switch-on.svg", "res/light-rev-switch-on.svg"},
+                {"res/dark-rev-switch-off.svg", "res/light-rev-switch-off.svg"},
+                mm2px(Vec(7.10457f, 117.48f))
+        };
+        addParam(createOrbitsSkinnedSwitch(swtch, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+
+        swtch.onImagePaths = {"res/dark-inv-switch-on.svg", "res/light-inv-switch-on.svg"};
+        swtch.offImagePaths = {"res/dark-inv-switch-off.svg", "res/light-inv-switch-off.svg"};
+        swtch.pos = mm2px(Vec(54.2021f, 117.166f));
+        addParam(createOrbitsSkinnedSwitch(swtch, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+
+        swtch.onImagePaths = {"res/dark-sync-switch-on.svg", "res/light-sync-switch-on.svg"};
+        swtch.offImagePaths = {"res/dark-sync-switch-off.svg", "res/light-sync-switch-off.svg"};
+        swtch.pos = mm2px(Vec(6.80921f, 48.3748f));
+        addParam(createOrbitsSkinnedButton(swtch, module, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));
 
         addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
         addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
