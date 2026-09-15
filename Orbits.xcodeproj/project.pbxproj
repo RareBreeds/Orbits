@@ -357,8 +357,13 @@
 				HEADER_SEARCH_PATHS = (
 					../Rack/include,
 					../Rack/dep/include,
+					../../include,
+					../../dep/include,
 				);
-				LIBRARY_SEARCH_PATHS = ../Rack;
+				LIBRARY_SEARCH_PATHS = (
+					../Rack,
+					../../,
+				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -415,8 +420,13 @@
 				HEADER_SEARCH_PATHS = (
 					../Rack/include,
 					../Rack/dep/include,
+					../../include,
+					../../dep/include,
 				);
-				LIBRARY_SEARCH_PATHS = ../Rack;
+				LIBRARY_SEARCH_PATHS = (
+					../Rack,
+					../../,
+				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
