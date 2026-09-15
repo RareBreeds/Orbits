@@ -76,7 +76,7 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 
                 // Inner circle radius
                 const float inner_circle_radius = 0.17f;
-                const float channel_width = (1.0f - inner_circle_radius) / 16.0f;
+                const float channel_width = (1.0f - inner_circle_radius) / (float)PORT_MAX_CHANNELS;
                 // Width of the line when drawing circles
                 const float arc_stroke_width = channel_width / 2.0f;
 
