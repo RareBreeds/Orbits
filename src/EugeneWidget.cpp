@@ -258,17 +258,29 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         swtch.pos = mm2px(Vec(6.80921f, 48.3748f));
         addParam(createOrbitsSkinnedButton(swtch, module, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));
 
-        addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "length_cv_port", module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "hits_cv_port", module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "shift_cv_port", module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "random_cv_port", module, RareBreeds_Orbits_Eugene::RANDOM_CV_INPUT));
+        OrbitsSkinnedPortConfig port;
+        port.imagePaths = {"res/dark-port.svg", "res/light-port.svg"};
+        port.pos = mm2px(Vec(6.6675f, 20.1351f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+        port.pos = mm2px(Vec(6.73062f, 36.8091f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+        port.pos = mm2px(Vec(13.2821f, 102.35f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+        port.pos = mm2px(Vec(30.48f, 102.35f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+        port.pos = mm2px(Vec(47.6779f, 102.35f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+        port.pos = mm2px(Vec(17.8051f, 117.076f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+        port.pos = mm2px(Vec(43.5015f, 117.076f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+        port.pos = mm2px(Vec(54.2921f, 51.801f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::RANDOM_CV_INPUT));
 
-        addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
-        addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
+        port.pos = mm2px(Vec(54.2925f, 20.1353f));
+        addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+        port.pos = mm2px(Vec(54.2921f, 36.8091f));
+        addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
         // clang-format on
 
         rhythm_display = new EugeneRhythmDisplay(module, m_config->getPos("display"), m_config->getSize("display"));

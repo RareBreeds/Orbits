@@ -60,17 +60,16 @@ OrbitsSkinnedButton::OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config
         momentary = true;
 }
 
-OrbitsSkinnedPort::OrbitsSkinnedPort(OrbitsConfig *config, std::string component)
+OrbitsSkinnedPort::OrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config) : m_config(config)
 {
-        m_config = config;
-        m_component = component;
-        loadTheme(m_config->getDefaultThemeId());
+        loadTheme(ORBITS_THEME_DEFAULT);
         shadow->opacity = 0.0f;
 }
 
 void OrbitsSkinnedPort::loadTheme(int theme)
 {
-        setSvg(APP->window->loadSvg(m_config->getSvg(m_component, theme)));
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[theme]);
+        setSvg(APP->window->loadSvg(imagePath));
         // fb->dirty = true; // Already set by setSvg for SvgPorts
 }
 
@@ -125,28 +124,28 @@ OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& 
         return o;
 }
 
-OrbitsSkinnedPort *createOrbitsSkinnedPort(OrbitsConfig *config, std::string component, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                            int portId)
 {
-        OrbitsSkinnedPort *o = new OrbitsSkinnedPort(config, component);
-        o->box.pos = config->getPos(component).minus(o->box.size.div(2));
+        OrbitsSkinnedPort *o = new OrbitsSkinnedPort(config);
+        o->box.pos = config.pos.minus(o->box.size.div(2));
         o->module = module;
         o->portId = portId;
         return o;
 }
 
-OrbitsSkinnedPort *createOrbitsSkinnedInput(OrbitsConfig *config, std::string component, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedInput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                             int inputId)
 {
-        OrbitsSkinnedPort *o = createOrbitsSkinnedPort(config, component, module, inputId);
+        OrbitsSkinnedPort *o = createOrbitsSkinnedPort(config, module, inputId);
         o->type = engine::Port::INPUT;
         return o;
 }
 
-OrbitsSkinnedPort *createOrbitsSkinnedOutput(OrbitsConfig *config, std::string component, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedOutput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                              int outputId)
 {
-        OrbitsSkinnedPort *o = createOrbitsSkinnedPort(config, component, module, outputId);
+        OrbitsSkinnedPort *o = createOrbitsSkinnedPort(config, module, outputId);
         o->type = engine::Port::OUTPUT;
         return o;
 }

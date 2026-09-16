@@ -67,9 +67,16 @@ struct OrbitsSkinnedButton : OrbitsSkinnedSwitch
         OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config);
 };
 
+struct OrbitsSkinnedPortConfig
+{
+        std::array<std::string, ORBITS_THEME_COUNT> imagePaths;
+        Vec pos;
+};
+
 struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
 {
-        OrbitsSkinnedPort(OrbitsConfig *config, std::string component);
+        OrbitsSkinnedPortConfig m_config;
+        OrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config);
         void loadTheme(int theme) override;
 };
 
@@ -79,11 +86,11 @@ OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config
 OrbitsSkinnedSwitch *createOrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config, engine::Module *module, int paramId);
 OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config, engine::Module *module, int paramId);
 
-OrbitsSkinnedPort *createOrbitsSkinnedPort(OrbitsConfig *config, std::string component, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                            int portId);
-OrbitsSkinnedPort *createOrbitsSkinnedInput(OrbitsConfig *config, std::string component, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedInput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                             int inputId);
-OrbitsSkinnedPort *createOrbitsSkinnedOutput(OrbitsConfig *config, std::string component, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedOutput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                              int outputId);
 
 

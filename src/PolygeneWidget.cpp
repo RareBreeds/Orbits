@@ -222,18 +222,30 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         swtch.pos = mm2px(Vec(8.67833f, 48.375f));
         addParam(createOrbitsSkinnedButton(swtch, module, RareBreeds_Orbits_Polygene::SYNC_KNOB_PARAM));
 
-        addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Polygene::SYNC_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "length_cv_port", module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "hits_cv_port", module, RareBreeds_Orbits_Polygene::HITS_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "shift_cv_port", module, RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "variation_cv_port", module, RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "random_cv_port", module, RareBreeds_Orbits_Polygene::RANDOM_CV_INPUT));
-
-        addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
-        addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Polygene::EOC_OUTPUT));
+        OrbitsSkinnedPortConfig port;
+        port.imagePaths = {"res/dark-port.svg", "res/light-port.svg"};
+        port.pos = mm2px(Vec(8.67833f, 20.1751f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
+        port.pos = mm2px(Vec(8.67833f, 36.8091f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::SYNC_INPUT));
+        port.pos = mm2px(Vec(13.97f, 101.821f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
+        port.pos = mm2px(Vec(35.1367f, 101.821f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::HITS_CV_INPUT));
+        port.pos = mm2px(Vec(56.3033f, 101.821f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT));
+        port.pos = mm2px(Vec(77.47f, 101.821f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT));
+        port.pos = mm2px(Vec(27.7283f, 117.167f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
+        port.pos = mm2px(Vec(63.7117f, 117.167f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
+        port.pos = mm2px(Vec(79.4349f, 54.0557f));
+        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Polygene::RANDOM_CV_INPUT));
+        port.pos = mm2px(Vec(83.1389f, 20.1749f));
+        addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
+        port.pos = mm2px(Vec(83.1388f, 36.8086f));
+        addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Polygene::EOC_OUTPUT));
         // clang-format on
 
         PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(m_config->getPos("display"));
