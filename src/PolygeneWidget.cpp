@@ -17,13 +17,19 @@ struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
-        loadTheme(g_config.getDefaultThemeId());
+        loadTheme(ORBITS_THEME_DEFAULT);
 }
 
 void PolygeneRhythmDisplay::loadTheme(int theme)
 {
-        std::array<uint8_t, 3> colour = g_config.getColour("display_accent", theme);
-        m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
+        if(theme == 0)
+        {
+                m_display_accent = nvgRGB(192, 0, 57);
+        }
+        else
+        {
+                m_display_accent = nvgRGB(0, 187, 225);
+        }
 }
 
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
@@ -49,23 +55,24 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
 
                 // Draw length text center bottom and hits text center top
-                nvgBeginPath(args.vg);
-                nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-                nvgFontSize(args.vg, 18);
                 std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
-                nvgFontFaceId(args.vg, font->handle);
+                if (font)
+                {
+                        nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+                        nvgFontSize(args.vg, 18);
 
-                const auto active_hits = data.channels[data.active_channel_id].hits;
-                nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
+                        nvgFontFaceId(args.vg, font->handle);
 
-                const auto active_length = data.channels[data.active_channel_id].length;
-                nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
+                        const auto active_hits = data.channels[data.active_channel_id].hits;
+                        nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
 
-                const auto active_channel = data.active_channel_id + 1;
-                nvgFontSize(args.vg, 12);
-                nvgText(args.vg, -b.size.x / 2. + 23.f, b.size.y / 2. - 9.f, std::to_string(active_channel).c_str(), NULL);
+                        const auto active_length = data.channels[data.active_channel_id].length;
+                        nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
 
-                nvgFill(args.vg);
+                        const auto active_channel = data.active_channel_id + 1;
+                        nvgFontSize(args.vg, 12);
+                        nvgText(args.vg, -b.size.x / 2. + 23.f, b.size.y / 2. - 9.f, std::to_string(active_channel).c_str(), NULL);
+                }
 
                 // Scale to [-1, 1]
                 nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
@@ -159,7 +166,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
                 eoc_widget.m_module = &module->m_eoc;
         }
 
-        m_theme = m_config->getDefaultThemeId();
+        m_theme = ORBITS_THEME_DEFAULT;
 
         // clang-format off
         setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/polygene-dark-panel.svg")));
@@ -248,9 +255,9 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Polygene::EOC_OUTPUT));
         // clang-format on
 
-        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(m_config->getPos("display"));
+        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(mm2px(Vec(18.7084f, 16.0718f)));
         r->module = module;
-        r->box.size = m_config->getSize("display");
+        r->box.size = mm2px(Vec(54.0231f, 54.0231f));
         addChild(r);
 }
 

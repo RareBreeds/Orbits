@@ -92,15 +92,3 @@ OrbitsSkinnedPort *createOrbitsSkinnedInput(const OrbitsSkinnedPortConfig& confi
                                             int inputId);
 OrbitsSkinnedPort *createOrbitsSkinnedOutput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
                                              int outputId);
-
-
-template <class TParamWidget>
-TParamWidget *createOrbitsSkinnedParam(OrbitsConfig *config, std::string component, engine::Module *module, int paramId)
-{
-        TParamWidget *o = new TParamWidget(config, component);
-        o->box.pos = config->getPos(component).minus(o->box.size.div(2));
-        o->app::ParamWidget::module = module;
-        o->app::ParamWidget::paramId = paramId;
-        o->initParamQuantity();
-        return o;
-}

@@ -283,7 +283,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
         // clang-format on
 
-        rhythm_display = new EugeneRhythmDisplay(module, m_config->getPos("display"), m_config->getSize("display"));
+        rhythm_display = new EugeneRhythmDisplay(module, mm2px(Vec(14.48f, 15.1036f)), mm2px(Vec(32.f, 32.f)));
         addChild(rhythm_display);
 }
 
