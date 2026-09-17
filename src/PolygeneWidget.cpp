@@ -92,11 +92,13 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgScale(args.vg, 1.0f - channel_width, 1.0f - channel_width);
 
                 nvgStrokeWidth(args.vg, arc_stroke_width);
-                for(unsigned int c = 0; c < PORT_MAX_CHANNELS; ++c)
+                for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
                 {
                         const unsigned int length = data.channels[c].length;
                         const float radius = 1.0f - c * channel_width;
-                        const float pi2_len = 2.0f * (float)M_PI / length;
+                        const float mpif = static_cast<float>(M_PI);
+                        const float lenf = static_cast<float>(length);
+                        const float pi2_len = 2.0f * mpif / lenf;
                         const float beat_gap = 0.06f;
                         const float len = pi2_len - beat_gap;
 

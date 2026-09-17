@@ -104,7 +104,10 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
                         }
 
                         nvgSave(args.vg);
-                        nvgRotate(args.vg, 2.f * k * (float)M_PI / m_data.length);
+                        const float kf = static_cast<float>(k);
+                        const float mpif = static_cast<float>(M_PI);
+                        const float lenf = static_cast<float>(m_data.length);
+                        nvgRotate(args.vg, 2.f * kf * mpif / lenf);
                         nvgBeginPath(args.vg);
                         nvgCircle(args.vg, 0.f, y_pos, radius);
                         if(m_data.invert)

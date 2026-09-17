@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OrbitsMacros.h"
 #include "plugin.hpp"
 #include <vector>
 
@@ -25,6 +26,7 @@ struct EOCModeOptionOnRepeat : EOCModeOption
 
         bool process(bool is_first, bool is_last, bool prev_was_last) const override
         {
+                UNUSED(is_last);
                 return is_first && prev_was_last;
         }
 };
@@ -37,6 +39,8 @@ struct EOCModeOptionFirst : EOCModeOption
 
         bool process(bool is_first, bool is_last, bool prev_was_last) const override
         {
+                UNUSED(is_last);
+                UNUSED(prev_was_last);
                 return is_first;
         }
 };
@@ -49,6 +53,8 @@ struct EOCModeOptionLast : EOCModeOption
 
         bool process(bool is_first, bool is_last, bool prev_was_last) const override
         {
+                UNUSED(is_first);
+                UNUSED(prev_was_last);
                 return is_last;
         }
 };
@@ -104,6 +110,7 @@ struct BeatModeOptionPulse : BeatModeOption
 
         bool process(bool pulse, bool state) const override
         {
+                UNUSED(state);
                 return pulse;
         }
 };
@@ -132,6 +139,7 @@ struct BeatModeOptionHold : BeatModeOption
 
         bool process(bool pulse, bool state) const override
         {
+                UNUSED(pulse);
                 return state;
         }
 };

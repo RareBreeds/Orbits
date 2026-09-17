@@ -89,7 +89,7 @@ struct RareBreeds_Orbits_Eugene : Module
         EOCGenerator m_eoc_generator;
 
         unsigned int m_current_step = 0;
-        int m_randomization_mask = RANDOMIZE_ALL;
+        unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
         RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
         std::atomic<json_t *> m_widget_config{nullptr};

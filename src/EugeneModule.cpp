@@ -7,12 +7,21 @@ static unsigned int clampRounded(float value, unsigned int min, unsigned int max
         return std::max(std::min((unsigned int)(value + 0.5f), max), min);
 }
 
-static void json_load_integer(json_t *root, const char *param, int *result)
+static void json_load_int(json_t *root, const char *param, int *result)
 {
         json_t *obj = json_object_get(root, param);
         if(obj)
         {
-                *result = json_integer_value(obj);
+                *result = static_cast<int>(json_integer_value(obj));
+        }
+}
+
+static void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = static_cast<unsigned int>(json_integer_value(obj));
         }
 }
 
@@ -94,7 +103,7 @@ unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
         float normalized_input = input / 5.f;
         float attenuation = getParam(HITS_CV_KNOB_PARAM).getValue();
         value += attenuation * normalized_input;
-        float hits_float = value * length;
+        float hits_float = value * static_cast<float>(length);
         return clampRounded(hits_float, 0, length);
 }
 
@@ -230,7 +239,7 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
                 m_beat.dataFromJson(json_object_get(root, "beat"));
                 m_eoc.dataFromJson(json_object_get(root, "eoc"));
                 m_randomization_mask = RANDOMIZE_ALL;
-                json_load_integer(root, "randomization_mask", &m_randomization_mask);
+                json_load_unsigned_int(root, "randomization_mask", &m_randomization_mask);
 
                 json_t *obj = json_object_get(root, "widget");
                 if(obj)

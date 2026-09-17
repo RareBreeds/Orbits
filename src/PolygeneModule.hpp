@@ -25,7 +25,7 @@ enum InputMode
 
 struct PolygeneDisplayData
 {
-        unsigned int active_channel_id, active_channels;
+        uint8_t active_channel_id, active_channels;
         struct
         {
                 unsigned int length, hits, shift, variation, invert, current_step;
@@ -89,13 +89,13 @@ struct RareBreeds_Orbits_Polygene : Module
         const unsigned int RANDOMIZE_ALL = (1 << RANDOMIZE_COUNT) - 1;
 
         // The channel currently being displayed and controlled by the knobs
-        int m_active_channel_id = 0;
-        int m_previous_channel_id = PORT_MAX_CHANNELS;
+        uint8_t m_active_channel_id = 0;
+        uint8_t m_previous_channel_id = PORT_MAX_CHANNELS;
 
         struct Channel
         {
                 unsigned int m_current_step = 0;
-                int m_channel;
+                uint8_t m_channel;
                 dsp::SchmittTrigger m_clock_trigger;
                 dsp::SchmittTrigger m_sync_trigger;
                 dsp::SchmittTrigger m_reverse_trigger;
@@ -106,7 +106,7 @@ struct RareBreeds_Orbits_Polygene : Module
                 PolygeneChannelState m_state;
                 RareBreeds_Orbits_Polygene *m_module;
 
-                void init(RareBreeds_Orbits_Polygene *module, int channel);
+                void init(RareBreeds_Orbits_Polygene *module, uint8_t channel);
                 bool readReverse(void);
                 bool readInvert(void);
                 static bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
@@ -122,11 +122,11 @@ struct RareBreeds_Orbits_Polygene : Module
                 void process(const ProcessArgs &args);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);
-                void onRandomizeWithHistory(int randomization_mask);
-                void onRandomize(int randomization_mask);
+                void onRandomizeWithHistory(unsigned int randomization_mask);
+                void onRandomize(unsigned int randomization_mask);
         };
 
-        int m_active_channels = 1;
+        uint8_t m_active_channels = 1;
         Channel m_channels[PORT_MAX_CHANNELS];
         Channel *m_active_channel;
         dsp::BooleanTrigger m_reverse_trigger;
@@ -138,7 +138,7 @@ struct RareBreeds_Orbits_Polygene : Module
         BeatMode m_beat;
         EOCMode m_eoc;
         InputMode m_input_mode[NUM_INPUTS];
-        int m_randomization_mask = RANDOMIZE_ALL;
+        unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
         RareBreeds_Orbits_Polygene();
         virtual ~RareBreeds_Orbits_Polygene();
@@ -151,6 +151,6 @@ struct RareBreeds_Orbits_Polygene : Module
         void onReset(const ResetEvent& e) override;
         PolygeneDisplayData getDisplayData(void);
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
-        float getParameterizedVoltage(int input_id, int channel);
+        float getParameterizedVoltage(int input_id, uint8_t channel);
         InputMode getInputMode(int input_id);
 };
