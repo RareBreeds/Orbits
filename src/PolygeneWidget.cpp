@@ -21,6 +21,7 @@ PolygeneRhythmDisplay::PolygeneRhythmDisplay()
         loadTheme(ORBITS_THEME_DEFAULT);
 }
 
+// TODO: Move to some theme configuration
 void PolygeneRhythmDisplay::loadTheme(int theme)
 {
         if(theme == 0)
