@@ -6,6 +6,8 @@
 // TODO: MOOOO: Better place for this, OrbitsConfig?
 #define ORBITS_THEME_COUNT (2)
 #define ORBITS_THEME_DEFAULT (0)
+#define ORBITS_POS(NAME) OrbitsPos(NAME##_POS_X, NAME##_POS_Y)
+Vec OrbitsPos(float x, float y);
 
 // Interface for components with the ability to change skins
 struct OrbitsSkinned

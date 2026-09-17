@@ -19,6 +19,14 @@ def float_value(value):
 
     return f"{float(value):g}f"
 
+def write_position_defines(out, module, label, x, y, width=None, height=None):
+    prefix = f"        #define {module.upper()}_{enum_name(label)}_POS"
+    out.write(f"{prefix}_X ({x})\n")
+    out.write(f"{prefix}_Y ({y})\n")
+    if width is not None and height is not None:
+        out.write(f"{prefix}_WIDTH ({width})\n")
+        out.write(f"{prefix}_HEIGHT ({height})\n")
+
 module = sys.argv[1]
 svg_file = sys.argv[2]
 output_file = sys.argv[3]
@@ -55,19 +63,10 @@ with open(output_file, "w") as out:
            element.tag == SVG + "ellipse":
             x = float_value(element.get("cx"))
             y = float_value(element.get("cy"))
-            out.write(
-                f"        #define {module.upper()}_{enum_name(label)}_POS_X ({x})\n"
-                f"        #define {module.upper()}_{enum_name(label)}_POS_Y ({y})\n"
-            )
-
+            write_position_defines(out, module, label, x, y)
         elif element.tag == SVG + "rect":
             x = float_value(element.get("x"))
             y = float_value(element.get("y"))
             width = float_value(element.get("width"))
-            height = float_value(element.get("height"))            
-            out.write(
-                f"        #define {module.upper()}_{enum_name(label)}_POS_X ({x})\n"
-                f"        #define {module.upper()}_{enum_name(label)}_POS_Y ({y})\n"
-                f"        #define {module.upper()}_{enum_name(label)}_POS_WIDTH ({width})\n"
-                f"        #define {module.upper()}_{enum_name(label)}_POS_HEIGHT ({height})\n"                
-            )
+            height = float_value(element.get("height"))
+            write_position_defines(out, module, label, x, y, width, height)

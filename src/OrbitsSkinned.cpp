@@ -1,5 +1,10 @@
 #include "OrbitsSkinned.hpp"
 
+Vec OrbitsPos(float x, float y)
+{
+        return mm2px(Vec(x, y));
+}
+
 OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config) : m_config(config)
 {
         minAngle = -0.83f * (float)M_PI;

@@ -24,6 +24,8 @@
 
 /* Begin PBXFileReference section */
 		D220D0FD305772EC007F356A /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../Rack/libRack.dylib; sourceTree = "<group>"; };
+		D2744409305B86AE000EF537 /* PolygeneComponentPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolygeneComponentPositions.h; sourceTree = "<group>"; };
+		D274440A305B9501000EF537 /* EugeneComponentPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EugeneComponentPositions.h; sourceTree = "<group>"; };
 		D2C0CEB32A5410850038808E /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../../libRack.dylib; sourceTree = "<group>"; };
 		D2CAD8B22A53798100613E5A /* libOrbits.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libOrbits.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsWidget.cpp; sourceTree = "<group>"; };
@@ -92,6 +94,8 @@
 		D2FD49B12A5379A40010944C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D274440A305B9501000EF537 /* EugeneComponentPositions.h */,
+				D2744409305B86AE000EF537 /* PolygeneComponentPositions.h */,
 				D2FD49C12A5379A40010944C /* Eugene.cpp */,
 				D2FD49BE2A5379A40010944C /* EugeneModule.cpp */,
 				D2FD49B92A5379A40010944C /* EugeneModule.hpp */,
