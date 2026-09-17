@@ -175,7 +175,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/polygene-dark-panel.svg")));
 
         OrbitsSkinnedScrewConfig screw = {
-                {"dark-hex-screw.svg", "light-hex-screw.svg"},
+                {"res/dark-hex-screw.svg", "res/light-hex-screw.svg"},
                 Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)
         };
         addChild(createOrbitsSkinnedScrew(screw));
