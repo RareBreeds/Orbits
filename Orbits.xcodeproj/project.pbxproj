@@ -3,55 +3,43 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		D220D0FE305772EC007F356A /* libRack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D220D0FD305772EC007F356A /* libRack.dylib */; };
-		D25F21BD2A537F9600400635 /* OrbitsWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */; };
-		D25F21BF2A537F9600400635 /* Rhythm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B42A5379A40010944C /* Rhythm.cpp */; };
-		D25F21C22A537F9600400635 /* OrbitsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49B72A5379A40010944C /* OrbitsModule.cpp */; };
-		D25F21C82A537F9600400635 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49BD2A5379A40010944C /* plugin.cpp */; };
-		D25F21C92A537F9600400635 /* EugeneModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49BE2A5379A40010944C /* EugeneModule.cpp */; };
-		D25F21CA2A537F9600400635 /* OrbitsConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49BF2A5379A40010944C /* OrbitsConfig.cpp */; };
-		D25F21CB2A537F9600400635 /* PolygeneModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C02A5379A40010944C /* PolygeneModule.cpp */; };
-		D25F21CC2A537F9600400635 /* Eugene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C12A5379A40010944C /* Eugene.cpp */; };
-		D25F21CE2A537F9600400635 /* OrbitsSkinned.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C32A5379A40010944C /* OrbitsSkinned.cpp */; };
-		D25F21D02A537F9600400635 /* EugeneWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C52A5379A40010944C /* EugeneWidget.cpp */; };
-		D25F21D22A537F9600400635 /* Polygene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C72A5379A40010944C /* Polygene.cpp */; };
-		D25F21D32A537F9600400635 /* PolygeneWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D220D0FD305772EC007F356A /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../Rack/libRack.dylib; sourceTree = "<group>"; };
-		D2744409305B86AE000EF537 /* PolygeneComponentPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolygeneComponentPositions.h; sourceTree = "<group>"; };
-		D274440A305B9501000EF537 /* EugeneComponentPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EugeneComponentPositions.h; sourceTree = "<group>"; };
 		D2C0CEB32A5410850038808E /* libRack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRack.dylib; path = ../../libRack.dylib; sourceTree = "<group>"; };
 		D2CAD8B22A53798100613E5A /* libOrbits.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libOrbits.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsWidget.cpp; sourceTree = "<group>"; };
-		D2FD49B32A5379A40010944C /* OrbitsSkinned.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsSkinned.hpp; sourceTree = "<group>"; };
-		D2FD49B42A5379A40010944C /* Rhythm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rhythm.cpp; sourceTree = "<group>"; };
-		D2FD49B52A5379A40010944C /* EugeneWidget.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EugeneWidget.hpp; sourceTree = "<group>"; };
-		D2FD49B62A5379A40010944C /* PolygeneWidget.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PolygeneWidget.hpp; sourceTree = "<group>"; };
-		D2FD49B72A5379A40010944C /* OrbitsModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsModule.cpp; sourceTree = "<group>"; };
-		D2FD49B82A5379A40010944C /* plugin.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = plugin.hpp; sourceTree = "<group>"; };
-		D2FD49B92A5379A40010944C /* EugeneModule.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EugeneModule.hpp; sourceTree = "<group>"; };
-		D2FD49BA2A5379A40010944C /* OrbitsConfig.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsConfig.hpp; sourceTree = "<group>"; };
-		D2FD49BB2A5379A40010944C /* PolygeneModule.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PolygeneModule.hpp; sourceTree = "<group>"; };
-		D2FD49BC2A5379A40010944C /* OrbitsModule.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsModule.hpp; sourceTree = "<group>"; };
-		D2FD49BD2A5379A40010944C /* plugin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plugin.cpp; sourceTree = "<group>"; };
-		D2FD49BE2A5379A40010944C /* EugeneModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EugeneModule.cpp; sourceTree = "<group>"; };
-		D2FD49BF2A5379A40010944C /* OrbitsConfig.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsConfig.cpp; sourceTree = "<group>"; };
-		D2FD49C02A5379A40010944C /* PolygeneModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolygeneModule.cpp; sourceTree = "<group>"; };
-		D2FD49C12A5379A40010944C /* Eugene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Eugene.cpp; sourceTree = "<group>"; };
-		D2FD49C22A5379A40010944C /* OrbitsWidget.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrbitsWidget.hpp; sourceTree = "<group>"; };
-		D2FD49C32A5379A40010944C /* OrbitsSkinned.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitsSkinned.cpp; sourceTree = "<group>"; };
-		D2FD49C42A5379A40010944C /* Rhythm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Rhythm.hpp; sourceTree = "<group>"; };
-		D2FD49C52A5379A40010944C /* EugeneWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EugeneWidget.cpp; sourceTree = "<group>"; };
-		D2FD49C62A5379A40010944C /* rhythm_table.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rhythm_table.h; sourceTree = "<group>"; };
-		D2FD49C72A5379A40010944C /* Polygene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Polygene.cpp; sourceTree = "<group>"; };
-		D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolygeneWidget.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D2F8FFBD305B991A00C7EDA7 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Eugene.cpp,
+				EugeneModule.cpp,
+				EugeneWidget.cpp,
+				OrbitsConfig.cpp,
+				OrbitsModule.cpp,
+				OrbitsSkinned.cpp,
+				OrbitsWidget.cpp,
+				plugin.cpp,
+				Polygene.cpp,
+				PolygeneModule.cpp,
+				PolygeneWidget.cpp,
+				Rhythm.cpp,
+			);
+			target = D2CAD8B12A53798100613E5A /* Orbits */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D2F8FFB0305B991900C7EDA7 /* src */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D2F8FFBD305B991A00C7EDA7 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = src; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		D2C0CEB12A5410750038808E /* Frameworks */ = {
@@ -77,7 +65,7 @@
 		D2CAD8A92A53798100613E5A = {
 			isa = PBXGroup;
 			children = (
-				D2FD49B12A5379A40010944C /* src */,
+				D2F8FFB0305B991900C7EDA7 /* src */,
 				D2CAD8B32A53798100613E5A /* Products */,
 				D2C0CEB22A5410850038808E /* Frameworks */,
 			);
@@ -89,38 +77,6 @@
 				D2CAD8B22A53798100613E5A /* libOrbits.dylib */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		D2FD49B12A5379A40010944C /* src */ = {
-			isa = PBXGroup;
-			children = (
-				D274440A305B9501000EF537 /* EugeneComponentPositions.h */,
-				D2744409305B86AE000EF537 /* PolygeneComponentPositions.h */,
-				D2FD49C12A5379A40010944C /* Eugene.cpp */,
-				D2FD49BE2A5379A40010944C /* EugeneModule.cpp */,
-				D2FD49B92A5379A40010944C /* EugeneModule.hpp */,
-				D2FD49C52A5379A40010944C /* EugeneWidget.cpp */,
-				D2FD49B52A5379A40010944C /* EugeneWidget.hpp */,
-				D2FD49BF2A5379A40010944C /* OrbitsConfig.cpp */,
-				D2FD49BA2A5379A40010944C /* OrbitsConfig.hpp */,
-				D2FD49B72A5379A40010944C /* OrbitsModule.cpp */,
-				D2FD49BC2A5379A40010944C /* OrbitsModule.hpp */,
-				D2FD49C32A5379A40010944C /* OrbitsSkinned.cpp */,
-				D2FD49B32A5379A40010944C /* OrbitsSkinned.hpp */,
-				D2FD49B22A5379A40010944C /* OrbitsWidget.cpp */,
-				D2FD49C22A5379A40010944C /* OrbitsWidget.hpp */,
-				D2FD49BD2A5379A40010944C /* plugin.cpp */,
-				D2FD49B82A5379A40010944C /* plugin.hpp */,
-				D2FD49C72A5379A40010944C /* Polygene.cpp */,
-				D2FD49C02A5379A40010944C /* PolygeneModule.cpp */,
-				D2FD49BB2A5379A40010944C /* PolygeneModule.hpp */,
-				D2FD49C82A5379A40010944C /* PolygeneWidget.cpp */,
-				D2FD49B62A5379A40010944C /* PolygeneWidget.hpp */,
-				D2FD49B42A5379A40010944C /* Rhythm.cpp */,
-				D2FD49C42A5379A40010944C /* Rhythm.hpp */,
-				D2FD49C62A5379A40010944C /* rhythm_table.h */,
-			);
-			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -179,18 +135,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D25F21BD2A537F9600400635 /* OrbitsWidget.cpp in Sources */,
-				D25F21BF2A537F9600400635 /* Rhythm.cpp in Sources */,
-				D25F21C22A537F9600400635 /* OrbitsModule.cpp in Sources */,
-				D25F21C82A537F9600400635 /* plugin.cpp in Sources */,
-				D25F21C92A537F9600400635 /* EugeneModule.cpp in Sources */,
-				D25F21CA2A537F9600400635 /* OrbitsConfig.cpp in Sources */,
-				D25F21CB2A537F9600400635 /* PolygeneModule.cpp in Sources */,
-				D25F21CC2A537F9600400635 /* Eugene.cpp in Sources */,
-				D25F21CE2A537F9600400635 /* OrbitsSkinned.cpp in Sources */,
-				D25F21D02A537F9600400635 /* EugeneWidget.cpp in Sources */,
-				D25F21D22A537F9600400635 /* Polygene.cpp in Sources */,
-				D25F21D32A537F9600400635 /* PolygeneWidget.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
