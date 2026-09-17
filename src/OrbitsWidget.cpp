@@ -1,6 +1,7 @@
 #include "OrbitsWidget.hpp"
 #include "OrbitsSkinned.hpp"
 
+// TODO: MOOOOO: OrbitsWidgetConfig? we'll need the theme configuration here, panels
 OrbitsWidget::OrbitsWidget(OrbitsConfig *config)
 {
         m_config = config;
@@ -19,6 +20,7 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         appendModuleContextMenu(menu);
 }
 
+// TODO: MOOOOOO
 void OrbitsWidget::loadTheme(const char *theme)
 {
         for(int i = 0; i < m_config->numThemes(); ++i)

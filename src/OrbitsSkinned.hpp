@@ -3,15 +3,13 @@
 #include "OrbitsConfig.hpp"
 #include "plugin.hpp"
 
-// TODO: Better place for this
+// TODO: MOOOO: Better place for this, OrbitsConfig?
 #define ORBITS_THEME_COUNT (2)
 #define ORBITS_THEME_DEFAULT (0)
 
 // Interface for components with the ability to change skins
 struct OrbitsSkinned
 {
-        OrbitsConfig *m_config;
-        std::string m_component;
         virtual void loadTheme(int theme) = 0;
         virtual ~OrbitsSkinned() = 0;
 };

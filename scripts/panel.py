@@ -39,76 +39,35 @@ components = next(
 if components is None:
     raise RuntimeError('Could not find group labelled "components"')
 
-elements = []
-
-for element in components.iter():
-    label = element.get(INKSCAPE + "label")
-
-    if not label:
-        continue
-
-    if element.tag == SVG + "circle":
-        geometry = (
-            float_value(element.get("cx")),
-            float_value(element.get("cy")),
-            "0.0f",
-            "0.0f",
-        )
-        element_type = "circle"
-
-    elif element.tag == SVG + "ellipse":
-        geometry = (
-            float_value(element.get("cx")),
-            float_value(element.get("cy")),
-            "0.0f",
-            "0.0f",
-        )
-        element_type = "ellipse"
-
-    elif element.tag == SVG + "rect":
-        geometry = (
-            float_value(element.get("x")),
-            float_value(element.get("y")),
-            float_value(element.get("width")),
-            float_value(element.get("height")),
-        )
-        element_type = "rect"
-
-    else:
-        continue
-
-    elements.append((label, element_type, geometry))
-
-
 with open(output_file, "w") as out:
     out.write(f"""\
 #pragma once
 
-#include "OrbitsComponent.h"
-
-typedef enum {module.capitalize()}Component
-{{
 """)
 
-    for label, _, _ in elements:
-        out.write(f"        {module.upper()}_COMPONENT_{enum_name(label)},\n")
+    for element in components.iter():
+        label = element.get(INKSCAPE + "label")
 
-    out.write(f"""\
-    {module.upper()}_COMPONENT_COUNT
-}} {module.capitalize()}Component;
+        if not label:
+            continue
 
-static const OrbitsComponentGeometry g_{module.lower()}ComponentGeometry[{module.upper()}_COMPONENT_COUNT] = {{
-""")
+        if element.tag == SVG + "circle" or \
+           element.tag == SVG + "ellipse":
+            x = float_value(element.get("cx"))
+            y = float_value(element.get("cy"))
+            out.write(
+                f"        #define {module.upper()}_{enum_name(label)}_POS_X ({x})\n"
+                f"        #define {module.upper()}_{enum_name(label)}_POS_Y ({y})\n"
+            )
 
-    for label, element_type, geometry in elements:
-        x, y, width, height = geometry
-
-        out.write(
-            f"        [{module.upper()}_COMPONENT_{enum_name(label)}] = "
-            f"{{ {x}, {y}, {width}, {height} }},"
-            f"  /* {element_type} */\n"
-        )
-
-    out.write(f"""\
-}};
-""")
+        elif element.tag == SVG + "rect":
+            x = float_value(element.get("x"))
+            y = float_value(element.get("y"))
+            width = float_value(element.get("width"))
+            height = float_value(element.get("height"))            
+            out.write(
+                f"        #define {module.upper()}_{enum_name(label)}_POS_X ({x})\n"
+                f"        #define {module.upper()}_{enum_name(label)}_POS_Y ({y})\n"
+                f"        #define {module.upper()}_{enum_name(label)}_POS_WIDTH ({width})\n"
+                f"        #define {module.upper()}_{enum_name(label)}_POS_HEIGHT ({height})\n"                
+            )

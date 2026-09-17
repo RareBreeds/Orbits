@@ -201,6 +201,9 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         m_theme = ORBITS_THEME_DEFAULT;
 
         // clang-format off
+        // TODO: MOOOO: OrbitsWidgetConfig
+        // EugeneConfig file that contains all of the svgs?
+        // and separately all of the positions?
         setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/eugene-dark-panel.svg")));
 
         OrbitsSkinnedScrewConfig screw = {
