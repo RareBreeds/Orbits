@@ -7,10 +7,10 @@ Recursively walks a directory and generates a C header file containing
 the current working directory.
 
 Usage:
-    python3 assets.py <asset_dir> [-o output.hpp]
+    python3 assets.py <asset_dir> [-o output.h]
 
 Example:
-    python3 assets.py res/ -o src/OrbitsAssets.hpp
+    python3 assets.py res/ -o src/OrbitsAssets.h
 
 Given a file at res/dark-knob-large.svg, this produces something like:
 
@@ -88,8 +88,8 @@ def main():
         help="Directory to scan recursively for asset files (default: res).",
     )
     parser.add_argument(
-        "-o", "--output", type=Path, default=Path("src/OrbitsAssets.hpp"),
-        help="Output header file path (default: src/OrbitsAssets.hpp)",
+        "-o", "--output", type=Path, default=Path("src/OrbitsAssets.h"),
+        help="Output header file path (default: src/OrbitsAssets.h)",
     )
     parser.add_argument(
         "--prefix", type=str, default="ORBITS_ASSET_",
