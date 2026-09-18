@@ -5,16 +5,29 @@ Vec OrbitsPos(float x, float y)
         return mm2px(Vec(x, y));
 }
 
+bool fromString(const char *name, OrbitsTheme& outTheme)
+{
+        for (uint8_t i = 0; i < static_cast<uint8_t>(OrbitsTheme::Count); ++i)
+        {
+                if (strcmp(name, kOrbitsThemeNames[i]) == 0)
+                {
+                        outTheme = static_cast<OrbitsTheme>(i);
+                        return true;
+                }
+        }
+        return false;
+}
+
 OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config) : m_config(config)
 {
         minAngle = -0.83f * (float)M_PI;
         maxAngle = 0.83f * (float)M_PI;
-        loadTheme(ORBITS_THEME_DEFAULT);
+        loadTheme(kOrbitsThemeDefault);
 }
 
-void OrbitsSkinnedKnob::loadTheme(int theme)
+void OrbitsSkinnedKnob::loadTheme(OrbitsTheme theme)
 {
-        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[theme]);
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[toIndex(theme)]);
         setSvg(APP->window->loadSvg(imagePath));
         fb->dirty = true;
 }
@@ -26,30 +39,30 @@ OrbitsSkinnedSnappyKnob::OrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& 
 
 OrbitsSkinnedScrew::OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config) : m_config(config)
 {
-        loadTheme(ORBITS_THEME_DEFAULT);
+        loadTheme(kOrbitsThemeDefault);
 }
 
-void OrbitsSkinnedScrew::loadTheme(int theme)
+void OrbitsSkinnedScrew::loadTheme(OrbitsTheme theme)
 {
-        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[theme]);
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[toIndex(theme)]);
         setSvg(APP->window->loadSvg(imagePath));
         fb->dirty = true;
 }
 
 OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config) : m_config(config)
 {
-        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[ORBITS_THEME_DEFAULT]);
-        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[ORBITS_THEME_DEFAULT]);
+        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[toIndex(kOrbitsThemeDefault)]);
+        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[toIndex(kOrbitsThemeDefault)]);
 
         addFrame(APP->window->loadSvg(offImagePath));
         addFrame(APP->window->loadSvg(onImagePath));
         shadow->opacity = 0.0;
 }
 
-void OrbitsSkinnedSwitch::loadTheme(int theme)
+void OrbitsSkinnedSwitch::loadTheme(OrbitsTheme theme)
 {
-        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[theme]);
-        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[theme]);
+        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[toIndex(theme)]);
+        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[toIndex(theme)]);
 
 #if METAMODULE == 0
         // TODO: MOOOO: Metamodule does not like this, seems to corrupt the image path that it's using
@@ -72,13 +85,13 @@ OrbitsSkinnedButton::OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config
 
 OrbitsSkinnedPort::OrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config) : m_config(config)
 {
-        loadTheme(ORBITS_THEME_DEFAULT);
+        loadTheme(kOrbitsThemeDefault);
         shadow->opacity = 0.0f;
 }
 
-void OrbitsSkinnedPort::loadTheme(int theme)
+void OrbitsSkinnedPort::loadTheme(OrbitsTheme theme)
 {
-        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[theme]);
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[toIndex(theme)]);
         setSvg(APP->window->loadSvg(imagePath));
         // fb->dirty = true; // Already set by setSvg for SvgPorts
 }

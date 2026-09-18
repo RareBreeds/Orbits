@@ -204,7 +204,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
                 eoc_widget.m_module = &module->m_eoc;
         }
 
-        m_theme = ORBITS_THEME_DEFAULT;
+        m_theme = kOrbitsThemeDefault;
 
         // clang-format off
         OrbitsSkinnedScrewConfig screw;
@@ -301,7 +301,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         rhythm_display = new EugeneRhythmDisplay(module, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
         addChild(rhythm_display);
 
-        loadTheme(ORBITS_THEME_DEFAULT);
+        loadTheme(kOrbitsThemeDefault);
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)

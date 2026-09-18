@@ -2,20 +2,26 @@
 
 #include "plugin.hpp"
 
-// TODO: MOOOO: Better place for this, OrbitsThemes.h?
-#define ORBITS_THEME_DARK  (0)
-#define ORBITS_THEME_LIGHT (1)
-#define ORBITS_THEME_COUNT (2)
-
-#define ORBITS_THEME_DEFAULT (0)
-
-#define ORBITS_THEME_NAMES {"Dark", "Light"}
-struct OrbitsSkinnedPanelConfig
+enum class OrbitsTheme { Dark, Light, Count };
+constexpr std::array<const char*, static_cast<size_t>(OrbitsTheme::Count)> kOrbitsThemeNames =
 {
-        const char *panelPaths[ORBITS_THEME_COUNT];
+        "Dark",
+        "Light",
 };
+constexpr OrbitsTheme kOrbitsThemeDefault = OrbitsTheme::Light;
 
-// TODO: MOOOO: Better place for this, OrbitsLayout.h?
+constexpr uint8_t toIndex(OrbitsTheme t)
+{
+        return static_cast<uint8_t>(t);
+}
+
+constexpr const char* toString(OrbitsTheme t)
+{
+        return kOrbitsThemeNames[static_cast<size_t>(t)];
+}
+
+bool fromString(const char *name, OrbitsTheme& outTheme);
+
 #define ORBITS_POS(NAME) OrbitsPos(NAME##_X, NAME##_Y)
 #define ORBITS_SIZE(NAME) OrbitsPos(NAME##_WIDTH, NAME##_HEIGHT)
 Vec OrbitsPos(float x, float y);
@@ -23,14 +29,20 @@ Vec OrbitsPos(float x, float y);
 // Interface for components with the ability to change skins
 struct OrbitsSkinned
 {
-        virtual void loadTheme(int theme) = 0;
+        virtual void loadTheme(OrbitsTheme theme) = 0;
         virtual ~OrbitsSkinned() = 0;
 };
 
-// TODO: Same as ScrewConfig
+struct OrbitsSkinnedPanelConfig
+{
+        // This struct is used as a global and the C string
+        // prevents exit-time-destructor warnings
+        const char *panelPaths[toIndex(OrbitsTheme::Count)];
+};
+
 struct OrbitsSkinnedKnobConfig
 {
-        std::array<std::string, ORBITS_THEME_COUNT> imagePaths;
+        std::array<std::string, toIndex(OrbitsTheme::Count)> imagePaths;
         Vec pos;
 };
 
@@ -38,7 +50,7 @@ struct OrbitsSkinnedKnob : SvgKnob, OrbitsSkinned
 {
         OrbitsSkinnedKnobConfig m_config;
         OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config);
-        void loadTheme(int theme) override;
+        void loadTheme(OrbitsTheme theme) override;
 };
 
 struct OrbitsSkinnedSnappyKnob : OrbitsSkinnedKnob
@@ -48,7 +60,7 @@ struct OrbitsSkinnedSnappyKnob : OrbitsSkinnedKnob
 
 struct OrbitsSkinnedScrewConfig
 {
-        std::array<std::string, ORBITS_THEME_COUNT> imagePaths;
+        std::array<std::string, toIndex(OrbitsTheme::Count)> imagePaths;
         Vec pos;
 };
 
@@ -56,13 +68,13 @@ struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
 {
         OrbitsSkinnedScrewConfig m_config;
         OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config);
-        void loadTheme(int theme) override;
+        void loadTheme(OrbitsTheme theme) override;
 };
 
 struct OrbitsSkinnedSwitchConfig
 {
-        std::array<std::string, ORBITS_THEME_COUNT> onImagePaths;
-        std::array<std::string, ORBITS_THEME_COUNT> offImagePaths;
+        std::array<std::string, toIndex(OrbitsTheme::Count)> onImagePaths;
+        std::array<std::string, toIndex(OrbitsTheme::Count)> offImagePaths;
         Vec pos;
 };
 
@@ -70,7 +82,7 @@ struct OrbitsSkinnedSwitch : app::SvgSwitch, OrbitsSkinned
 {
         OrbitsSkinnedSwitchConfig m_config;
         OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config);
-        void loadTheme(int theme) override;
+        void loadTheme(OrbitsTheme theme) override;
 };
 
 struct OrbitsSkinnedButton : OrbitsSkinnedSwitch
@@ -80,7 +92,7 @@ struct OrbitsSkinnedButton : OrbitsSkinnedSwitch
 
 struct OrbitsSkinnedPortConfig
 {
-        std::array<std::string, ORBITS_THEME_COUNT> imagePaths;
+        std::array<std::string, toIndex(OrbitsTheme::Count)> imagePaths;
         Vec pos;
 };
 
@@ -88,7 +100,7 @@ struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
 {
         OrbitsSkinnedPortConfig m_config;
         OrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config);
-        void loadTheme(int theme) override;
+        void loadTheme(OrbitsTheme theme) override;
 };
 
 OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config);

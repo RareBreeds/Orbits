@@ -5,14 +5,14 @@
 
 struct OrbitsWidget : ModuleWidget
 {
-        int m_theme;
+        OrbitsTheme m_theme;
         OrbitsSkinnedPanelConfig m_config;
 
         OrbitsWidget(const OrbitsSkinnedPanelConfig& config);
         void appendContextMenu(Menu *menu) override;
         virtual void appendModuleContextMenu(Menu *menu) = 0;
         void loadTheme(const char *theme);
-        void loadTheme(int theme);
+        void loadTheme(OrbitsTheme theme);
         json_t *dataToJson();
         void dataFromJson(json_t *root);
 };

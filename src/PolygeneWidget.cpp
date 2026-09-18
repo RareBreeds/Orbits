@@ -7,7 +7,7 @@
 
 struct PolygeneRhythmDisplayConfig
 {
-        std::array<NVGcolor, ORBITS_THEME_COUNT> accent;
+        std::array<NVGcolor, toIndex(OrbitsTheme::Count)> accent;
 };
 
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
@@ -18,16 +18,16 @@ struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 
         PolygeneRhythmDisplay();
         void drawLayer(const DrawArgs &args, int layer) override;
-        void loadTheme(int theme) override;
+        void loadTheme(OrbitsTheme theme) override;
 };
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
 }
 
-void PolygeneRhythmDisplay::loadTheme(int theme)
+void PolygeneRhythmDisplay::loadTheme(OrbitsTheme theme)
 {
-        m_display_accent = m_config.accent[theme];
+        m_display_accent = m_config.accent[toIndex(theme)];
 }
 
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
@@ -172,7 +172,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
                 eoc_widget.m_module = &module->m_eoc;
         }
 
-        m_theme = ORBITS_THEME_DEFAULT;
+        m_theme = kOrbitsThemeDefault;
 
         // clang-format off
         OrbitsSkinnedScrewConfig screw;
@@ -274,7 +274,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         r->box.size = POLYGENE_SIZE(DISPLAY);
         addChild(r);
 
-        loadTheme(ORBITS_THEME_DEFAULT);
+        loadTheme(kOrbitsThemeDefault);
 }
 
 static void ToggleInputMode(InputMode *mode)

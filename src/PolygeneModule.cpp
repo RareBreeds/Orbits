@@ -137,7 +137,7 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readHits(unsigned int length)
 {
         auto cv = m_module->getParameterizedVoltage(HITS_CV_INPUT, m_channel) / 5.f;
         auto f_hits = m_state.hits + cv;
-        return clampRounded(f_hits * length, 0, length);
+        return clampRounded(f_hits * static_cast<float>(length), 0, length);
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
@@ -152,7 +152,7 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
         auto cv = m_module->getParameterizedVoltage(VARIATION_CV_INPUT, m_channel) / 5.f;
         auto f_variation = m_state.variation + cv;
         auto count = rhythm::numNearEvenRhythms(length, hits);
-        return clampRounded(f_variation * (count - 1), 0, count - 1);
+        return clampRounded(f_variation * (static_cast<float>(count - 1)), 0, count - 1);
 }
 
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
@@ -548,7 +548,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 json_t *obj = json_object_get(root, "sync");
                 if(obj)
                 {
-                        int old_sync = json_integer_value(obj);
+                        uint8_t old_sync = static_cast<uint8_t>(json_integer_value(obj));
                         if (old_sync == /*SYNC_MODE_INDIVIDUAL_CHANNELS*/0)
                         {
                                 m_input_mode[SYNC_INPUT] = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;

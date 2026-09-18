@@ -11,29 +11,28 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         menu->addChild(new MenuSeparator);
 
         menu->addChild(createIndexSubmenuItem("Theme",
-                ORBITS_THEME_NAMES,
-                [this]() { return this->m_theme; },
-                [this](int mode) { loadTheme(mode); }
+                std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()),
+                [this]() { return toIndex(this->m_theme); },
+                [this](int mode) { loadTheme(static_cast<OrbitsTheme>(mode)); }
         ));
 
         appendModuleContextMenu(menu);
 }
 
-// TODO: MOOOOOO
 void OrbitsWidget::loadTheme(const char *theme)
 {
-        const char *themes[ORBITS_THEME_COUNT] = ORBITS_THEME_NAMES;
-        for(int i = 0; i < ORBITS_THEME_COUNT; ++i)
+        OrbitsTheme t;
+        if (fromString(theme, t))
         {
-                if(strcmp(themes[i], theme) == 0)
-                {
-                        loadTheme(i);
-                        break;
-                }
+                loadTheme(t);
+        }
+        else
+        {
+                loadTheme(kOrbitsThemeDefault);
         }
 }
 
-void OrbitsWidget::loadTheme(int theme)
+void OrbitsWidget::loadTheme(OrbitsTheme theme)
 {
         m_theme = theme;
 
@@ -46,7 +45,7 @@ void OrbitsWidget::loadTheme(int theme)
                 }
         }
 
-        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[theme]);
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(theme)]);
         setPanel(APP->window->loadSvg(panelPath));
 }
 
@@ -55,8 +54,7 @@ json_t *OrbitsWidget::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                const char *themes[ORBITS_THEME_COUNT] = ORBITS_THEME_NAMES;
-                json_t *theme = json_string(themes[m_theme]);
+                json_t *theme = json_string(toString(m_theme));
                 if(theme)
                 {
                         json_object_set_new(root, "theme", theme);
