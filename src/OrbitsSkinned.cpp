@@ -51,8 +51,13 @@ void OrbitsSkinnedSwitch::loadTheme(int theme)
         std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[theme]);
         std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[theme]);
 
-        frames[0] = APP->window->loadSvg(offImagePath);
-        frames[1] = APP->window->loadSvg(onImagePath);
+#if METAMODULE == 0
+        // TODO: MOOOO: Metamodule does not like this, seems to corrupt the image path that it's using
+        // whether you directly assign to frame[0] or clear then re-add
+        frames.clear();
+        addFrame(APP->window->loadSvg(offImagePath));
+        addFrame(APP->window->loadSvg(onImagePath));
+#endif
 
         event::Change change;
         onChange(change);

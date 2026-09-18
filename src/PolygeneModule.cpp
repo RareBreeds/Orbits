@@ -339,7 +339,7 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
-        configParam(CHANNEL_KNOB_PARAM, 0.f, 15.f, 0.f, "Channel", "", 0.f, 1.f, 1.f);
+        configParam(CHANNEL_KNOB_PARAM, 0.f, static_cast<float>(PORT_MAX_CHANNELS - 1), 0.f, "Channel", "", 0.f, 1.f, 1.f);
         configParam(LENGTH_KNOB_PARAM, 1.f, rhythm::max_length, rhythm::max_length, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
         configParam(SHIFT_KNOB_PARAM, 0.f, rhythm::max_length - 1, 0.f, "Shift");

@@ -23,7 +23,6 @@ struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
-        loadTheme(ORBITS_THEME_DEFAULT);
 }
 
 void PolygeneRhythmDisplay::loadTheme(int theme)
