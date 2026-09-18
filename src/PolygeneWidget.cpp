@@ -2,11 +2,8 @@
 #include "PolygeneThemes.h"
 #include "PolygeneWidget.hpp"
 #include "OrbitsAssets.h"
-#include "OrbitsConfig.hpp"
 #include "OrbitsSkinned.hpp"
 #include "PolygeneModule.hpp"
-
-static OrbitsConfig g_config("res/polygene-layout.json");
 
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
@@ -164,8 +161,9 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 #define POLYGENE_POS(NAME) ORBITS_POS(POLYGENE_##NAME)
 #define POLYGENE_SIZE(NAME) ORBITS_SIZE(POLYGENE_##NAME)
 
+static const OrbitsSkinnedPanelConfig g_config = {.panelPaths = {POLYGENE_DARK_PANEL, POLYGENE_LIGHT_PANEL}};
 RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module)
-        : OrbitsWidget(&g_config)
+        : OrbitsWidget(g_config)
 {
         setModule(module);
 

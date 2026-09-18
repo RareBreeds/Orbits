@@ -2,10 +2,7 @@
 #include "EugeneThemes.h"
 #include "EugeneWidget.hpp"
 #include "EugeneModule.hpp"
-#include "OrbitsConfig.hpp"
 #include "OrbitsSkinned.hpp"
-
-static OrbitsConfig g_config("res/eugene-layout.json");
 
 struct EugeneRhythmDisplayUnbuffered : Widget
 {
@@ -194,7 +191,8 @@ void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 #define EUGENE_POS(NAME) ORBITS_POS(EUGENE_##NAME)
 #define EUGENE_SIZE(NAME) ORBITS_SIZE(EUGENE_##NAME)
 
-RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&g_config)
+static const OrbitsSkinnedPanelConfig g_config = {.panelPaths = {EUGENE_DARK_PANEL, EUGENE_LIGHT_PANEL}};
+RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(g_config)
 {
         setModule(module);
 

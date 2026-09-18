@@ -23,7 +23,6 @@
 				Eugene.cpp,
 				EugeneModule.cpp,
 				EugeneWidget.cpp,
-				OrbitsConfig.cpp,
 				OrbitsModule.cpp,
 				OrbitsSkinned.cpp,
 				OrbitsWidget.cpp,

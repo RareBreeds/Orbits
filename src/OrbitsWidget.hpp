@@ -1,14 +1,14 @@
 #pragma once
 
-#include "OrbitsConfig.hpp"
 #include "OrbitsModule.hpp"
+#include "OrbitsSkinned.hpp"
 
 struct OrbitsWidget : ModuleWidget
 {
         int m_theme;
-        OrbitsConfig *m_config;
+        OrbitsSkinnedPanelConfig m_config;
 
-        OrbitsWidget(OrbitsConfig *config);
+        OrbitsWidget(const OrbitsSkinnedPanelConfig& config);
         void appendContextMenu(Menu *menu) override;
         virtual void appendModuleContextMenu(Menu *menu) = 0;
         void loadTheme(const char *theme);

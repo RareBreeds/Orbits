@@ -2,9 +2,8 @@
 #include "OrbitsSkinned.hpp"
 
 // TODO: MOOOOO: OrbitsWidgetConfig? we'll need the theme configuration here, panels
-OrbitsWidget::OrbitsWidget(OrbitsConfig *config)
+OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig& config) : m_config(config)
 {
-        m_config = config;
 }
 
 void OrbitsWidget::appendContextMenu(Menu *menu)
@@ -12,7 +11,7 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         menu->addChild(new MenuSeparator);
 
         menu->addChild(createIndexSubmenuItem("Theme",
-                m_config->getThemeNames(),
+                ORBITS_THEME_NAMES,
                 [this]() { return this->m_theme; },
                 [this](int mode) { loadTheme(mode); }
         ));
@@ -23,9 +22,10 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 // TODO: MOOOOOO
 void OrbitsWidget::loadTheme(const char *theme)
 {
-        for(int i = 0; i < m_config->numThemes(); ++i)
+        const char *themes[ORBITS_THEME_COUNT] = ORBITS_THEME_NAMES;
+        for(int i = 0; i < ORBITS_THEME_COUNT; ++i)
         {
-                if(m_config->getThemeName(i) == theme)
+                if(strcmp(themes[i], theme) == 0)
                 {
                         loadTheme(i);
                         break;
@@ -46,7 +46,8 @@ void OrbitsWidget::loadTheme(int theme)
                 }
         }
 
-        setPanel(APP->window->loadSvg(m_config->getSvg("panel", theme)));
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[theme]);
+        setPanel(APP->window->loadSvg(panelPath));
 }
 
 json_t *OrbitsWidget::dataToJson()
@@ -54,7 +55,8 @@ json_t *OrbitsWidget::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_t *theme = json_string(m_config->getThemeName(m_theme).c_str());
+                const char *themes[ORBITS_THEME_COUNT] = ORBITS_THEME_NAMES;
+                json_t *theme = json_string(themes[m_theme]);
                 if(theme)
                 {
                         json_object_set_new(root, "theme", theme);

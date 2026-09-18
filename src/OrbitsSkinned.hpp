@@ -1,6 +1,5 @@
 #pragma once
 
-#include "OrbitsConfig.hpp"
 #include "plugin.hpp"
 
 // TODO: MOOOO: Better place for this, OrbitsThemes.h?
@@ -9,6 +8,12 @@
 #define ORBITS_THEME_COUNT (2)
 
 #define ORBITS_THEME_DEFAULT (0)
+
+#define ORBITS_THEME_NAMES {"Dark", "Light"}
+struct OrbitsSkinnedPanelConfig
+{
+        std::array<std::string, ORBITS_THEME_COUNT> panelPaths;
+};
 
 // TODO: MOOOO: Better place for this, OrbitsLayout.h?
 #define ORBITS_POS(NAME) OrbitsPos(NAME##_X, NAME##_Y)
