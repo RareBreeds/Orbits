@@ -207,11 +207,6 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         m_theme = ORBITS_THEME_DEFAULT;
 
         // clang-format off
-        // TODO: MOOOO: OrbitsWidgetConfig
-        // EugeneConfig file that contains all of the svgs?
-        // and separately all of the positions?
-        setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, EUGENE_DARK_PANEL)));
-
         OrbitsSkinnedScrewConfig screw;
         screw.imagePaths = {EUGENE_DARK_SCREW, EUGENE_LIGHT_SCREW};
         screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
@@ -305,6 +300,8 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
 
         rhythm_display = new EugeneRhythmDisplay(module, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
         addChild(rhythm_display);
+
+        loadTheme(ORBITS_THEME_DEFAULT);
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)

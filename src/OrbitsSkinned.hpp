@@ -12,14 +12,13 @@
 #define ORBITS_THEME_NAMES {"Dark", "Light"}
 struct OrbitsSkinnedPanelConfig
 {
-        std::array<std::string, ORBITS_THEME_COUNT> panelPaths;
+        const char *panelPaths[ORBITS_THEME_COUNT];
 };
 
 // TODO: MOOOO: Better place for this, OrbitsLayout.h?
 #define ORBITS_POS(NAME) OrbitsPos(NAME##_X, NAME##_Y)
 #define ORBITS_SIZE(NAME) OrbitsPos(NAME##_WIDTH, NAME##_HEIGHT)
 Vec OrbitsPos(float x, float y);
-
 
 // Interface for components with the ability to change skins
 struct OrbitsSkinned

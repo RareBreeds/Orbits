@@ -5,9 +5,15 @@
 #include "OrbitsSkinned.hpp"
 #include "PolygeneModule.hpp"
 
+struct PolygeneRhythmDisplayConfig
+{
+        std::array<NVGcolor, ORBITS_THEME_COUNT> accent;
+};
+
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
         RareBreeds_Orbits_Polygene *module = NULL;
+        PolygeneRhythmDisplayConfig m_config;
         NVGcolor m_display_accent;
 
         PolygeneRhythmDisplay();
@@ -20,17 +26,9 @@ PolygeneRhythmDisplay::PolygeneRhythmDisplay()
         loadTheme(ORBITS_THEME_DEFAULT);
 }
 
-// TODO: MOOOO: Don't want to update this every time there's a new theme, lookup from array?
 void PolygeneRhythmDisplay::loadTheme(int theme)
 {
-        if(theme == ORBITS_THEME_DARK)
-        {
-                m_display_accent = POLYGENE_DARK_DISPLAY_ACCENT;
-        }
-        else
-        {
-                m_display_accent = POLYGENE_LIGHT_DISPLAY_ACCENT;
-        }
+        m_display_accent = m_config.accent[theme];
 }
 
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
@@ -178,8 +176,6 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         m_theme = ORBITS_THEME_DEFAULT;
 
         // clang-format off
-        setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, POLYGENE_DARK_PANEL)));
-
         OrbitsSkinnedScrewConfig screw;
         screw.imagePaths = {POLYGENE_DARK_SCREW, POLYGENE_LIGHT_SCREW};
         screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
@@ -274,9 +270,12 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         // clang-format on
 
         PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(POLYGENE_POS(DISPLAY));
+        r->m_config = {{POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
         r->module = module;
         r->box.size = POLYGENE_SIZE(DISPLAY);
         addChild(r);
+
+        loadTheme(ORBITS_THEME_DEFAULT);
 }
 
 static void ToggleInputMode(InputMode *mode)
