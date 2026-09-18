@@ -192,6 +192,7 @@ void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 }
 
 #define EUGENE_POS(NAME) ORBITS_POS(EUGENE_##NAME)
+#define EUGENE_SIZE(NAME) ORBITS_SIZE(EUGENE_##NAME)
 
 RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(&g_config)
 {
@@ -213,10 +214,9 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         // and separately all of the positions?
         setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, EUGENE_DARK_PANEL)));
 
-        OrbitsSkinnedScrewConfig screw = {
-                {EUGENE_DARK_SCREW, EUGENE_LIGHT_SCREW},
-                Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)
-        };
+        OrbitsSkinnedScrewConfig screw;
+        screw.imagePaths = {EUGENE_DARK_SCREW, EUGENE_LIGHT_SCREW};
+        screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
         addChild(createOrbitsSkinnedScrew(screw));
 
         screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
@@ -250,7 +250,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         knob.pos = EUGENE_POS(HITS_CV_KNOB);
         addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
 
-        knob.imagePaths = {EUGENE_LIGHT_SHIFT_CV_KNOB, EUGENE_LIGHT_SHIFT_CV_KNOB};
+        knob.imagePaths = {EUGENE_DARK_SHIFT_CV_KNOB, EUGENE_LIGHT_SHIFT_CV_KNOB};
         knob.pos = EUGENE_POS(SHIFT_CV_KNOB);
         addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
 
@@ -305,7 +305,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
         // clang-format on
 
-        rhythm_display = new EugeneRhythmDisplay(module, mm2px(Vec(14.48f, 15.1036f)), mm2px(Vec(32.f, 32.f)));
+        rhythm_display = new EugeneRhythmDisplay(module, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
         addChild(rhythm_display);
 }
 

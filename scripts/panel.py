@@ -16,11 +16,13 @@ def float_value(value):
     """Convert an SVG number to a C float literal."""
     if value is None:
         return "0.0f"
-
-    return f"{float(value):g}f"
+    formatted = f"{float(value):g}"
+    if "." not in formatted and "e" not in formatted and "E" not in formatted:
+        formatted += ".0"
+    return f"{formatted}f"
 
 def write_position_defines(out, module, label, x, y, width=None, height=None):
-    prefix = f"        #define {module.upper()}_{enum_name(label)}_POS"
+    prefix = f"        #define {module.upper()}_{enum_name(label)}"
     out.write(f"{prefix}_X ({x})\n")
     out.write(f"{prefix}_Y ({y})\n")
     if width is not None and height is not None:

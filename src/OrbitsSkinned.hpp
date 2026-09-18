@@ -3,11 +3,18 @@
 #include "OrbitsConfig.hpp"
 #include "plugin.hpp"
 
-// TODO: MOOOO: Better place for this, OrbitsConfig?
+// TODO: MOOOO: Better place for this, OrbitsThemes.h?
+#define ORBITS_THEME_DARK  (0)
+#define ORBITS_THEME_LIGHT (1)
 #define ORBITS_THEME_COUNT (2)
+
 #define ORBITS_THEME_DEFAULT (0)
-#define ORBITS_POS(NAME) OrbitsPos(NAME##_POS_X, NAME##_POS_Y)
+
+// TODO: MOOOO: Better place for this, OrbitsLayout.h?
+#define ORBITS_POS(NAME) OrbitsPos(NAME##_X, NAME##_Y)
+#define ORBITS_SIZE(NAME) OrbitsPos(NAME##_WIDTH, NAME##_HEIGHT)
 Vec OrbitsPos(float x, float y);
+
 
 // Interface for components with the ability to change skins
 struct OrbitsSkinned
