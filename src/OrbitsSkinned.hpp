@@ -8,7 +8,7 @@ constexpr std::array<const char*, static_cast<size_t>(OrbitsTheme::Count)> kOrbi
         "Dark",
         "Light",
 };
-constexpr OrbitsTheme kOrbitsThemeDefault = OrbitsTheme::Light;
+constexpr OrbitsTheme kOrbitsThemeDefault = OrbitsTheme::Dark;
 
 constexpr uint8_t toIndex(OrbitsTheme t)
 {
