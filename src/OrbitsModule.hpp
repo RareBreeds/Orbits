@@ -4,71 +4,12 @@
 #include "plugin.hpp"
 #include <vector>
 
-struct EOCModeOption
+struct EOCModeOptions
 {
-        const char *desc;
-        EOCModeOption(const char *_desc) : desc(_desc)
-        {
-        }
-
-        virtual bool process(bool is_first, bool is_last, bool prev_was_last) const = 0;
-
-        virtual ~EOCModeOption()
-        {
-        }
-};
-
-struct EOCModeOptionOnRepeat : EOCModeOption
-{
-        EOCModeOptionOnRepeat() : EOCModeOption("On Repeat")
-        {
-        }
-
-        bool process(bool is_first, bool is_last, bool prev_was_last) const override
-        {
-                UNUSED(is_last);
-                return is_first && prev_was_last;
-        }
-};
-
-struct EOCModeOptionFirst : EOCModeOption
-{
-        EOCModeOptionFirst() : EOCModeOption("First")
-        {
-        }
-
-        bool process(bool is_first, bool is_last, bool prev_was_last) const override
-        {
-                UNUSED(is_last);
-                UNUSED(prev_was_last);
-                return is_first;
-        }
-};
-
-struct EOCModeOptionLast : EOCModeOption
-{
-        EOCModeOptionLast() : EOCModeOption("Last")
-        {
-        }
-
-        bool process(bool is_first, bool is_last, bool prev_was_last) const override
-        {
-                UNUSED(is_first);
-                UNUSED(prev_was_last);
-                return is_last;
-        }
-};
-
-class EOCModeOptions
-{
-      public:
         bool process(uint8_t mode, bool is_first, bool is_last, bool prev_was_last) const;
         std::vector<std::string> getOptions(void) const;
         ~EOCModeOptions();
         uint8_t size() const;
-
-      private:
-        std::vector<EOCModeOption *> options{new EOCModeOptionOnRepeat, new EOCModeOptionFirst, new EOCModeOptionLast};
 };
 
 struct EOCMode

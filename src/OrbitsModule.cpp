@@ -1,34 +1,34 @@
 #include "OrbitsModule.hpp"
 
-static const EOCModeOptions eoc_mode_options;
-
-bool EOCModeOptions::process(uint8_t mode, bool is_first, bool is_last, bool prev_was_last) const
+struct EOCModeOption
 {
-        return options[mode]->process(is_first, is_last, prev_was_last);
+        const char *name;
+        bool (*process)(bool is_first, bool is_last, bool prev_was_last);
+};
+
+static bool eocModeOnRepeat(bool is_first, bool /*is_last*/, bool prev_was_last)
+{
+        return is_first && prev_was_last;
 }
 
-std::vector<std::string> EOCModeOptions::getOptions(void) const
+static bool eocModeFirst(bool is_first, bool /*is_last*/, bool /*prev_was_last*/)
 {
-        std::vector<std::string> opts;
-        for(auto option : options)
-        {
-                opts.push_back(option->desc);
-        }
-        return opts;
+        return is_first;
 }
 
-EOCModeOptions::~EOCModeOptions()
+static bool eocModeLast(bool /*is_first*/, bool is_last, bool /*prev_was_last*/)
 {
-        for(auto i : options)
-        {
-                delete i;
-        }
+        return is_last;
 }
 
-uint8_t EOCModeOptions::size() const
+static constexpr EOCModeOption eoc_mode_options[] =
 {
-        return static_cast<uint8_t>(options.size());
-}
+        {"On Repeat", eocModeOnRepeat},
+        {"First", eocModeFirst},
+        {"Last", eocModeLast},
+};
+
+static constexpr size_t eoc_mode_count = sizeof(eoc_mode_options) / sizeof(eoc_mode_options[0]);
 
 uint8_t EOCMode::getMode(void)
 {
@@ -37,12 +37,20 @@ uint8_t EOCMode::getMode(void)
 
 void EOCMode::setMode(uint8_t mode)
 {
-        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, eoc_mode_options.size()));
+        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, eoc_mode_count));
 }
 
 std::vector<std::string> EOCMode::getOptions(void)
 {
-        return eoc_mode_options.getOptions();
+        std::vector<std::string> names;
+        names.reserve(eoc_mode_count);
+
+        for (const EOCModeOption &option : eoc_mode_options)
+        {
+                names.emplace_back(option.name);
+        }
+
+        return names;
 }
 
 json_t *EOCMode::dataToJson(void)
@@ -61,7 +69,7 @@ void EOCMode::dataFromJson(json_t *root)
 
 void EOCGenerator::update(EOCMode &mode, bool is_first, bool is_last)
 {
-        if(eoc_mode_options.process(mode.getMode(), is_first, is_last, m_previous_beat_was_last))
+        if(eoc_mode_options[mode.getMode()].process(is_first, is_last, m_previous_beat_was_last))
         {
                 m_generator.trigger(1e-3f);
         }
