@@ -81,35 +81,39 @@ bool EOCGenerator::process(float delta)
         return m_generator.process(delta);
 }
 
-static const BeatModeOptions beat_mode_options;
-
-std::vector<std::string> BeatModeOptions::getOptions(void) const
+struct BeatModeOption
 {
-        std::vector<std::string> opts;
-        for(auto option : options)
+        const char *name;
+        bool (*process)(bool pulse, bool state);
+};
+
+static bool beatModePulse(bool pulse, bool /*state*/)
+{
+        return pulse;
+}
+
+static bool beatModeGate(bool pulse, bool state)
+{
+        if(pulse)
         {
-                opts.push_back(option->desc);
+                return false;
         }
-        return opts;
+        return state;
 }
 
-BeatModeOptions::~BeatModeOptions()
+static bool beatModeHold(bool /*pulse*/, bool state)
 {
-        for(auto i : options)
-        {
-                delete i;
-        }
+        return state;
 }
 
-uint8_t BeatModeOptions::size() const
+static constexpr BeatModeOption beat_mode_options[] =
 {
-        return static_cast<uint8_t>(options.size());
-}
+        {"Pulse", beatModePulse},
+        {"Gate", beatModeGate},
+        {"Hold", beatModeHold},
+};
 
-bool BeatModeOptions::process(uint8_t mode, bool pulse, bool state) const
-{
-        return options[mode]->process(pulse, state);
-}
+static constexpr size_t beat_mode_count = sizeof(beat_mode_options) / sizeof(beat_mode_options[0]);
 
 uint8_t BeatMode::getMode(void)
 {
@@ -118,12 +122,20 @@ uint8_t BeatMode::getMode(void)
 
 void BeatMode::setMode(uint8_t mode)
 {
-        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, beat_mode_options.size()));
+        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, beat_mode_count));
 }
 
 std::vector<std::string> BeatMode::getOptions(void)
 {
-        return beat_mode_options.getOptions();
+        std::vector<std::string> names;
+        names.reserve(eoc_mode_count);
+
+        for (const BeatModeOption &option : beat_mode_options)
+        {
+                names.emplace_back(option.name);
+        }
+
+        return names;
 }
 
 json_t *BeatMode::dataToJson(void)
@@ -152,5 +164,5 @@ void BeatGenerator::update(bool is_on)
 bool BeatGenerator::process(BeatMode &mode, float delta)
 {
         bool pulse = m_generator.process(delta);
-        return beat_mode_options.process(mode.getMode(), pulse, m_state);
+        return beat_mode_options[mode.getMode()].process(pulse, m_state);
 }

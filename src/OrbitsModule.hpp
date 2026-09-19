@@ -4,14 +4,6 @@
 #include "plugin.hpp"
 #include <vector>
 
-struct EOCModeOptions
-{
-        bool process(uint8_t mode, bool is_first, bool is_last, bool prev_was_last) const;
-        std::vector<std::string> getOptions(void) const;
-        ~EOCModeOptions();
-        uint8_t size() const;
-};
-
 struct EOCMode
 {
         uint8_t m_mode = 0;
@@ -29,72 +21,6 @@ struct EOCGenerator
         bool m_previous_beat_was_last = false;
         void update(EOCMode &mode, bool is_first, bool is_last);
         bool process(float delta);
-};
-
-struct BeatModeOption
-{
-        const char *desc;
-        BeatModeOption(const char *_desc) : desc{_desc}
-        {
-        }
-        virtual bool process(bool pulse, bool state) const = 0;
-        virtual ~BeatModeOption()
-        {
-        }
-};
-
-struct BeatModeOptionPulse : BeatModeOption
-{
-        BeatModeOptionPulse() : BeatModeOption("Pulse")
-        {
-        }
-
-        bool process(bool pulse, bool state) const override
-        {
-                UNUSED(state);
-                return pulse;
-        }
-};
-
-struct BeatModeOptionGate : BeatModeOption
-{
-        BeatModeOptionGate() : BeatModeOption("Gate")
-        {
-        }
-
-        bool process(bool pulse, bool state) const override
-        {
-                if(pulse)
-                {
-                        return false;
-                }
-                return state;
-        }
-};
-
-struct BeatModeOptionHold : BeatModeOption
-{
-        BeatModeOptionHold() : BeatModeOption("Hold")
-        {
-        }
-
-        bool process(bool pulse, bool state) const override
-        {
-                UNUSED(pulse);
-                return state;
-        }
-};
-
-class BeatModeOptions
-{
-      public:
-        bool process(uint8_t mode, bool pulse, bool state) const;
-        std::vector<std::string> getOptions(void) const;
-        ~BeatModeOptions();
-        uint8_t size() const;
-
-      private:
-        std::vector<BeatModeOption *> options{new BeatModeOptionPulse, new BeatModeOptionGate, new BeatModeOptionHold};
 };
 
 struct BeatMode
