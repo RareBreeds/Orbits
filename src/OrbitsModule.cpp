@@ -2,7 +2,7 @@
 
 static const EOCModeOptions eoc_mode_options;
 
-bool EOCModeOptions::process(int mode, bool is_first, bool is_last, bool prev_was_last) const
+bool EOCModeOptions::process(uint8_t mode, bool is_first, bool is_last, bool prev_was_last) const
 {
         return options[mode]->process(is_first, is_last, prev_was_last);
 }
@@ -25,19 +25,19 @@ EOCModeOptions::~EOCModeOptions()
         }
 }
 
-size_t EOCModeOptions::size() const
+uint8_t EOCModeOptions::size() const
 {
-        return options.size();
+        return static_cast<uint8_t>(options.size());
 }
 
-int EOCMode::getMode(void)
+uint8_t EOCMode::getMode(void)
 {
         return m_mode;
 }
 
-void EOCMode::setMode(int mode)
+void EOCMode::setMode(uint8_t mode)
 {
-        m_mode = math::clamp(mode, 0, eoc_mode_options.size());
+        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, eoc_mode_options.size()));
 }
 
 std::vector<std::string> EOCMode::getOptions(void)
@@ -54,7 +54,8 @@ void EOCMode::dataFromJson(json_t *root)
 {
         if(root)
         {
-                setMode(json_integer_value(root));
+                uint8_t mode = static_cast<uint8_t>(json_integer_value(root));
+                setMode(mode);
         }
 }
 
@@ -92,24 +93,24 @@ BeatModeOptions::~BeatModeOptions()
         }
 }
 
-size_t BeatModeOptions::size() const
+uint8_t BeatModeOptions::size() const
 {
-        return options.size();
+        return static_cast<uint8_t>(options.size());
 }
 
-bool BeatModeOptions::process(int mode, bool pulse, bool state) const
+bool BeatModeOptions::process(uint8_t mode, bool pulse, bool state) const
 {
         return options[mode]->process(pulse, state);
 }
 
-int BeatMode::getMode(void)
+uint8_t BeatMode::getMode(void)
 {
         return m_mode;
 }
 
-void BeatMode::setMode(int mode)
+void BeatMode::setMode(uint8_t mode)
 {
-        m_mode = math::clamp(mode, 0, beat_mode_options.size());
+        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, beat_mode_options.size()));
 }
 
 std::vector<std::string> BeatMode::getOptions(void)
@@ -126,7 +127,8 @@ void BeatMode::dataFromJson(json_t *root)
 {
         if(root)
         {
-                setMode(json_integer_value(root));
+                uint8_t mode = static_cast<uint8_t>(json_integer_value(root));
+                setMode(mode);
         }
 }
 

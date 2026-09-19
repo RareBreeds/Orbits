@@ -7,7 +7,7 @@
 struct EOCModeOption
 {
         const char *desc;
-        EOCModeOption(const char *_desc) : desc{_desc}
+        EOCModeOption(const char *_desc) : desc(_desc)
         {
         }
 
@@ -62,10 +62,10 @@ struct EOCModeOptionLast : EOCModeOption
 class EOCModeOptions
 {
       public:
-        bool process(int mode, bool is_first, bool is_last, bool prev_was_last) const;
+        bool process(uint8_t mode, bool is_first, bool is_last, bool prev_was_last) const;
         std::vector<std::string> getOptions(void) const;
         ~EOCModeOptions();
-        size_t size() const;
+        uint8_t size() const;
 
       private:
         std::vector<EOCModeOption *> options{new EOCModeOptionOnRepeat, new EOCModeOptionFirst, new EOCModeOptionLast};
@@ -73,10 +73,10 @@ class EOCModeOptions
 
 struct EOCMode
 {
-        int m_mode = 0;
+        uint8_t m_mode = 0;
 
-        int getMode(void);
-        void setMode(int mode);
+        uint8_t getMode(void);
+        void setMode(uint8_t mode);
         std::vector<std::string> getOptions(void);
         json_t *dataToJson(void);
         void dataFromJson(json_t *root);
@@ -147,10 +147,10 @@ struct BeatModeOptionHold : BeatModeOption
 class BeatModeOptions
 {
       public:
-        bool process(int mode, bool pulse, bool state) const;
+        bool process(uint8_t mode, bool pulse, bool state) const;
         std::vector<std::string> getOptions(void) const;
         ~BeatModeOptions();
-        size_t size() const;
+        uint8_t size() const;
 
       private:
         std::vector<BeatModeOption *> options{new BeatModeOptionPulse, new BeatModeOptionGate, new BeatModeOptionHold};
@@ -158,10 +158,10 @@ class BeatModeOptions
 
 struct BeatMode
 {
-        int m_mode = 0;
+        uint8_t m_mode = 0;
 
-        int getMode(void);
-        void setMode(int mode);
+        uint8_t getMode(void);
+        void setMode(uint8_t mode);
         std::vector<std::string> getOptions(void);
         json_t *dataToJson(void);
         void dataFromJson(json_t *root);
