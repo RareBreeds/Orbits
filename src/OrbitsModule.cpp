@@ -1,5 +1,66 @@
 #include "OrbitsModule.hpp"
 
+unsigned int clampRounded(float value, unsigned int min, unsigned int max)
+{
+        float r = std::round(value);
+        if (std::isnan(r) || r <= (float)min)
+        {
+                return min;
+        }
+
+        if (r >= (float)max)
+        {
+                return max;
+        }
+
+        return (unsigned int)r;
+}
+
+void json_load_real(json_t *root, const char *param, float *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = (float) json_real_value(obj);
+        }
+}
+
+void json_load_bool(json_t *root, const char *param, bool *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = json_boolean_value(obj);
+        }
+}
+
+void json_load_int(json_t *root, const char *param, int *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = static_cast<int>(json_integer_value(obj));
+        }
+}
+
+void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = static_cast<unsigned int>(json_integer_value(obj));
+        }
+}
+
+void json_load_uint8_t(json_t *root, const char *param, uint8_t *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = static_cast<uint8_t>(json_integer_value(obj));
+        }
+}
+
 struct EOCModeOption
 {
         const char *name;

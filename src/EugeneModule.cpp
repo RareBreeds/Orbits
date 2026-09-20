@@ -2,29 +2,6 @@
 #include "EugeneWidget.hpp"
 #include "Rhythm.hpp"
 
-static unsigned int clampRounded(float value, unsigned int min, unsigned int max)
-{
-        return std::max(std::min((unsigned int)(value + 0.5f), max), min);
-}
-
-static void json_load_int(json_t *root, const char *param, int *result)
-{
-        json_t *obj = json_object_get(root, param);
-        if(obj)
-        {
-                *result = static_cast<int>(json_integer_value(obj));
-        }
-}
-
-static void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result)
-{
-        json_t *obj = json_object_get(root, param);
-        if(obj)
-        {
-                *result = static_cast<unsigned int>(json_integer_value(obj));
-        }
-}
-
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -272,45 +249,44 @@ void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& e)
         if (m_randomization_mask & (1 << RANDOMIZE_LENGTH))
         {
                 float length = random::uniform() * rhythm::max_length;
-                getParam(LENGTH_KNOB_PARAM).setValue(length);
+                getParamQuantity(LENGTH_KNOB_PARAM)->setImmediateValue(length);
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_LENGTH_CV))
         {
-                getParam(LENGTH_CV_KNOB_PARAM).setValue(random::uniform());
+                getParamQuantity(LENGTH_CV_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_HITS))
         {
-                float hits = random::uniform();
-                getParam(HITS_KNOB_PARAM).setValue(hits);
+                getParamQuantity(HITS_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_HITS_CV))
         {
-                getParam(HITS_CV_KNOB_PARAM).setValue(random::uniform());
+                getParamQuantity(HITS_CV_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_SHIFT))
         {
                 float shift = random::uniform() * (rhythm::max_length - 1);
-                getParam(SHIFT_KNOB_PARAM).setValue(shift);
+                getParamQuantity(SHIFT_KNOB_PARAM)->setImmediateValue(shift);
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_SHIFT_CV))
         {
-                getParam(SHIFT_CV_KNOB_PARAM).setValue(random::uniform());
+                getParamQuantity(SHIFT_CV_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_REVERSE))
         {
                 bool reverse = (random::uniform() < 0.5f);
-                getParam(REVERSE_KNOB_PARAM).setValue(reverse);
+                getParamQuantity(REVERSE_KNOB_PARAM)->setImmediateValue(reverse);
         }
 
         if (m_randomization_mask & (1 << RANDOMIZE_INVERT))
         {
                 bool invert = (random::uniform() < 0.5f);
-                getParam(INVERT_KNOB_PARAM).setValue(invert);
+                getParamQuantity(INVERT_KNOB_PARAM)->setImmediateValue(invert);
         }
 }
