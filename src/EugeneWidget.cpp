@@ -221,7 +221,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
         addChild(createOrbitsSkinnedScrew(screw));
 
-        // TODO: MOOOOOO: Autogenerate config for each param/input/output?
+        // TODO: Autogenerate config for each param/input/output?
         OrbitsSkinnedKnobConfig knob;
         knob.imagePaths = {EUGENE_DARK_LENGTH_KNOB, EUGENE_LIGHT_LENGTH_KNOB};
         knob.pos = EUGENE_POS(LENGTH_KNOB);
@@ -301,7 +301,8 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         rhythm_display = new EugeneRhythmDisplay(module, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
         addChild(rhythm_display);
 
-        loadTheme(kOrbitsThemeDefault);
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(kOrbitsThemeDefault)]);
+        setPanel(APP->window->loadSvg(panelPath));
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)

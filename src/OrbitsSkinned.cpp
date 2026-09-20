@@ -1,3 +1,4 @@
+#include "OrbitsMacros.h"
 #include "OrbitsSkinned.hpp"
 
 Vec OrbitsPos(float x, float y)
@@ -61,20 +62,20 @@ OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config
 
 void OrbitsSkinnedSwitch::loadTheme(OrbitsTheme theme)
 {
+#if ORBITS_THEME_SELECTION_ENABLED
         std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[toIndex(theme)]);
         std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[toIndex(theme)]);
 
-#if METAMODULE == 0
-        // TODO: MOOOO: Metamodule does not like this, seems to corrupt the image path that it's using
-        // whether you directly assign to frame[0] or clear then re-add
+        // Metamodule does not like the frames being changed, seems to corrupt the image path.
+        // This happens whether I directly assign to frame[0] or clear the vector and re-add the frames.
         frames.clear();
         addFrame(APP->window->loadSvg(offImagePath));
         addFrame(APP->window->loadSvg(onImagePath));
-#endif
 
-        event::Change change;
-        onChange(change);
-        onChange(change);
+        onChange(event::Change());
+#else
+        UNUSED(theme);
+#endif
 }
 
 OrbitsSkinnedButton::OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config)

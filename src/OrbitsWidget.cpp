@@ -1,7 +1,6 @@
 #include "OrbitsWidget.hpp"
 #include "OrbitsSkinned.hpp"
 
-// TODO: MOOOOO: OrbitsWidgetConfig? we'll need the theme configuration here, panels
 OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig& config) : m_config(config)
 {
 }
@@ -10,30 +9,37 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 {
         menu->addChild(new MenuSeparator);
 
+#if ORBITS_THEME_SELECTION_ENABLED
         menu->addChild(createIndexSubmenuItem("Theme",
                 std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()),
                 [this]() { return toIndex(this->m_theme); },
-                [this](int mode) { loadTheme(static_cast<OrbitsTheme>(mode)); }
+                [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }
         ));
+#endif
 
         appendModuleContextMenu(menu);
 }
 
-void OrbitsWidget::loadTheme(const char *theme)
+void OrbitsWidget::switchTheme(const char *theme)
 {
+#if ORBITS_THEME_SELECTION_ENABLED
         OrbitsTheme t;
         if (fromString(theme, t))
         {
-                loadTheme(t);
+                switchTheme(t);
         }
         else
         {
-                loadTheme(kOrbitsThemeDefault);
+                switchTheme(kOrbitsThemeDefault);
         }
+#else
+        UNUSED(theme);
+#endif
 }
 
-void OrbitsWidget::loadTheme(OrbitsTheme theme)
+void OrbitsWidget::switchTheme(OrbitsTheme theme)
 {
+#if ORBITS_THEME_SELECTION_ENABLED
         m_theme = theme;
 
         for(auto child : children)
@@ -47,6 +53,9 @@ void OrbitsWidget::loadTheme(OrbitsTheme theme)
 
         std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(theme)]);
         setPanel(APP->window->loadSvg(panelPath));
+#else
+        UNUSED(theme);
+#endif
 }
 
 json_t *OrbitsWidget::dataToJson()
@@ -65,14 +74,18 @@ json_t *OrbitsWidget::dataToJson()
 
 void OrbitsWidget::dataFromJson(json_t *root)
 {
+#if ORBITS_THEME_SELECTION_ENABLED
         if(root)
         {
                 json_t *obj = json_object_get(root, "theme");
                 if(obj)
                 {
-                        loadTheme(json_string_value(obj));
+                        switchTheme(json_string_value(obj));
                 }
         }
+#else
+        UNUSED(root);
+#endif
 }
 
 void EOCWidget::appendContextMenu(Menu *menu)

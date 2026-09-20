@@ -565,10 +565,8 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
         }
 }
 
-void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& e)
+void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& /*e*/)
 {
-        (void) e;
-
         for(auto &chan : m_channels)
         {
                 chan.onRandomize(m_randomization_mask);

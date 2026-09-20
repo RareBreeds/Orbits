@@ -242,10 +242,8 @@ RareBreeds_Orbits_Eugene::~RareBreeds_Orbits_Eugene()
         json_decref(m_widget_config);
 }
 
-void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& e)
+void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& /*e*/)
 {
-        (void) e;
-
         if (m_randomization_mask & (1 << RANDOMIZE_LENGTH))
         {
                 float length = random::uniform() * rhythm::max_length;

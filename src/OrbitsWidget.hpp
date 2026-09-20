@@ -11,8 +11,8 @@ struct OrbitsWidget : ModuleWidget
         OrbitsWidget(const OrbitsSkinnedPanelConfig& config);
         void appendContextMenu(Menu *menu) override;
         virtual void appendModuleContextMenu(Menu *menu) = 0;
-        void loadTheme(const char *theme);
-        void loadTheme(OrbitsTheme theme);
+        void switchTheme(const char *theme);
+        void switchTheme(OrbitsTheme theme);
         json_t *dataToJson();
         void dataFromJson(json_t *root);
 };

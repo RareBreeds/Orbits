@@ -27,7 +27,11 @@ PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 
 void PolygeneRhythmDisplay::loadTheme(OrbitsTheme theme)
 {
+#if ORBITS_THEME_SELECTION_ENABLE
         m_display_accent = m_config.accent[toIndex(theme)];
+#else
+        UNUSED(theme);
+#endif
 }
 
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
@@ -272,9 +276,11 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         r->m_config = {{POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
         r->module = module;
         r->box.size = POLYGENE_SIZE(DISPLAY);
+        r->m_display_accent = r->m_config.accent[toIndex(kOrbitsThemeDefault)];
         addChild(r);
 
-        loadTheme(kOrbitsThemeDefault);
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(kOrbitsThemeDefault)]);
+        setPanel(APP->window->loadSvg(panelPath));
 }
 
 static void ToggleInputMode(InputMode *mode)
