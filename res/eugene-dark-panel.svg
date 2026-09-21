@@ -1147,7 +1147,7 @@
     <circle
        style="fill:#0000ff;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-4"
-       cx="54.3"
+       cx="54.35"
        cy="20.135324"
        r="4.8440628"
        inkscape:label="beat_port" />
@@ -1211,14 +1211,14 @@
     <circle
        style="display:inline;opacity:1;fill:#0000ff;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-4-6"
-       cx="54.3"
+       cx="54.35"
        cy="36.809063"
        r="4.8440628"
        inkscape:label="eoc_port" />
     <circle
        style="display:inline;fill:#00ff00;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-6-7-9"
-       cx="54.3"
+       cx="54.35"
        cy="51.800968"
        r="4.8440619"
        inkscape:label="random_cv_port" />
