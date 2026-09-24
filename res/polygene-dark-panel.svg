@@ -1138,8 +1138,8 @@
     <circle
        style="fill:#0000ff;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-4"
-       cx="83.138855"
-       cy="20.174862"
+       cx="83.26"
+       cy="20.17"
        r="4.8440628"
        inkscape:label="beat_port" />
     <circle
@@ -1225,8 +1225,8 @@
     <circle
        style="display:inline;opacity:1;fill:#0000ff;stroke:none;stroke-width:0.212039;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path1082-1-4-9"
-       cx="83.138847"
-       cy="36.808636"
+       cx="83.26"
+       cy="36.8"
        r="4.8440628"
        inkscape:label="eoc_port" />
   </g>
