@@ -2,6 +2,9 @@
 
 #include "plugin.hpp"
 
+#include <array>
+#include <string>
+
 enum class OrbitsTheme { Dark, Light, Count };
 constexpr std::array<const char*, static_cast<size_t>(OrbitsTheme::Count)> kOrbitsThemeNames =
 {
