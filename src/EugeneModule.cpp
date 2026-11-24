@@ -37,8 +37,8 @@ EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(void)
         data.length = readLength();
         data.hits = readHits(data.length);
         data.shift = readShift(data.length);
-        data.reverse = readReverse();
-        data.invert = readInvert();
+        data.reverse = m_reverse.load(std::memory_order_relaxed);
+        data.invert = m_invert.load(std::memory_order_relaxed);
         data.current_step = m_current_step > data.length - 1 ? 0 : m_current_step;
         return data;
 }
@@ -138,13 +138,16 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &process_args)
                 onRandomize(e);
         }
 
+        const bool reverse = readReverse();
+        const bool invert = readInvert();
+        m_reverse.store(reverse, std::memory_order_relaxed);
+        m_invert.store(invert, std::memory_order_relaxed);
+
         if(m_clock_trigger.process(getInput(CLOCK_INPUT).getVoltage()))
         {
                 auto length = readLength();
                 auto hits = readHits(length);
                 auto shift = readShift(length);
-                auto reverse = readReverse();
-                auto invert = readInvert();
 
                 if(m_current_step >= length)
                 {

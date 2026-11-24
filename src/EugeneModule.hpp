@@ -91,6 +91,9 @@ struct RareBreeds_Orbits_Eugene : Module
         unsigned int m_current_step = 0;
         unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
+        std::atomic<bool> m_reverse{false};
+        std::atomic<bool> m_invert{false};
+
         RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
         std::atomic<json_t *> m_widget_config{nullptr};
         RareBreeds_Orbits_Eugene();

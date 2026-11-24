@@ -116,9 +116,9 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto length = readLength();
                 auto hits = readHits(length);
                 auto shift = readShift(length);
-                auto invert = readInvert();
+                auto invert = m_invert.load(std::memory_order_relaxed);
                 auto variation = readVariation(length, hits);
-                auto reverse = readReverse();
+                auto reverse = m_reverse.load(std::memory_order_relaxed);
 
                 // Avoid stepping out of bounds
                 m_current_step = readStep(length);
@@ -244,7 +244,7 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(void)
                 ch->hits = m_channels[c].readHits(ch->length);
                 ch->shift = m_channels[c].readShift(ch->length);
                 ch->variation = m_channels[c].readVariation(ch->length, ch->hits);
-                ch->invert = m_channels[c].readInvert();
+                ch->invert = m_channels[c].m_invert.load(std::memory_order_relaxed);
                 ch->current_step = m_channels[c].readStep(ch->length);
         }
         return data;
@@ -420,6 +420,12 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
                 {
                         chan.m_current_step = 0;
                 }
+        }
+
+        for(auto &chan : m_channels)
+        {
+                chan.m_reverse.store(chan.readReverse(), std::memory_order_relaxed);
+                chan.m_invert.store(chan.readInvert(), std::memory_order_relaxed);
         }
 
         uint8_t clock_channels = static_cast<uint8_t>(getInput(CLOCK_INPUT).getChannels());

@@ -104,6 +104,12 @@ struct RareBreeds_Orbits_Polygene : Module
                 BeatGenerator m_beat_generator;
                 EOCGenerator m_eoc_generator;
                 PolygeneChannelState m_state;
+
+                // Reverse/invert as last evaluated by the module's process() on the engine thread.
+                // The display reads these instead of evaluating the triggers itself.
+                std::atomic<bool> m_reverse{false};
+                std::atomic<bool> m_invert{false};
+
                 RareBreeds_Orbits_Polygene *m_module;
 
                 void init(RareBreeds_Orbits_Polygene *module, uint8_t channel);
