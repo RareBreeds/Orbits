@@ -3,17 +3,17 @@
 unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
         float r = std::round(value);
-        if (std::isnan(r) || r <= (float)min)
+        if (std::isnan(r) || r <= static_cast<float>(min))
         {
                 return min;
         }
 
-        if (r >= (float)max)
+        if (r >= static_cast<float>(max))
         {
                 return max;
         }
 
-        return (unsigned int)r;
+        return static_cast<unsigned int>(r);
 }
 
 void json_load_real(json_t *root, const char *param, float *result)
@@ -21,7 +21,7 @@ void json_load_real(json_t *root, const char *param, float *result)
         json_t *obj = json_object_get(root, param);
         if(obj)
         {
-                *result = (float) json_real_value(obj);
+                *result = static_cast<float>(json_real_value(obj));
         }
 }
 

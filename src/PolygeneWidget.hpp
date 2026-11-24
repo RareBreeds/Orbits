@@ -8,7 +8,7 @@ struct RareBreeds_Orbits_PolygeneWidget : OrbitsWidget
 {
         BeatWidget beat_widget;
         EOCWidget eoc_widget;
-        RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module);
+        RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *polygene);
         void appendModuleContextMenu(Menu *menu) override;
         void draw(const DrawArgs& args) override;
 };

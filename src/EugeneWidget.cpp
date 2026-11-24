@@ -191,17 +191,17 @@ void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 #define EUGENE_POS(NAME) ORBITS_POS(EUGENE_##NAME)
 #define EUGENE_SIZE(NAME) ORBITS_SIZE(EUGENE_##NAME)
 
-static const OrbitsSkinnedPanelConfig g_config = {.panelPaths = {EUGENE_DARK_PANEL, EUGENE_LIGHT_PANEL}};
-RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module) : OrbitsWidget(g_config)
+static const OrbitsSkinnedPanelConfig g_config = {{EUGENE_DARK_PANEL, EUGENE_LIGHT_PANEL}};
+RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *eugene) : OrbitsWidget(g_config)
 {
-        setModule(module);
+        setModule(eugene);
 
         // Module may be NULL if this is the module selection screen
-        if(module)
+        if(eugene)
         {
-                module->m_widget = this;
-                beat_widget.m_module = &module->m_beat;
-                eoc_widget.m_module = &module->m_eoc;
+                eugene->m_widget = this;
+                beat_widget.m_module = &eugene->m_beat;
+                eoc_widget.m_module = &eugene->m_eoc;
         }
 
         m_theme = kOrbitsThemeDefault;
@@ -225,80 +225,80 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         OrbitsSkinnedKnobConfig knob;
         knob.imagePaths = {EUGENE_DARK_LENGTH_KNOB, EUGENE_LIGHT_LENGTH_KNOB};
         knob.pos = EUGENE_POS(LENGTH_KNOB);
-        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
+        addParam(createOrbitsSkinnedSnappyKnob(knob, eugene, RareBreeds_Orbits_Eugene::LENGTH_KNOB_PARAM));
 
         knob.imagePaths = {EUGENE_DARK_HITS_KNOB, EUGENE_LIGHT_HITS_KNOB};
         knob.pos = EUGENE_POS(HITS_KNOB);
-        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
+        addParam(createOrbitsSkinnedKnob(knob, eugene, RareBreeds_Orbits_Eugene::HITS_KNOB_PARAM));
 
         knob.imagePaths = {EUGENE_DARK_SHIFT_KNOB, EUGENE_LIGHT_SHIFT_KNOB};
         knob.pos = EUGENE_POS(SHIFT_KNOB);
-        addParam(createOrbitsSkinnedSnappyKnob(knob, module, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedSnappyKnob(knob, eugene, RareBreeds_Orbits_Eugene::SHIFT_KNOB_PARAM));
 
         knob.imagePaths = {EUGENE_DARK_LENGTH_CV_KNOB, EUGENE_LIGHT_LENGTH_CV_KNOB};
         knob.pos = EUGENE_POS(LENGTH_CV_KNOB);
-        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedKnob(knob, eugene, RareBreeds_Orbits_Eugene::LENGTH_CV_KNOB_PARAM));
 
         knob.imagePaths = {EUGENE_DARK_HITS_CV_KNOB, EUGENE_LIGHT_HITS_CV_KNOB};
         knob.pos = EUGENE_POS(HITS_CV_KNOB);
-        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedKnob(knob, eugene, RareBreeds_Orbits_Eugene::HITS_CV_KNOB_PARAM));
 
         knob.imagePaths = {EUGENE_DARK_SHIFT_CV_KNOB, EUGENE_LIGHT_SHIFT_CV_KNOB};
         knob.pos = EUGENE_POS(SHIFT_CV_KNOB);
-        addParam(createOrbitsSkinnedKnob(knob, module, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
+        addParam(createOrbitsSkinnedKnob(knob, eugene, RareBreeds_Orbits_Eugene::SHIFT_CV_KNOB_PARAM));
 
         OrbitsSkinnedSwitchConfig swtch;
         swtch.onImagePaths = {EUGENE_DARK_REVERSE_SWITCH_ON, EUGENE_LIGHT_REVERSE_SWITCH_ON};
         swtch.offImagePaths = {EUGENE_DARK_REVERSE_SWITCH_OFF, EUGENE_LIGHT_REVERSE_SWITCH_OFF};
         swtch.pos = EUGENE_POS(REVERSE_SWITCH);
-        addParam(createOrbitsSkinnedSwitch(swtch, module, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
+        addParam(createOrbitsSkinnedSwitch(swtch, eugene, RareBreeds_Orbits_Eugene::REVERSE_KNOB_PARAM));
 
         swtch.onImagePaths = {EUGENE_DARK_INVERT_SWITCH_ON, EUGENE_LIGHT_INVERT_SWITCH_ON};
         swtch.offImagePaths = {EUGENE_DARK_INVERT_SWITCH_OFF, EUGENE_LIGHT_INVERT_SWITCH_OFF};
         swtch.pos = EUGENE_POS(INVERT_SWITCH);
-        addParam(createOrbitsSkinnedSwitch(swtch, module, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
+        addParam(createOrbitsSkinnedSwitch(swtch, eugene, RareBreeds_Orbits_Eugene::INVERT_KNOB_PARAM));
 
         swtch.onImagePaths = {EUGENE_DARK_SYNC_BUTTON_ON, EUGENE_LIGHT_SYNC_BUTTON_ON};
         swtch.offImagePaths = {EUGENE_DARK_SYNC_BUTTON_OFF, EUGENE_LIGHT_SYNC_BUTTON_OFF};
         swtch.pos = EUGENE_POS(SYNC_BUTTON);
-        addParam(createOrbitsSkinnedButton(swtch, module, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));
+        addParam(createOrbitsSkinnedButton(swtch, eugene, RareBreeds_Orbits_Eugene::SYNC_KNOB_PARAM));
 
         OrbitsSkinnedPortConfig port;
         port.imagePaths = {EUGENE_DARK_CLOCK_PORT, EUGENE_LIGHT_CLOCK_PORT};
         port.pos = EUGENE_POS(CLOCK_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::CLOCK_INPUT));
         port.imagePaths = {EUGENE_DARK_SYNC_PORT, EUGENE_LIGHT_SYNC_PORT};
         port.pos = EUGENE_POS(SYNC_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::SYNC_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::SYNC_INPUT));
         port.imagePaths = {EUGENE_DARK_LENGTH_CV_PORT, EUGENE_LIGHT_LENGTH_CV_PORT};
         port.pos = EUGENE_POS(LENGTH_CV_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::LENGTH_CV_INPUT));
 
         port.imagePaths = {EUGENE_DARK_HITS_CV_PORT, EUGENE_LIGHT_HITS_CV_PORT};
         port.pos = EUGENE_POS(HITS_CV_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::HITS_CV_INPUT));
         port.imagePaths = {EUGENE_DARK_SHIFT_CV_PORT, EUGENE_LIGHT_SHIFT_CV_PORT};
         port.pos = EUGENE_POS(SHIFT_CV_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::SHIFT_CV_INPUT));
         port.imagePaths = {EUGENE_DARK_REVERSE_CV_PORT, EUGENE_LIGHT_REVERSE_CV_PORT};
         port.pos = EUGENE_POS(REVERSE_CV_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::REVERSE_CV_INPUT));
         port.imagePaths = {EUGENE_DARK_INVERT_CV_PORT, EUGENE_LIGHT_INVERT_CV_PORT};
         port.pos = EUGENE_POS(INVERT_CV_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::INVERT_CV_INPUT));
         port.imagePaths = {EUGENE_DARK_RANDOM_CV_PORT, EUGENE_LIGHT_RANDOM_CV_PORT};
         port.pos = EUGENE_POS(RANDOM_CV_PORT);
-        addInput(createOrbitsSkinnedInput(port, module, RareBreeds_Orbits_Eugene::RANDOM_CV_INPUT));
+        addInput(createOrbitsSkinnedInput(port, eugene, RareBreeds_Orbits_Eugene::RANDOM_CV_INPUT));
 
         port.imagePaths = {EUGENE_DARK_BEAT_PORT, EUGENE_LIGHT_BEAT_PORT};
         port.pos = EUGENE_POS(BEAT_PORT);
-        addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
+        addOutput(createOrbitsSkinnedOutput(port, eugene, RareBreeds_Orbits_Eugene::BEAT_OUTPUT));
         port.imagePaths = {EUGENE_DARK_EOC_PORT, EUGENE_LIGHT_EOC_PORT};
         port.pos = EUGENE_POS(EOC_PORT);
-        addOutput(createOrbitsSkinnedOutput(port, module, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
+        addOutput(createOrbitsSkinnedOutput(port, eugene, RareBreeds_Orbits_Eugene::EOC_OUTPUT));
         // clang-format on
 
-        rhythm_display = new EugeneRhythmDisplay(module, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
+        rhythm_display = new EugeneRhythmDisplay(eugene, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
         addChild(rhythm_display);
 
         std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(kOrbitsThemeDefault)]);
@@ -312,8 +312,8 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
 
         RareBreeds_Orbits_Eugene *eugene = static_cast<RareBreeds_Orbits_Eugene *>(module);
 	menu->addChild(createSubmenuItem("Randomize Filter", "",
-                [=](Menu* menu) {
-                        menu->addChild(createMenuLabel("Parameters that are randomized"));
+                [=](Menu* submenu) {
+                        submenu->addChild(createMenuLabel("Parameters that are randomized"));
 
                         std::vector<std::pair<std::string, size_t>> items = {
                                 std::make_pair("Length", RareBreeds_Orbits_Eugene::RANDOMIZE_LENGTH),
@@ -328,7 +328,7 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
 
                         for(auto i : items)
                         {
-                                menu->addChild(createCheckMenuItem(i.first, "",
+                                submenu->addChild(createCheckMenuItem(i.first, "",
                                         [=]() {return eugene->m_randomization_mask & (1 << i.second);},
                                         [=]() {eugene->m_randomization_mask ^= (1 << i.second);}
                                 ));
@@ -339,13 +339,13 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
 
 void RareBreeds_Orbits_EugeneWidget::draw(const DrawArgs& args)
 {
-        RareBreeds_Orbits_Eugene *module = static_cast<RareBreeds_Orbits_Eugene *>(getModule());
+        RareBreeds_Orbits_Eugene *eugene = static_cast<RareBreeds_Orbits_Eugene *>(getModule());
 
         // In Rack-2 dataFromJson is called on the module before the widget is created
         // The module remembers the json object so we can initialise it here
-        if(module)
+        if(eugene)
         {
-                json_t *config = module->m_widget_config.exchange(nullptr);
+                json_t *config = eugene->m_widget_config.exchange(nullptr);
                 if(config)
                 {
                         dataFromJson(config);

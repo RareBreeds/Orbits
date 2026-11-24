@@ -260,9 +260,9 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits
         {
                 // Default data shown in the module browser
                 PolygeneDisplayData data = {
-                        .active_channel_id = 3,
-                        .active_channels = PORT_MAX_CHANNELS,
-                        .channels = {
+                        /* active_channel_id */ 3,
+                        /* active_channels */ PORT_MAX_CHANNELS,
+                        /* channels */ {
                                 {32, 6, 0, 0, 0, 4},
                                 {16, 9, 3, 0, 0, 0},
                                 {7, 3, 6, 0, 0, 5},
@@ -363,7 +363,7 @@ float RareBreeds_Orbits_Polygene::getParameterizedVoltage(int input_id, uint8_t 
         }
 }
 
-void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
+void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
 {
         m_active_channels = static_cast<uint8_t>(getInput(CLOCK_INPUT).getChannels());
         getOutput(BEAT_OUTPUT).setChannels(m_active_channels);
@@ -391,7 +391,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         m_active_channel->m_state.invert = m_invert_trigger.state;
 
         bool rnd = getParam(RANDOM_KNOB_PARAM).getValue() > 0.5f;
-        if(m_random_trigger.process(rnd, args.sampleTime))
+        if(m_random_trigger.process(rnd, process_args.sampleTime))
         {
                 m_active_channel->onRandomizeWithHistory(m_randomization_mask);
                 syncParamsToActiveChannel();
@@ -425,7 +425,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &args)
         uint8_t clock_channels = static_cast<uint8_t>(getInput(CLOCK_INPUT).getChannels());
         for(uint8_t i = 0; i < clock_channels; ++i)
         {
-                m_channels[i].process(args);
+                m_channels[i].process(process_args);
         }
 }
 
@@ -513,24 +513,24 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 {
                         int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
                         json_load_int(root, "sync_cv", &mode);
-                        m_input_mode[SYNC_INPUT] = (InputMode) mode;
+                        m_input_mode[SYNC_INPUT] = static_cast<InputMode>(mode);
                 }
 
                 int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
                 json_load_int(root, "length_cv", &mode);
-                m_input_mode[LENGTH_CV_INPUT] = (InputMode) mode;
+                m_input_mode[LENGTH_CV_INPUT] = static_cast<InputMode>(mode);
 
                 mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
                 json_load_int(root, "hits_cv", &mode);
-                m_input_mode[HITS_CV_INPUT] = (InputMode) mode;
+                m_input_mode[HITS_CV_INPUT] = static_cast<InputMode>(mode);
 
                 mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
                 json_load_int(root, "shift_cv", &mode);
-                m_input_mode[SHIFT_CV_INPUT] = (InputMode) mode;
+                m_input_mode[SHIFT_CV_INPUT] = static_cast<InputMode>(mode);
 
                 mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
                 json_load_int(root, "variation_cv", &mode);
-                m_input_mode[VARIATION_CV_INPUT] = (InputMode) mode;
+                m_input_mode[VARIATION_CV_INPUT] = static_cast<InputMode>(mode);
 
                 m_randomization_mask = RANDOMIZE_ALL;
                 json_load_unsigned_int(root, "randomization_mask", &m_randomization_mask);

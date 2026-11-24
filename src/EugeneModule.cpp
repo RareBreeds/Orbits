@@ -120,7 +120,7 @@ bool RareBreeds_Orbits_Eugene::readInvert()
         }
 }
 
-void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
+void RareBreeds_Orbits_Eugene::process(const ProcessArgs &process_args)
 {
         if(m_sync_trigger.process(getInput(SYNC_INPUT).getVoltage()))
         {
@@ -184,8 +184,8 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &args)
                 }
         }
 
-        getOutput(BEAT_OUTPUT).setVoltage(m_beat_generator.process(m_beat, args.sampleTime) ? 10.f : 0.f);
-        getOutput(EOC_OUTPUT).setVoltage(m_eoc_generator.process(args.sampleTime) ? 10.f : 0.f);
+        getOutput(BEAT_OUTPUT).setVoltage(m_beat_generator.process(m_beat, process_args.sampleTime) ? 10.f : 0.f);
+        getOutput(EOC_OUTPUT).setVoltage(m_eoc_generator.process(process_args.sampleTime) ? 10.f : 0.f);
 }
 
 json_t *RareBreeds_Orbits_Eugene::dataToJson()

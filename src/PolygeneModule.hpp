@@ -144,7 +144,7 @@ struct RareBreeds_Orbits_Polygene : Module
         virtual ~RareBreeds_Orbits_Polygene();
         void reset();
         void syncParamsToActiveChannel();
-        void process(const ProcessArgs &args) override;
+        void process(const ProcessArgs &process_args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
         void onRandomize(const RandomizeEvent& e) override;

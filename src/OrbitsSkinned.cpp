@@ -21,8 +21,8 @@ bool fromString(const char *name, OrbitsTheme& outTheme)
 
 OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config) : m_config(config)
 {
-        minAngle = -0.83f * (float)M_PI;
-        maxAngle = 0.83f * (float)M_PI;
+        minAngle = -0.83f * static_cast<float>(M_PI);
+        maxAngle = 0.83f * static_cast<float>(M_PI);
         loadTheme(kOrbitsThemeDefault);
 }
 
