@@ -310,6 +310,8 @@
 					../Rack/dep/include,
 					../../include,
 					../../dep/include,
+					../../Rack/include,
+					../../Rack/dep/include,
 				);
 			};
 			name = Debug;
@@ -373,6 +375,8 @@
 					../Rack/dep/include,
 					../../include,
 					../../dep/include,
+					../../Rack/include,
+					../../Rack/dep/include,
 				);
 			};
 			name = Release;
