@@ -16,8 +16,9 @@ See https://vcvrack.com/manual/Building#building-rack-plugins for how to build V
 ## Testing
 
     make -C tests
+    make -C tests rack RACK_DIR=$HOME/Rack-SDK
 
-Builds and runs the unit tests in `tests/` with AddressSanitizer and UndefinedBehaviorSanitizer. They use [doctest](https://github.com/doctest/doctest), which is included in `tests/doctest/`, and don't need the Rack SDK.
+The first builds and runs the unit tests that don't need VCV Rack. The second builds and runs the tests that use Rack, such as patch loading and the modules' outputs, against a Rack SDK or a Rack source directory with libRack built; give RACK_DIR as an absolute path. Both use AddressSanitizer and UndefinedBehaviorSanitizer, and [doctest](https://github.com/doctest/doctest), which is included in `tests/doctest/`.
 
 ## Manual
 https://rarebreeds.github.io/Orbits/

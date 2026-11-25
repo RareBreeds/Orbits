@@ -320,8 +320,9 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
                         for(auto i : items)
                         {
                                 submenu->addChild(createCheckMenuItem(
-                                        i.first, "", [=]() { return polygene->m_randomization_mask & (1 << i.second); },
-                                        [=]() { polygene->m_randomization_mask ^= (1 << i.second); }));
+                                        i.first, "",
+                                        [=]() { return polygene->m_randomization_mask & (1u << i.second); },
+                                        [=]() { polygene->m_randomization_mask ^= (1u << i.second); }));
                         }
                 }));
 

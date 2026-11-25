@@ -330,8 +330,8 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
                         for(auto i : items)
                         {
                                 submenu->addChild(createCheckMenuItem(
-                                        i.first, "", [=]() { return eugene->m_randomization_mask & (1 << i.second); },
-                                        [=]() { eugene->m_randomization_mask ^= (1 << i.second); }));
+                                        i.first, "", [=]() { return eugene->m_randomization_mask & (1u << i.second); },
+                                        [=]() { eugene->m_randomization_mask ^= (1u << i.second); }));
                         }
                 }));
 }
