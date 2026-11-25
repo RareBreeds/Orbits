@@ -363,7 +363,7 @@ InputMode RareBreeds_Orbits_Polygene::getInputMode(int input_id)
 
 float RareBreeds_Orbits_Polygene::getParameterizedVoltage(int input_id, uint8_t channel)
 {
-        Input input = getInput(input_id);
+        Input &input = getInput(input_id);
         switch(getInputMode(input_id))
         {
                 case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
