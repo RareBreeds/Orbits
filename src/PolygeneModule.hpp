@@ -100,7 +100,7 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
         struct Channel
         {
                 OrbitsStepCounter m_steps;
-                uint8_t m_channel;
+                uint8_t m_channel = 0;
                 dsp::SchmittTrigger m_clock_trigger;
                 dsp::SchmittTrigger m_sync_trigger;
                 dsp::SchmittTrigger m_reverse_trigger;
@@ -115,7 +115,7 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
                 std::atomic<bool> m_reverse{false};
                 std::atomic<bool> m_invert{false};
 
-                RareBreeds_Orbits_Polygene *m_module;
+                RareBreeds_Orbits_Polygene *m_module = NULL;
 
                 void init(RareBreeds_Orbits_Polygene *module, uint8_t channel);
                 bool readReverse(void);
@@ -135,7 +135,7 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
 
         uint8_t m_active_channels = 1;
         Channel m_channels[PORT_MAX_CHANNELS];
-        Channel *m_active_channel;
+        Channel *m_active_channel = NULL;
         dsp::BooleanTrigger m_reverse_trigger;
         dsp::BooleanTrigger m_invert_trigger;
         RepeatTrigger m_random_trigger;

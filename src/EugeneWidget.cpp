@@ -6,7 +6,7 @@
 
 struct EugeneRhythmDisplayUnbuffered : Widget
 {
-        EugeneDisplayData m_data;
+        EugeneDisplayData m_data{};
         EugeneRhythmDisplayUnbuffered(Vec size);
         void drawLayer(const DrawArgs &args, int layer) override;
 };
@@ -152,9 +152,9 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
 
 struct EugeneRhythmDisplay : Widget
 {
-        FramebufferWidget *m_fb;
-        EugeneRhythmDisplayUnbuffered *m_ub;
-        RareBreeds_Orbits_Eugene *m_module;
+        FramebufferWidget *m_fb = NULL;
+        EugeneRhythmDisplayUnbuffered *m_ub = NULL;
+        RareBreeds_Orbits_Eugene *m_module = NULL;
 
         EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size);
         void drawLayer(const DrawArgs &args, int layer) override;

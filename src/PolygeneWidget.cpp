@@ -13,8 +13,8 @@ struct PolygeneRhythmDisplayConfig
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
         RareBreeds_Orbits_Polygene *module = NULL;
-        PolygeneRhythmDisplayConfig m_config;
-        NVGcolor m_display_accent;
+        PolygeneRhythmDisplayConfig m_config{};
+        NVGcolor m_display_accent{};
 
         PolygeneRhythmDisplay();
         void drawLayer(const DrawArgs &args, int layer) override;

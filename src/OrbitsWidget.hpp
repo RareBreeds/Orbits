@@ -28,7 +28,7 @@ struct OrbitsWidget : ModuleWidget
 
 struct EOCWidget
 {
-        EOCMode *m_module;
+        EOCMode *m_module = NULL;
         void appendContextMenu(Menu *menu);
 };
 
@@ -46,6 +46,6 @@ void orbitsAppendRandomizeFilterMenu(Menu *menu, unsigned int *mask,
 
 struct BeatWidget
 {
-        BeatMode *m_module;
+        BeatMode *m_module = NULL;
         void appendContextMenu(Menu *menu);
 };
