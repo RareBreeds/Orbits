@@ -176,8 +176,6 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
                 eoc_widget.m_module = &polygene->m_eoc;
         }
 
-        m_theme = kOrbitsThemeDefault;
-
         // clang-format off
         OrbitsSkinnedScrewConfig screw;
         screw.imagePaths = {POLYGENE_DARK_SCREW, POLYGENE_LIGHT_SCREW};

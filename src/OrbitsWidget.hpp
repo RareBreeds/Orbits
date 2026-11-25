@@ -5,7 +5,7 @@
 
 struct OrbitsWidget : ModuleWidget
 {
-        OrbitsTheme m_theme;
+        OrbitsTheme m_theme = kOrbitsThemeDefault;
         OrbitsSkinnedPanelConfig m_config;
 
         OrbitsWidget(const OrbitsSkinnedPanelConfig& config);

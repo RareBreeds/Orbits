@@ -204,8 +204,6 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
                 eoc_widget.m_module = &eugene->m_eoc;
         }
 
-        m_theme = kOrbitsThemeDefault;
-
         // clang-format off
         OrbitsSkinnedScrewConfig screw;
         screw.imagePaths = {EUGENE_DARK_SCREW, EUGENE_LIGHT_SCREW};
