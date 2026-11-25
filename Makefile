@@ -33,9 +33,6 @@ DISTRIBUTABLES += res
 DISTRIBUTABLES += $(wildcard LICENSE*)
 DISTRIBUTABLES += presets
 
-dist-all:
-	./scripts/build-all.sh
-
 # Include the Rack plugin Makefile framework
 include $(RACK_DIR)/plugin.mk
 
