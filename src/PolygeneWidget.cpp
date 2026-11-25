@@ -1,29 +1,37 @@
 #include "PolygeneWidget.hpp"
-#include "OrbitsConfig.hpp"
+#include "OrbitsAssets.h"
 #include "OrbitsSkinned.hpp"
+#include "PolygeneComponentPositions.h"
 #include "PolygeneModule.hpp"
+#include "PolygeneThemes.h"
 
-static OrbitsConfig g_config("res/polygene-layout.json");
+struct PolygeneRhythmDisplayConfig
+{
+        std::array<NVGcolor, orbitsThemeIndex(OrbitsTheme::Count)> accent;
+};
 
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
 {
         RareBreeds_Orbits_Polygene *module = NULL;
-        NVGcolor m_display_accent;
+        PolygeneRhythmDisplayConfig m_config{};
+        NVGcolor m_display_accent{};
 
         PolygeneRhythmDisplay();
         void drawLayer(const DrawArgs &args, int layer) override;
-        void loadTheme(int theme) override;
+        void loadTheme(OrbitsTheme theme) override;
 };
 
 PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 {
-        loadTheme(g_config.getDefaultThemeId());
 }
 
-void PolygeneRhythmDisplay::loadTheme(int theme)
+void PolygeneRhythmDisplay::loadTheme(OrbitsTheme theme)
 {
-        std::array<uint8_t, 3> colour = g_config.getColour("display_accent", theme);
-        m_display_accent = nvgRGB(colour[0], colour[1], colour[2]);
+#if ORBITS_THEME_SELECTION_ENABLED
+        m_display_accent = m_config.accent[orbitsThemeIndex(theme)];
+#else
+        UNUSED(theme);
+#endif
 }
 
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
@@ -49,23 +57,26 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
 
                 // Draw length text center bottom and hits text center top
-                nvgBeginPath(args.vg);
-                nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-                nvgFontSize(args.vg, 18);
-                std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/ShareTechMono-Regular.ttf"));
-                nvgFontFaceId(args.vg, font->handle);
+                std::shared_ptr<Font> font = APP->window->loadFont(
+                        asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
+                if(font)
+                {
+                        nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+                        nvgFontSize(args.vg, 18);
 
-                const auto active_hits = data.channels[data.active_channel_id].hits;
-                nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
+                        nvgFontFaceId(args.vg, font->handle);
 
-                const auto active_length = data.channels[data.active_channel_id].length;
-                nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
+                        const auto active_hits = data.channels[data.active_channel_id].hits;
+                        nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
 
-                const auto active_channel = data.active_channel_id + 1;
-                nvgFontSize(args.vg, 12);
-                nvgText(args.vg, -b.size.x / 2. + 23.f, b.size.y / 2. - 9.f, std::to_string(active_channel).c_str(), NULL);
+                        const auto active_length = data.channels[data.active_channel_id].length;
+                        nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
 
-                nvgFill(args.vg);
+                        const auto active_channel = data.active_channel_id + 1;
+                        nvgFontSize(args.vg, 12);
+                        nvgText(args.vg, -b.size.x / 2.f + 23.f, b.size.y / 2.f - 9.f,
+                                std::to_string(active_channel).c_str(), NULL);
+                }
 
                 // Scale to [-1, 1]
                 nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
@@ -76,7 +87,7 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 
                 // Inner circle radius
                 const float inner_circle_radius = 0.17f;
-                const float channel_width = (1.0f - inner_circle_radius) / 16.0f;
+                const float channel_width = (1.0f - inner_circle_radius) / static_cast<float>(PORT_MAX_CHANNELS);
                 // Width of the line when drawing circles
                 const float arc_stroke_width = channel_width / 2.0f;
 
@@ -84,11 +95,13 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgScale(args.vg, 1.0f - channel_width, 1.0f - channel_width);
 
                 nvgStrokeWidth(args.vg, arc_stroke_width);
-                for(unsigned int c = 0; c < PORT_MAX_CHANNELS; ++c)
+                for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
                 {
                         const unsigned int length = data.channels[c].length;
                         const float radius = 1.0f - c * channel_width;
-                        const float pi2_len = 2.0f * (float)M_PI / length;
+                        const float mpif = static_cast<float>(M_PI);
+                        const float lenf = static_cast<float>(length);
+                        const float pi2_len = 2.0f * mpif / lenf;
                         const float beat_gap = 0.06f;
                         const float len = pi2_len - beat_gap;
 
@@ -108,28 +121,28 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 
                         nvgStrokeColor(args.vg, dash_colour);
                         nvgFillColor(args.vg, dash_colour);
-                        // The engine is run in a different thread, m_current_step is only updated on each clock
-                        // cycle so may not have been wrapped to a new length parameter yet. If the current step
-                        // is out of bounds then display it at 0.
+                        // The engine is run in a different thread and only wraps the step position to a new
+                        // length on the next clock, so getDisplayData() shows a position beyond the length as 0.
                         unsigned int current_step = data.channels[c].current_step;
                         for(unsigned int k = 0; k < length; ++k)
                         {
-                                const float a0 = k * pi2_len + (float)M_PI_2;
+                                const float mpif2 = static_cast<float>(M_PI_2);
+                                const float kf = static_cast<float>(k);
+                                const float a0 = kf * pi2_len + mpif2;
                                 const float a1 = a0 + len;
 
                                 if(current_step == k)
                                 {
                                         const auto center = a0 - beat_gap / 2.f;
                                         nvgBeginPath(args.vg);
-                                        nvgCircle(args.vg,
-                                                  radius * cosf(center),
-                                                  radius * sinf(center),
+                                        nvgCircle(args.vg, radius * cosf(center), radius * sinf(center),
                                                   arc_stroke_width / 2.0f);
                                         nvgFill(args.vg);
                                 }
 
-                                auto on_beat = RareBreeds_Orbits_Polygene::Channel::isOnBeat(length, data.channels[c].hits, data.channels[c].shift,
-                                                                                   data.channels[c].variation, k, data.channels[c].invert);
+                                auto on_beat = RareBreeds_Orbits_Polygene::Channel::isOnBeat(
+                                        length, data.channels[c].hits, data.channels[c].shift,
+                                        data.channels[c].variation, k, data.channels[c].invert);
                                 if(on_beat)
                                 {
                                         nvgBeginPath(args.vg);
@@ -146,71 +159,142 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
         Widget::drawLayer(args, layer);
 }
 
-RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *module)
-        : OrbitsWidget(&g_config)
+#define POLYGENE_POS(NAME) ORBITS_POS(POLYGENE_##NAME)
+#define POLYGENE_SIZE(NAME) ORBITS_SIZE(POLYGENE_##NAME)
+
+static const OrbitsSkinnedPanelConfig g_config = {{POLYGENE_DARK_PANEL, POLYGENE_LIGHT_PANEL}};
+RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Orbits_Polygene *polygene)
+        : OrbitsWidget(g_config)
 {
-        setModule(module);
+        using Polygene = RareBreeds_Orbits_Polygene;
+
+        setModule(polygene);
 
         // Module may be NULL if this is the module selection screen
-        if(module)
+        if(polygene)
         {
-                module->m_widget = this;
-                beat_widget.m_module = &module->m_beat;
-                eoc_widget.m_module = &module->m_eoc;
+                attachWidgetData(&polygene->m_widget_data);
+                beat_widget.m_module = &polygene->m_beat;
+                eoc_widget.m_module = &polygene->m_eoc;
         }
 
-        m_theme = m_config->getDefaultThemeId();
-
         // clang-format off
-        setPanel(APP->window->loadSvg(m_config->getSvg("panel")));
+        OrbitsSkinnedScrewConfig screw;
+        screw.imagePaths = {POLYGENE_DARK_SCREW, POLYGENE_LIGHT_SCREW};
+        screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
 
-        // TODO: Screw positions are based on the panel size, could have a position for them in config based on panel size
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_top_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_left", Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
-        addChild(createOrbitsSkinnedScrew(m_config, "screw_bottom_right", Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2)));
+        screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
 
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "channel_knob", module, RareBreeds_Orbits_Polygene::CHANNEL_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "length_knob", module, RareBreeds_Orbits_Polygene::LENGTH_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "hits_knob", module, RareBreeds_Orbits_Polygene::HITS_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(m_config, "shift_knob", module, RareBreeds_Orbits_Polygene::SHIFT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(m_config, "variation_knob", module, RareBreeds_Orbits_Polygene::VARIATION_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "reverse_switch", module, RareBreeds_Orbits_Polygene::REVERSE_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(m_config, "invert_switch", module, RareBreeds_Orbits_Polygene::INVERT_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "random_button", module, RareBreeds_Orbits_Polygene::RANDOM_KNOB_PARAM));
-        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(m_config, "sync_button", module, RareBreeds_Orbits_Polygene::SYNC_KNOB_PARAM));
+        screw.pos = Vec(RACK_GRID_WIDTH + RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
 
-        addInput(createOrbitsSkinnedInput(m_config, "clock_port", module, RareBreeds_Orbits_Polygene::CLOCK_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "sync_port", module, RareBreeds_Orbits_Polygene::SYNC_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "length_cv_port", module, RareBreeds_Orbits_Polygene::LENGTH_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "hits_cv_port", module, RareBreeds_Orbits_Polygene::HITS_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "shift_cv_port", module, RareBreeds_Orbits_Polygene::SHIFT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "variation_cv_port", module, RareBreeds_Orbits_Polygene::VARIATION_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "reverse_cv_port", module, RareBreeds_Orbits_Polygene::REVERSE_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "invert_cv_port", module, RareBreeds_Orbits_Polygene::INVERT_CV_INPUT));
-        addInput(createOrbitsSkinnedInput(m_config, "random_cv_port", module, RareBreeds_Orbits_Polygene::RANDOM_CV_INPUT));
+        screw.pos = Vec(box.size.x - RACK_GRID_WIDTH - RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH / 2);
+        addChild(createOrbitsSkinnedScrew(screw));
 
-        addOutput(createOrbitsSkinnedOutput(m_config, "beat_port", module, RareBreeds_Orbits_Polygene::BEAT_OUTPUT));
-        addOutput(createOrbitsSkinnedOutput(m_config, "eoc_port", module, RareBreeds_Orbits_Polygene::EOC_OUTPUT));
+
+        OrbitsSkinnedKnobConfig knob;
+        knob.imagePaths = {POLYGENE_DARK_CHANNEL_KNOB, POLYGENE_LIGHT_CHANNEL_KNOB};
+        knob.pos = POLYGENE_POS(CHANNEL_KNOB);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(knob, polygene, Polygene::CHANNEL_KNOB_PARAM));
+
+        knob.imagePaths = {POLYGENE_DARK_LENGTH_KNOB, POLYGENE_LIGHT_LENGTH_KNOB};
+        knob.pos = POLYGENE_POS(LENGTH_KNOB);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(knob, polygene, Polygene::LENGTH_KNOB_PARAM));
+
+        knob.imagePaths = {POLYGENE_DARK_HITS_KNOB, POLYGENE_LIGHT_HITS_KNOB};
+        knob.pos = POLYGENE_POS(HITS_KNOB);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(knob, polygene, Polygene::HITS_KNOB_PARAM));
+
+        knob.imagePaths = {POLYGENE_DARK_SHIFT_KNOB, POLYGENE_LIGHT_SHIFT_KNOB};
+        knob.pos = POLYGENE_POS(SHIFT_KNOB);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSnappyKnob>(knob, polygene, Polygene::SHIFT_KNOB_PARAM));
+
+        knob.imagePaths = {POLYGENE_DARK_VARIATION_KNOB, POLYGENE_LIGHT_VARIATION_KNOB};
+        knob.pos = POLYGENE_POS(VARIATION_KNOB);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedKnob>(knob, polygene, Polygene::VARIATION_KNOB_PARAM));
+
+        OrbitsSkinnedSwitchConfig swtch;
+        swtch.onImagePaths = {POLYGENE_DARK_REVERSE_SWITCH_ON, POLYGENE_LIGHT_REVERSE_SWITCH_ON};
+        swtch.offImagePaths = {POLYGENE_DARK_REVERSE_SWITCH_OFF, POLYGENE_LIGHT_REVERSE_SWITCH_OFF};
+        swtch.pos = POLYGENE_POS(REVERSE_SWITCH);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(swtch, polygene, Polygene::REVERSE_KNOB_PARAM));
+
+        swtch.onImagePaths = {POLYGENE_DARK_INVERT_SWITCH_ON, POLYGENE_LIGHT_INVERT_SWITCH_ON};
+        swtch.offImagePaths = {POLYGENE_DARK_INVERT_SWITCH_OFF, POLYGENE_LIGHT_INVERT_SWITCH_OFF};
+        swtch.pos = POLYGENE_POS(INVERT_SWITCH);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedSwitch>(swtch, polygene, Polygene::INVERT_KNOB_PARAM));
+
+        swtch.onImagePaths = {POLYGENE_DARK_RANDOM_BUTTON_ON, POLYGENE_LIGHT_RANDOM_BUTTON_ON};
+        swtch.offImagePaths = {POLYGENE_DARK_RANDOM_BUTTON_OFF, POLYGENE_LIGHT_RANDOM_BUTTON_OFF};
+        swtch.pos = POLYGENE_POS(RANDOM_BUTTON);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(swtch, polygene, Polygene::RANDOM_KNOB_PARAM));
+
+        swtch.onImagePaths = {POLYGENE_DARK_SYNC_BUTTON_ON, POLYGENE_LIGHT_SYNC_BUTTON_ON};
+        swtch.offImagePaths = {POLYGENE_DARK_SYNC_BUTTON_OFF, POLYGENE_LIGHT_SYNC_BUTTON_OFF};
+        swtch.pos = POLYGENE_POS(SYNC_BUTTON);
+        addParam(createOrbitsSkinnedParam<OrbitsSkinnedButton>(swtch, polygene, Polygene::SYNC_KNOB_PARAM));
+
+        OrbitsSkinnedPortConfig port;
+        port.imagePaths = {POLYGENE_DARK_CLOCK_PORT, POLYGENE_LIGHT_CLOCK_PORT};
+        port.pos = POLYGENE_POS(CLOCK_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::CLOCK_INPUT));
+        port.imagePaths = {POLYGENE_DARK_SYNC_PORT, POLYGENE_LIGHT_SYNC_PORT};
+        port.pos = POLYGENE_POS(SYNC_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::SYNC_INPUT));
+        port.imagePaths = {POLYGENE_DARK_LENGTH_CV_PORT, POLYGENE_LIGHT_LENGTH_CV_PORT};
+        port.pos = POLYGENE_POS(LENGTH_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::LENGTH_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_HITS_CV_PORT, POLYGENE_LIGHT_HITS_CV_PORT};
+        port.pos = POLYGENE_POS(HITS_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::HITS_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_SHIFT_CV_PORT, POLYGENE_LIGHT_SHIFT_CV_PORT};
+        port.pos = POLYGENE_POS(SHIFT_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::SHIFT_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_VARIATION_CV_PORT, POLYGENE_LIGHT_VARIATION_CV_PORT};
+        port.pos = POLYGENE_POS(VARIATION_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::VARIATION_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_REVERSE_CV_PORT, POLYGENE_LIGHT_REVERSE_CV_PORT};
+        port.pos = POLYGENE_POS(REVERSE_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::REVERSE_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_INVERT_CV_PORT, POLYGENE_LIGHT_INVERT_CV_PORT};
+        port.pos = POLYGENE_POS(INVERT_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::INVERT_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_RANDOM_CV_PORT, POLYGENE_LIGHT_RANDOM_CV_PORT};
+        port.pos = POLYGENE_POS(RANDOM_CV_PORT);
+        addInput(createOrbitsSkinnedInput(port, polygene, Polygene::RANDOM_CV_INPUT));
+        port.imagePaths = {POLYGENE_DARK_BEAT_PORT, POLYGENE_LIGHT_BEAT_PORT};
+        port.pos = POLYGENE_POS(BEAT_PORT);
+        addOutput(createOrbitsSkinnedOutput(port, polygene, Polygene::BEAT_OUTPUT));
+        port.imagePaths = {POLYGENE_DARK_EOC_PORT, POLYGENE_LIGHT_EOC_PORT};
+        port.pos = POLYGENE_POS(EOC_PORT);
+        addOutput(createOrbitsSkinnedOutput(port, polygene, Polygene::EOC_OUTPUT));
         // clang-format on
 
-        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(m_config->getPos("display"));
-        r->module = module;
-        r->box.size = m_config->getSize("display");
+        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(POLYGENE_POS(DISPLAY));
+        r->m_config = {{POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
+        r->module = polygene;
+        r->box.size = POLYGENE_SIZE(DISPLAY);
+        r->m_display_accent = r->m_config.accent[orbitsThemeIndex(kOrbitsThemeDefault)];
         addChild(r);
+
+        std::string panelPath =
+                asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(kOrbitsThemeDefault)]);
+        setPanel(APP->window->loadSvg(panelPath));
 }
 
 static void ToggleInputMode(InputMode *mode)
 {
         switch(*mode)
         {
-                case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
-                        *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
-                        break;
-                case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
-                default:
-                        *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                        break;
+        case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
+                *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
+                break;
+        case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
+        default:
+                *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                break;
         }
 }
 
@@ -221,32 +305,19 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 
         RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(module);
 
-        menu->addChild(createSubmenuItem("Randomize Filter", "",
-                [=](Menu* menu) {
-                        menu->addChild(createMenuLabel("Parameters that are randomized"));
+        orbitsAppendRandomizeFilterMenu(menu, &polygene->m_randomization_mask,
+                                        {{"Length", RareBreeds_Orbits_Polygene::RANDOMIZE_LENGTH},
+                                         {"Hits", RareBreeds_Orbits_Polygene::RANDOMIZE_HITS},
+                                         {"Shift", RareBreeds_Orbits_Polygene::RANDOMIZE_SHIFT},
+                                         {"Variation", RareBreeds_Orbits_Polygene::RANDOMIZE_VARIATION},
+                                         {"Reverse", RareBreeds_Orbits_Polygene::RANDOMIZE_REVERSE},
+                                         {"Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT}});
 
-                        std::vector<std::pair<std::string, size_t>> items = {
-                                std::make_pair("Length", RareBreeds_Orbits_Polygene::RANDOMIZE_LENGTH),
-                                std::make_pair("Hits", RareBreeds_Orbits_Polygene::RANDOMIZE_HITS),
-                                std::make_pair("Shift", RareBreeds_Orbits_Polygene::RANDOMIZE_SHIFT),
-                                std::make_pair("Variation", RareBreeds_Orbits_Polygene::RANDOMIZE_VARIATION),
-                                std::make_pair("Reverse", RareBreeds_Orbits_Polygene::RANDOMIZE_REVERSE),
-                                std::make_pair("Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT)
-                        };
-
-                        for(auto i : items)
-                        {
-                                menu->addChild(createCheckMenuItem(i.first, "",
-                                        [=]() {return polygene->m_randomization_mask & (1 << i.second);},
-                                        [=]() {polygene->m_randomization_mask ^= (1 << i.second);}
-                                ));
-                        }
-                }
-        ));
-
-        menu->addChild(createSubmenuItem("Mono Input Behavior", "",
-                [=](Menu* menu) {
-                        menu->addChild(createMenuLabel("Make mono cables only control the first channel"));
+        menu->addChild(createSubmenuItem(
+                "Mono Input Behavior", "",
+                [=](Menu *submenu)
+                {
+                        submenu->addChild(createMenuLabel("Make mono cables only control the first channel"));
 
                         InputMode *input_mode_array = polygene->m_input_mode;
                         std::vector<std::pair<std::string, size_t>> items = {
@@ -261,30 +332,9 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 
                         for(auto i : items)
                         {
-                                menu->addChild(createCheckMenuItem(i.first, "",
-                                        [=]() {return input_mode_array[i.second];},
-                                        [=]() {ToggleInputMode(&input_mode_array[i.second]);}
-                                ));
+                                submenu->addChild(createCheckMenuItem(
+                                        i.first, "", [=]() { return input_mode_array[i.second]; },
+                                        [=]() { ToggleInputMode(&input_mode_array[i.second]); }));
                         }
-                }
-        ));
-}
-
-void RareBreeds_Orbits_PolygeneWidget::draw(const DrawArgs& args)
-{
-        RareBreeds_Orbits_Polygene *module = static_cast<RareBreeds_Orbits_Polygene *>(getModule());
-
-        // In Rack-2 dataFromJson is called on the module before the widget is created
-        // The module remembers the json object so we can initialise it here
-        if(module)
-        {
-                json_t *config = module->m_widget_config.exchange(nullptr);
-                if(config)
-                {
-                        dataFromJson(config);
-                        json_decref(config);
-                }
-        }
-
-        OrbitsWidget::draw(args);
+                }));
 }

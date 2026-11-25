@@ -1,78 +1,22 @@
 #pragma once
 
+#include "OrbitsMacros.h"
 #include "plugin.hpp"
 #include <vector>
 
-struct EOCModeOption
-{
-        const char *desc;
-        EOCModeOption(const char *_desc) : desc{_desc}
-        {
-        }
-
-        virtual bool process(bool is_first, bool is_last, bool prev_was_last) const = 0;
-
-        virtual ~EOCModeOption()
-        {
-        }
-};
-
-struct EOCModeOptionOnRepeat : EOCModeOption
-{
-        EOCModeOptionOnRepeat() : EOCModeOption("On Repeat")
-        {
-        }
-
-        bool process(bool is_first, bool is_last, bool prev_was_last) const override
-        {
-                return is_first && prev_was_last;
-        }
-};
-
-struct EOCModeOptionFirst : EOCModeOption
-{
-        EOCModeOptionFirst() : EOCModeOption("First")
-        {
-        }
-
-        bool process(bool is_first, bool is_last, bool prev_was_last) const override
-        {
-                return is_first;
-        }
-};
-
-struct EOCModeOptionLast : EOCModeOption
-{
-        EOCModeOptionLast() : EOCModeOption("Last")
-        {
-        }
-
-        bool process(bool is_first, bool is_last, bool prev_was_last) const override
-        {
-                return is_last;
-        }
-};
-
-class EOCModeOptions
-{
-      public:
-        bool process(int mode, bool is_first, bool is_last, bool prev_was_last) const;
-        std::vector<std::string> getOptions(void) const;
-        ~EOCModeOptions();
-        size_t size() const;
-
-      private:
-        std::vector<EOCModeOption *> options{new EOCModeOptionOnRepeat, new EOCModeOptionFirst, new EOCModeOptionLast};
-};
+unsigned int clampRounded(float value, unsigned int min, unsigned int max);
+void json_load_real(json_t *root, const char *param, float *result);
+void json_load_bool(json_t *root, const char *param, bool *result);
+void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result);
 
 struct EOCMode
 {
-        int m_mode = 0;
+        uint8_t m_mode = 0;
 
-        int getMode(void);
-        void setMode(int mode);
-        std::vector<std::string> getOptions(void);
-        json_t *dataToJson(void);
+        uint8_t getMode() const;
+        void setMode(uint8_t mode);
+        std::vector<std::string> getOptions() const;
+        json_t *dataToJson() const;
         void dataFromJson(json_t *root);
 };
 
@@ -80,82 +24,18 @@ struct EOCGenerator
 {
         dsp::PulseGenerator m_generator;
         bool m_previous_beat_was_last = false;
-        void update(EOCMode &mode, bool is_first, bool is_last);
+        void update(const EOCMode &mode, bool is_first, bool is_last);
         bool process(float delta);
-};
-
-struct BeatModeOption
-{
-        const char *desc;
-        BeatModeOption(const char *_desc) : desc{_desc}
-        {
-        }
-        virtual bool process(bool pulse, bool state) const = 0;
-        virtual ~BeatModeOption()
-        {
-        }
-};
-
-struct BeatModeOptionPulse : BeatModeOption
-{
-        BeatModeOptionPulse() : BeatModeOption("Pulse")
-        {
-        }
-
-        bool process(bool pulse, bool state) const override
-        {
-                return pulse;
-        }
-};
-
-struct BeatModeOptionGate : BeatModeOption
-{
-        BeatModeOptionGate() : BeatModeOption("Gate")
-        {
-        }
-
-        bool process(bool pulse, bool state) const override
-        {
-                if(pulse)
-                {
-                        return false;
-                }
-                return state;
-        }
-};
-
-struct BeatModeOptionHold : BeatModeOption
-{
-        BeatModeOptionHold() : BeatModeOption("Hold")
-        {
-        }
-
-        bool process(bool pulse, bool state) const override
-        {
-                return state;
-        }
-};
-
-class BeatModeOptions
-{
-      public:
-        bool process(int mode, bool pulse, bool state) const;
-        std::vector<std::string> getOptions(void) const;
-        ~BeatModeOptions();
-        size_t size() const;
-
-      private:
-        std::vector<BeatModeOption *> options{new BeatModeOptionPulse, new BeatModeOptionGate, new BeatModeOptionHold};
 };
 
 struct BeatMode
 {
-        int m_mode = 0;
+        uint8_t m_mode = 0;
 
-        int getMode(void);
-        void setMode(int mode);
-        std::vector<std::string> getOptions(void);
-        json_t *dataToJson(void);
+        uint8_t getMode() const;
+        void setMode(uint8_t mode);
+        std::vector<std::string> getOptions() const;
+        json_t *dataToJson() const;
         void dataFromJson(json_t *root);
 };
 
@@ -164,7 +44,7 @@ struct BeatGenerator
         dsp::PulseGenerator m_generator;
         bool m_state = false;
         void update(bool is_on);
-        bool process(BeatMode &mode, float delta);
+        bool process(const BeatMode &mode, float delta);
 };
 
 struct RepeatTrigger

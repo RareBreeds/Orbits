@@ -9,8 +9,7 @@ struct RareBreeds_Orbits_EugeneWidget : OrbitsWidget
 {
         BeatWidget beat_widget;
         EOCWidget eoc_widget;
-        EugeneRhythmDisplay *rhythm_display;
-        RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *module);
+        EugeneRhythmDisplay *rhythm_display = NULL;
+        RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *eugene);
         void appendModuleContextMenu(Menu *menu) override;
-        void draw(const DrawArgs& args) override;
 };

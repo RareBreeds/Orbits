@@ -1,51 +1,112 @@
 #include "OrbitsModule.hpp"
 
-static const EOCModeOptions eoc_mode_options;
+#include <algorithm>
+#include <limits>
 
-bool EOCModeOptions::process(int mode, bool is_first, bool is_last, bool prev_was_last) const
+unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
-        return options[mode]->process(is_first, is_last, prev_was_last);
-}
-
-std::vector<std::string> EOCModeOptions::getOptions(void) const
-{
-        std::vector<std::string> opts;
-        for(auto option : options)
+        float r = std::round(value);
+        if(std::isnan(r) || r <= static_cast<float>(min))
         {
-                opts.push_back(option->desc);
+                return min;
         }
-        return opts;
-}
 
-EOCModeOptions::~EOCModeOptions()
-{
-        for(auto i : options)
+        if(r >= static_cast<float>(max))
         {
-                delete i;
+                return max;
+        }
+
+        return static_cast<unsigned int>(r);
+}
+
+void json_load_real(json_t *root, const char *param, float *result)
+{
+        json_t *obj = json_object_get(root, param);
+        // Accept integers as well as reals, e.g. from a hand-edited patch.
+        if(json_is_number(obj))
+        {
+                // Keep the value finite. json_real() can't store them and the plugin
+                // doesn't need them for anything.
+                const double max = static_cast<double>(std::numeric_limits<float>::max());
+                const double value = std::max(-max, std::min(json_number_value(obj), max));
+                *result = static_cast<float>(value);
         }
 }
 
-size_t EOCModeOptions::size() const
+void json_load_bool(json_t *root, const char *param, bool *result)
 {
-        return options.size();
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = json_boolean_value(obj);
+        }
 }
 
-int EOCMode::getMode(void)
+void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result)
+{
+        json_t *obj = json_object_get(root, param);
+        if(obj)
+        {
+                *result = static_cast<unsigned int>(json_integer_value(obj));
+        }
+}
+
+struct EOCModeOption
+{
+        const char *name;
+        bool (*process)(bool is_first, bool is_last, bool prev_was_last);
+};
+
+static bool eocModeOnRepeat(bool is_first, bool /*is_last*/, bool prev_was_last)
+{
+        return is_first && prev_was_last;
+}
+
+static bool eocModeFirst(bool is_first, bool /*is_last*/, bool /*prev_was_last*/)
+{
+        return is_first;
+}
+
+static bool eocModeLast(bool /*is_first*/, bool is_last, bool /*prev_was_last*/)
+{
+        return is_last;
+}
+
+static constexpr EOCModeOption eoc_mode_options[] = {
+        {"On Repeat", eocModeOnRepeat},
+        {"First", eocModeFirst},
+        {"Last", eocModeLast},
+};
+
+static constexpr size_t eoc_mode_count = sizeof(eoc_mode_options) / sizeof(eoc_mode_options[0]);
+
+uint8_t EOCMode::getMode() const
 {
         return m_mode;
 }
 
-void EOCMode::setMode(int mode)
+void EOCMode::setMode(uint8_t mode)
 {
-        m_mode = math::clamp(mode, 0, eoc_mode_options.size());
+        if(mode < eoc_mode_count)
+        {
+                m_mode = mode;
+        }
 }
 
-std::vector<std::string> EOCMode::getOptions(void)
+std::vector<std::string> EOCMode::getOptions() const
 {
-        return eoc_mode_options.getOptions();
+        std::vector<std::string> names;
+        names.reserve(eoc_mode_count);
+
+        for(const EOCModeOption &option : eoc_mode_options)
+        {
+                names.emplace_back(option.name);
+        }
+
+        return names;
 }
 
-json_t *EOCMode::dataToJson(void)
+json_t *EOCMode::dataToJson() const
 {
         return json_integer(m_mode);
 }
@@ -54,13 +115,17 @@ void EOCMode::dataFromJson(json_t *root)
 {
         if(root)
         {
-                setMode(json_integer_value(root));
+                json_int_t mode = json_integer_value(root);
+                if(json_is_integer(root) && mode >= 0 && mode < static_cast<json_int_t>(eoc_mode_count))
+                {
+                        setMode(static_cast<uint8_t>(mode));
+                }
         }
 }
 
-void EOCGenerator::update(EOCMode &mode, bool is_first, bool is_last)
+void EOCGenerator::update(const EOCMode &mode, bool is_first, bool is_last)
 {
-        if(eoc_mode_options.process(mode.getMode(), is_first, is_last, m_previous_beat_was_last))
+        if(eoc_mode_options[mode.getMode()].process(is_first, is_last, m_previous_beat_was_last))
         {
                 m_generator.trigger(1e-3f);
         }
@@ -72,52 +137,66 @@ bool EOCGenerator::process(float delta)
         return m_generator.process(delta);
 }
 
-static const BeatModeOptions beat_mode_options;
-
-std::vector<std::string> BeatModeOptions::getOptions(void) const
+struct BeatModeOption
 {
-        std::vector<std::string> opts;
-        for(auto option : options)
+        const char *name;
+        bool (*process)(bool pulse, bool state);
+};
+
+static bool beatModePulse(bool pulse, bool /*state*/)
+{
+        return pulse;
+}
+
+static bool beatModeGate(bool pulse, bool state)
+{
+        if(pulse)
         {
-                opts.push_back(option->desc);
+                return false;
         }
-        return opts;
+        return state;
 }
 
-BeatModeOptions::~BeatModeOptions()
+static bool beatModeHold(bool /*pulse*/, bool state)
 {
-        for(auto i : options)
-        {
-                delete i;
-        }
+        return state;
 }
 
-size_t BeatModeOptions::size() const
-{
-        return options.size();
-}
+static constexpr BeatModeOption beat_mode_options[] = {
+        {"Pulse", beatModePulse},
+        {"Gate", beatModeGate},
+        {"Hold", beatModeHold},
+};
 
-bool BeatModeOptions::process(int mode, bool pulse, bool state) const
-{
-        return options[mode]->process(pulse, state);
-}
+static constexpr size_t beat_mode_count = sizeof(beat_mode_options) / sizeof(beat_mode_options[0]);
 
-int BeatMode::getMode(void)
+uint8_t BeatMode::getMode() const
 {
         return m_mode;
 }
 
-void BeatMode::setMode(int mode)
+void BeatMode::setMode(uint8_t mode)
 {
-        m_mode = math::clamp(mode, 0, beat_mode_options.size());
+        if(mode < beat_mode_count)
+        {
+                m_mode = mode;
+        }
 }
 
-std::vector<std::string> BeatMode::getOptions(void)
+std::vector<std::string> BeatMode::getOptions() const
 {
-        return beat_mode_options.getOptions();
+        std::vector<std::string> names;
+        names.reserve(beat_mode_count);
+
+        for(const BeatModeOption &option : beat_mode_options)
+        {
+                names.emplace_back(option.name);
+        }
+
+        return names;
 }
 
-json_t *BeatMode::dataToJson(void)
+json_t *BeatMode::dataToJson() const
 {
         return json_integer(m_mode);
 }
@@ -126,7 +205,11 @@ void BeatMode::dataFromJson(json_t *root)
 {
         if(root)
         {
-                setMode(json_integer_value(root));
+                json_int_t mode = json_integer_value(root);
+                if(json_is_integer(root) && mode >= 0 && mode < static_cast<json_int_t>(beat_mode_count))
+                {
+                        setMode(static_cast<uint8_t>(mode));
+                }
         }
 }
 
@@ -139,8 +222,8 @@ void BeatGenerator::update(bool is_on)
         }
 }
 
-bool BeatGenerator::process(BeatMode &mode, float delta)
+bool BeatGenerator::process(const BeatMode &mode, float delta)
 {
         bool pulse = m_generator.process(delta);
-        return beat_mode_options.process(mode.getMode(), pulse, m_state);
+        return beat_mode_options[mode.getMode()].process(pulse, m_state);
 }

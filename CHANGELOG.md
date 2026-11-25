@@ -1,3 +1,18 @@
+## [Unreleased]
+### Added
+ - Support for the 4ms MetaModule
+
+### Changed
+ - Polygene's RND input no longer adds to the undo history each time it randomizes a channel
+
+### Fixed
+ - Length, Hits and Shift CV well below 0V could jump to the maximum value instead of the minimum
+ - Hits could sometimes stay at 0 after randomizing
+ - Undoing a Polygene channel randomization could restore the wrong channel
+ - Polygene's mono input behaviour option for the RND input wasn't saved with the patch
+ - Possible crashes when loading patches or presets with invalid settings
+ - Small memory leak when loading several presets in quick succession
+
 ## [2.0.4] - 2023-12-21
 ### Added
  - Ability to filter what is randomized

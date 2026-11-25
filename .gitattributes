@@ -1,0 +1,7 @@
+# Store text files with LF line endings in the repository. Git detects which files are
+# text. Checkouts use the platform's line endings as configured by core.autocrlf.
+* text=auto
+
+# Never convert these.
+*.png binary
+*.ttf binary

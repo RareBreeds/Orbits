@@ -1,11 +1,11 @@
 #pragma once
 
 #include "OrbitsModule.hpp"
-#include "Rhythm.hpp"
+#include "OrbitsRhythm.hpp"
+#include "OrbitsStepCounter.hpp"
+#include "OrbitsWidgetData.hpp"
 
 #include <atomic>
-
-struct RareBreeds_Orbits_EugeneWidget;
 
 struct EugeneDisplayData
 {
@@ -88,24 +88,25 @@ struct RareBreeds_Orbits_Eugene : Module
         EOCMode m_eoc;
         EOCGenerator m_eoc_generator;
 
-        unsigned int m_current_step = 0;
-        int m_randomization_mask = RANDOMIZE_ALL;
+        OrbitsStepCounter m_steps;
+        unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
-        RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
-        std::atomic<json_t *> m_widget_config{nullptr};
+        std::atomic<bool> m_reverse{false};
+        std::atomic<bool> m_invert{false};
+
+        OrbitsWidgetData m_widget_data;
         RareBreeds_Orbits_Eugene();
-        virtual ~RareBreeds_Orbits_Eugene();
 
         unsigned int readLength();
         unsigned int readHits(unsigned int length);
         unsigned int readShift(unsigned int length);
         bool readReverse();
         bool readInvert();
-        void process(const ProcessArgs &args) override;
+        void process(const ProcessArgs &process_args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
         void onReset() override;
-        EugeneDisplayData getDisplayData(void);
+        EugeneDisplayData getDisplayData();
         static EugeneDisplayData getDisplayData(RareBreeds_Orbits_Eugene *module);
-        void onRandomize(const RandomizeEvent& e) override;
+        void onRandomize(const RandomizeEvent &e) override;
 };

@@ -1,0 +1,95 @@
+#include "doctest.h"
+
+#include "EugeneModule.hpp"
+#include "RackTestHelpers.hpp"
+
+typedef RareBreeds_Orbits_Eugene Eugene;
+
+// Sets the knobs for a rhythm of `length` steps with `hits` on beats.
+static void setRhythm(Eugene &eugene, unsigned int length, unsigned int hits, unsigned int shift = 0)
+{
+        eugene.getParam(Eugene::LENGTH_KNOB_PARAM).setValue(static_cast<float>(length));
+        eugene.getParam(Eugene::HITS_KNOB_PARAM).setValue(static_cast<float>(hits) / static_cast<float>(length));
+        eugene.getParam(Eugene::SHIFT_KNOB_PARAM).setValue(static_cast<float>(shift));
+}
+
+static ClockedOutputs sendClocks(Eugene &eugene, unsigned int clocks)
+{
+        return sendClocks(eugene, Eugene::CLOCK_INPUT, Eugene::BEAT_OUTPUT, Eugene::EOC_OUTPUT, 1, clocks);
+}
+
+TEST_CASE("Eugene plays its rhythm on the beat output, starting from the first step")
+{
+        Eugene eugene;
+        setRhythm(eugene, 8, 3);
+        CHECK(sendClocks(eugene, 16).beat[0] == "x.x..x..x.x..x..");
+}
+
+TEST_CASE("Eugene's shift rotates the rhythm later")
+{
+        Eugene eugene;
+        setRhythm(eugene, 8, 3, 1);
+        CHECK(sendClocks(eugene, 8).beat[0] == ".x.x..x.");
+}
+
+TEST_CASE("Eugene's reverse plays the rhythm backwards from the last step")
+{
+        Eugene eugene;
+        setRhythm(eugene, 8, 3);
+        eugene.getParam(Eugene::REVERSE_KNOB_PARAM).setValue(1.f);
+        CHECK(sendClocks(eugene, 16).beat[0] == "..x..x.x..x..x.x");
+}
+
+TEST_CASE("Eugene's invert swaps on and off beats")
+{
+        Eugene eugene;
+        setRhythm(eugene, 8, 3);
+        eugene.getParam(Eugene::INVERT_KNOB_PARAM).setValue(1.f);
+        CHECK(sendClocks(eugene, 8).beat[0] == ".x.xx.xx");
+}
+
+TEST_CASE("Eugene's end of cycle output follows its EOC mode")
+{
+        Eugene eugene;
+        setRhythm(eugene, 8, 3);
+
+        SUBCASE("On Repeat, the default, fires as each repeat starts")
+        {
+                CHECK(sendClocks(eugene, 24).eoc[0] == "........x.......x.......");
+        }
+        SUBCASE("First fires on every first step")
+        {
+                eugene.m_eoc.setMode(1);
+                CHECK(sendClocks(eugene, 16).eoc[0] == "x.......x.......");
+        }
+        SUBCASE("Last fires on every last step")
+        {
+                eugene.m_eoc.setMode(2);
+                CHECK(sendClocks(eugene, 16).eoc[0] == ".......x.......x");
+        }
+}
+
+TEST_CASE("Loading Eugene's widget config twice before the widget draws doesn't leak it")
+{
+        // dataFromJson() keeps the "widget" object for the widget to apply when it next draws.
+        // Loading a second patch before then used to leak the first one's.
+        json_t *first = json_object();
+        json_t *second = json_object();
+        json_t *first_patch = json_object();
+        json_t *second_patch = json_object();
+        json_object_set(first_patch, "widget", first);
+        json_object_set(second_patch, "widget", second);
+
+        {
+                Eugene eugene;
+                eugene.dataFromJson(first_patch);
+                eugene.dataFromJson(second_patch);
+        }
+        json_decref(first_patch);
+        json_decref(second_patch);
+
+        CHECK(referenceCount(first) == 1);
+        CHECK(referenceCount(second) == 1);
+        json_decref(first);
+        json_decref(second);
+}

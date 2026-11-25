@@ -1,11 +1,12 @@
 #pragma once
 
 #include "OrbitsModule.hpp"
-#include "Rhythm.hpp"
+#include "OrbitsRhythm.hpp"
+#include "OrbitsStepCounter.hpp"
+#include "OrbitsUndoQueue.hpp"
+#include "OrbitsWidgetData.hpp"
 
 #include <atomic>
-
-struct RareBreeds_Orbits_PolygeneWidget;
 
 enum InputMode
 {
@@ -19,13 +20,15 @@ enum InputMode
         INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST
 };
 
+struct PolygeneChannelDisplayData
+{
+        unsigned int length, hits, shift, variation, invert, current_step;
+};
+
 struct PolygeneDisplayData
 {
-        unsigned int active_channel_id, active_channels;
-        struct
-        {
-                unsigned int length, hits, shift, variation, invert, current_step;
-        } channels[PORT_MAX_CHANNELS];
+        uint8_t active_channel_id, active_channels;
+        PolygeneChannelDisplayData channels[PORT_MAX_CHANNELS];
 };
 
 struct PolygeneChannelState
@@ -34,7 +37,13 @@ struct PolygeneChannelState
         bool reverse, invert;
 };
 
-struct RareBreeds_Orbits_Polygene : Module
+struct PolygeneRandomizeRecord
+{
+        uint8_t channel;
+        PolygeneChannelState old_state, new_state;
+};
+
+struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
 {
         enum ParamIds
         {
@@ -85,13 +94,13 @@ struct RareBreeds_Orbits_Polygene : Module
         const unsigned int RANDOMIZE_ALL = (1 << RANDOMIZE_COUNT) - 1;
 
         // The channel currently being displayed and controlled by the knobs
-        int m_active_channel_id = 0;
-        int m_previous_channel_id = PORT_MAX_CHANNELS;
+        uint8_t m_active_channel_id = 0;
+        uint8_t m_previous_channel_id = PORT_MAX_CHANNELS;
 
         struct Channel
         {
-                unsigned int m_current_step = 0;
-                int m_channel;
+                OrbitsStepCounter m_steps;
+                uint8_t m_channel = 0;
                 dsp::SchmittTrigger m_clock_trigger;
                 dsp::SchmittTrigger m_sync_trigger;
                 dsp::SchmittTrigger m_reverse_trigger;
@@ -100,53 +109,58 @@ struct RareBreeds_Orbits_Polygene : Module
                 BeatGenerator m_beat_generator;
                 EOCGenerator m_eoc_generator;
                 PolygeneChannelState m_state;
-                RareBreeds_Orbits_Polygene *m_module;
 
-                void init(RareBreeds_Orbits_Polygene *module, int channel);
-                bool readReverse(void);
-                bool readInvert(void);
+                // Reverse/invert as last evaluated by the module's process() on the engine thread.
+                // The display reads these instead of evaluating the triggers itself.
+                std::atomic<bool> m_reverse{false};
+                std::atomic<bool> m_invert{false};
+
+                RareBreeds_Orbits_Polygene *m_module = NULL;
+
+                void init(RareBreeds_Orbits_Polygene *module, uint8_t channel);
+                bool readReverse();
+                bool readInvert();
                 static bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
                                      unsigned int beat, bool invert);
                 unsigned int readLength();
-                unsigned int readStep(unsigned int length)
-                {
-                        return m_current_step >= length ? 0 : m_current_step;
-                }
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
                 unsigned int readVariation(unsigned int length, unsigned int shift);
                 void process(const ProcessArgs &args);
                 json_t *dataToJson();
                 void dataFromJson(json_t *root);
-                void onRandomizeWithHistory(int randomization_mask);
-                void onRandomize(int randomization_mask);
+                void onRandomizeWithHistory(unsigned int randomization_mask);
+                void onRandomize(unsigned int randomization_mask);
         };
 
-        int m_active_channels = 1;
+        uint8_t m_active_channels = 1;
         Channel m_channels[PORT_MAX_CHANNELS];
-        Channel *m_active_channel;
+        Channel *m_active_channel = NULL;
         dsp::BooleanTrigger m_reverse_trigger;
         dsp::BooleanTrigger m_invert_trigger;
         RepeatTrigger m_random_trigger;
         dsp::BooleanTrigger m_sync_trigger;
-        RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
-        std::atomic<json_t *> m_widget_config{nullptr};
+        OrbitsWidgetData m_widget_data;
+
+        // Channels randomized by the Random button, waiting to be added to the undo history.
+        OrbitsUndoQueue<PolygeneRandomizeRecord> m_randomize_undo;
+
         BeatMode m_beat;
         EOCMode m_eoc;
         InputMode m_input_mode[NUM_INPUTS];
-        int m_randomization_mask = RANDOMIZE_ALL;
+        unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
         RareBreeds_Orbits_Polygene();
-        virtual ~RareBreeds_Orbits_Polygene();
         void reset();
         void syncParamsToActiveChannel();
-        void process(const ProcessArgs &args) override;
+        void process(const ProcessArgs &process_args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
-        void onRandomize(const RandomizeEvent& e) override;
-        void onReset(const ResetEvent& e) override;
-        PolygeneDisplayData getDisplayData(void);
+        void onRandomize(const RandomizeEvent &e) override;
+        void onReset(const ResetEvent &e) override;
+        void flushUndoHistory() override;
+        PolygeneDisplayData getDisplayData();
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
-        float getParameterizedVoltage(int input_id, int channel);
-        InputMode getInputMode(int input_id);
+        float getParameterizedVoltage(int input_id, uint8_t channel);
+        InputMode getInputMode(int input_id) const;
 };
