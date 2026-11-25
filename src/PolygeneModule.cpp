@@ -567,8 +567,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                         //    so store the config and initialize when it's first used.
                         // 2. EightFaceMk2 calls dataFromJson from a different thread than the
                         //    main thread which may cause GL operations to fail.
-                        // Note the module must remember to decref this if the widget is never created
-                        m_widget_config = json_incref(obj);
+                        json_decref(m_widget_config.exchange(json_incref(obj)));
                 }
 
                 syncParamsToActiveChannel();
