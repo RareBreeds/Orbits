@@ -135,6 +135,24 @@ void EOCWidget::appendContextMenu(Menu *menu)
         menu->addChild(createIndexPtrSubmenuItem("EOC Mode", m_module->getOptions(), &m_module->m_mode));
 }
 
+void orbitsAppendRandomizeFilterMenu(Menu *menu, unsigned int *mask,
+                                     const std::vector<OrbitsRandomizeFilterOption> &options)
+{
+        // The submenu is built when it's opened, so the options are copied into the lambda.
+        menu->addChild(createSubmenuItem("Randomize Filter", "",
+                                         [=](Menu *submenu)
+                                         {
+                                                 submenu->addChild(createMenuLabel("Parameters that are randomized"));
+                                                 for(const OrbitsRandomizeFilterOption &option : options)
+                                                 {
+                                                         const unsigned int bit = 1u << option.bit;
+                                                         submenu->addChild(createCheckMenuItem(
+                                                                 option.name, "", [=]() { return (*mask & bit) != 0; },
+                                                                 [=]() { *mask ^= bit; }));
+                                                 }
+                                         }));
+}
+
 void BeatWidget::appendContextMenu(Menu *menu)
 {
         menu->addChild(createIndexPtrSubmenuItem("Beat Mode", m_module->getOptions(), &m_module->m_mode));

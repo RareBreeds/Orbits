@@ -305,28 +305,13 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 
         RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(module);
 
-        menu->addChild(createSubmenuItem(
-                "Randomize Filter", "",
-                [=](Menu *submenu)
-                {
-                        submenu->addChild(createMenuLabel("Parameters that are randomized"));
-
-                        std::vector<std::pair<std::string, size_t>> items = {
-                                std::make_pair("Length", RareBreeds_Orbits_Polygene::RANDOMIZE_LENGTH),
-                                std::make_pair("Hits", RareBreeds_Orbits_Polygene::RANDOMIZE_HITS),
-                                std::make_pair("Shift", RareBreeds_Orbits_Polygene::RANDOMIZE_SHIFT),
-                                std::make_pair("Variation", RareBreeds_Orbits_Polygene::RANDOMIZE_VARIATION),
-                                std::make_pair("Reverse", RareBreeds_Orbits_Polygene::RANDOMIZE_REVERSE),
-                                std::make_pair("Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT)};
-
-                        for(auto i : items)
-                        {
-                                submenu->addChild(createCheckMenuItem(
-                                        i.first, "",
-                                        [=]() { return polygene->m_randomization_mask & (1u << i.second); },
-                                        [=]() { polygene->m_randomization_mask ^= (1u << i.second); }));
-                        }
-                }));
+        orbitsAppendRandomizeFilterMenu(menu, &polygene->m_randomization_mask,
+                                        {{"Length", RareBreeds_Orbits_Polygene::RANDOMIZE_LENGTH},
+                                         {"Hits", RareBreeds_Orbits_Polygene::RANDOMIZE_HITS},
+                                         {"Shift", RareBreeds_Orbits_Polygene::RANDOMIZE_SHIFT},
+                                         {"Variation", RareBreeds_Orbits_Polygene::RANDOMIZE_VARIATION},
+                                         {"Reverse", RareBreeds_Orbits_Polygene::RANDOMIZE_REVERSE},
+                                         {"Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT}});
 
         menu->addChild(createSubmenuItem(
                 "Mono Input Behavior", "",

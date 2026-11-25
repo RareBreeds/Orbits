@@ -13,6 +13,7 @@
 #include <engine/Engine.hpp>
 #include <history.hpp>
 #include <random.hpp>
+#include <widget/event.hpp>
 
 void clearTestUndoHistory()
 {
@@ -27,11 +28,13 @@ int main(int argc, char **argv)
         rack::contextSet(new rack::Context);
         APP->engine = new rack::engine::Engine;
         APP->history = new rack::history::State;
+        // Widgets tell the event state when they're deleted, e.g. menus built by tests.
+        APP->event = new rack::widget::EventState;
 
         doctest::Context tests(argc, argv);
         const int result = tests.run();
 
-        // Deleting the context also deletes its engine and history.
+        // Deleting the context also deletes its engine, history and event state.
         delete APP;
         rack::contextSet(NULL);
         return result;

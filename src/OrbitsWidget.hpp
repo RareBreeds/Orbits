@@ -32,6 +32,18 @@ struct EOCWidget
         void appendContextMenu(Menu *menu);
 };
 
+// One option in the Randomize Filter menu: its name, and its bit in the module's randomization mask.
+struct OrbitsRandomizeFilterOption
+{
+        const char *name;
+        unsigned int bit;
+};
+
+// Adds the "Randomize Filter" submenu, with a check item for each option that toggles its bit in
+// `*mask`. Bits that are set are randomized.
+void orbitsAppendRandomizeFilterMenu(Menu *menu, unsigned int *mask,
+                                     const std::vector<OrbitsRandomizeFilterOption> &options);
+
 struct BeatWidget
 {
         BeatMode *m_module;

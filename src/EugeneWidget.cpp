@@ -314,27 +314,13 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
         eoc_widget.appendContextMenu(menu);
 
         RareBreeds_Orbits_Eugene *eugene = static_cast<RareBreeds_Orbits_Eugene *>(module);
-        menu->addChild(createSubmenuItem(
-                "Randomize Filter", "",
-                [=](Menu *submenu)
-                {
-                        submenu->addChild(createMenuLabel("Parameters that are randomized"));
-
-                        std::vector<std::pair<std::string, size_t>> items = {
-                                std::make_pair("Length", RareBreeds_Orbits_Eugene::RANDOMIZE_LENGTH),
-                                std::make_pair("Length CV", RareBreeds_Orbits_Eugene::RANDOMIZE_LENGTH_CV),
-                                std::make_pair("Hits", RareBreeds_Orbits_Eugene::RANDOMIZE_HITS),
-                                std::make_pair("Hits CV", RareBreeds_Orbits_Eugene::RANDOMIZE_HITS_CV),
-                                std::make_pair("Shift", RareBreeds_Orbits_Eugene::RANDOMIZE_SHIFT),
-                                std::make_pair("Shift CV", RareBreeds_Orbits_Eugene::RANDOMIZE_SHIFT_CV),
-                                std::make_pair("Reverse", RareBreeds_Orbits_Eugene::RANDOMIZE_REVERSE),
-                                std::make_pair("Invert", RareBreeds_Orbits_Eugene::RANDOMIZE_INVERT)};
-
-                        for(auto i : items)
-                        {
-                                submenu->addChild(createCheckMenuItem(
-                                        i.first, "", [=]() { return eugene->m_randomization_mask & (1u << i.second); },
-                                        [=]() { eugene->m_randomization_mask ^= (1u << i.second); }));
-                        }
-                }));
+        orbitsAppendRandomizeFilterMenu(menu, &eugene->m_randomization_mask,
+                                        {{"Length", RareBreeds_Orbits_Eugene::RANDOMIZE_LENGTH},
+                                         {"Length CV", RareBreeds_Orbits_Eugene::RANDOMIZE_LENGTH_CV},
+                                         {"Hits", RareBreeds_Orbits_Eugene::RANDOMIZE_HITS},
+                                         {"Hits CV", RareBreeds_Orbits_Eugene::RANDOMIZE_HITS_CV},
+                                         {"Shift", RareBreeds_Orbits_Eugene::RANDOMIZE_SHIFT},
+                                         {"Shift CV", RareBreeds_Orbits_Eugene::RANDOMIZE_SHIFT_CV},
+                                         {"Reverse", RareBreeds_Orbits_Eugene::RANDOMIZE_REVERSE},
+                                         {"Invert", RareBreeds_Orbits_Eugene::RANDOMIZE_INVERT}});
 }
