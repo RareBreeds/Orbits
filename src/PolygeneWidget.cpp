@@ -121,9 +121,8 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 
                         nvgStrokeColor(args.vg, dash_colour);
                         nvgFillColor(args.vg, dash_colour);
-                        // The engine is run in a different thread, m_current_step is only updated on each clock
-                        // cycle so may not have been wrapped to a new length parameter yet. If the current step
-                        // is out of bounds then display it at 0.
+                        // The engine is run in a different thread and only wraps the step position to a new
+                        // length on the next clock, so getDisplayData() shows a position beyond the length as 0.
                         unsigned int current_step = data.channels[c].current_step;
                         for(unsigned int k = 0; k < length; ++k)
                         {

@@ -39,7 +39,7 @@ EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(void)
         data.shift = readShift(data.length);
         data.reverse = m_reverse.load(std::memory_order_relaxed);
         data.invert = m_invert.load(std::memory_order_relaxed);
-        data.current_step = m_current_step > data.length - 1 ? 0 : m_current_step;
+        data.current_step = m_steps.position(data.length);
         return data;
 }
 
@@ -124,12 +124,12 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &process_args)
 {
         if(m_sync_trigger.process(getInput(SYNC_INPUT).getVoltage()))
         {
-                m_current_step = 0;
+                m_steps.reset();
         }
 
         if(m_sync_button_trigger.process(getParam(SYNC_KNOB_PARAM).getValue() > 0.5f))
         {
-                m_current_step = 0;
+                m_steps.reset();
         }
 
         if(m_random_trigger.process(getInput(RANDOM_CV_INPUT).getVoltage()))
@@ -149,42 +149,9 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &process_args)
                 auto hits = readHits(length);
                 auto shift = readShift(length);
 
-                if(m_current_step >= length)
-                {
-                        m_current_step = 0;
-                }
-
-                if(reverse)
-                {
-                        if(m_current_step == 0)
-                        {
-                                m_current_step = length - 1;
-                        }
-                        else
-                        {
-                                --m_current_step;
-                        }
-                }
-
-                // If we're going forwards, first is 0, last is length - 1
-                // If we're going backwards, first is length - 1, last is 0
-                unsigned int first = reverse ? length - 1 : 0;
-                unsigned int last = reverse ? 0 : length - 1;
-                m_eoc_generator.update(m_eoc, m_current_step == first, m_current_step == last);
-
-                m_beat_generator.update(orbitsEuclideanBeat(length, hits, shift, m_current_step, invert));
-
-                if(!reverse)
-                {
-                        if(m_current_step == length - 1)
-                        {
-                                m_current_step = 0;
-                        }
-                        else
-                        {
-                                ++m_current_step;
-                        }
-                }
+                const OrbitsStepCounter::Step step = m_steps.advance(length, reverse);
+                m_eoc_generator.update(m_eoc, step.is_first, step.is_last);
+                m_beat_generator.update(orbitsEuclideanBeat(length, hits, shift, step.index, invert));
         }
 
         getOutput(BEAT_OUTPUT).setVoltage(m_beat_generator.process(m_beat, process_args.sampleTime) ? 10.f : 0.f);
@@ -236,7 +203,7 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Eugene::onReset()
 {
-        m_current_step = 0;
+        m_steps.reset();
 }
 
 RareBreeds_Orbits_Eugene::~RareBreeds_Orbits_Eugene()

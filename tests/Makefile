@@ -21,6 +21,7 @@ RACK_TARGET := $(BUILD_DIR)/orbits-rack-tests
 SOURCES := ../src/OrbitsRhythm.cpp
 SOURCES += TestMain.cpp
 SOURCES += OrbitsRhythmTests.cpp
+SOURCES += OrbitsStepCounterTests.cpp
 
 # All of the plugin's sources, then the Rack tests.
 RACK_SOURCES := $(wildcard ../src/*.cpp)

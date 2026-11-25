@@ -2,6 +2,7 @@
 
 #include "OrbitsModule.hpp"
 #include "OrbitsRhythm.hpp"
+#include "OrbitsStepCounter.hpp"
 
 #include <atomic>
 
@@ -88,7 +89,7 @@ struct RareBreeds_Orbits_Eugene : Module
         EOCMode m_eoc;
         EOCGenerator m_eoc_generator;
 
-        unsigned int m_current_step = 0;
+        OrbitsStepCounter m_steps;
         unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
         std::atomic<bool> m_reverse{false};

@@ -39,7 +39,7 @@ struct RandomizeChannelAction : rack::history::ModuleAction
 
 void RareBreeds_Orbits_Polygene::Channel::init(RareBreeds_Orbits_Polygene *module, uint8_t channel)
 {
-        m_current_step = 0;
+        m_steps.reset();
         m_module = module;
         m_channel = channel;
         m_state.length = m_module->getParam(LENGTH_KNOB_PARAM).getValue();
@@ -113,11 +113,8 @@ unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int len
 
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
 {
-        // A rising clock edge means first play the current beat
-        // then advance to the next step
         if(m_clock_trigger.process(m_module->getInput(CLOCK_INPUT).getPolyVoltage(m_channel)))
         {
-                // Play the current beat
                 auto length = readLength();
                 auto hits = readHits(length);
                 auto shift = readShift(length);
@@ -125,38 +122,9 @@ void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
                 auto variation = readVariation(length, hits);
                 auto reverse = m_reverse.load(std::memory_order_relaxed);
 
-                // Avoid stepping out of bounds
-                m_current_step = readStep(length);
-
-                if(reverse)
-                {
-                        if(m_current_step == 0)
-                        {
-                                m_current_step = length - 1;
-                        }
-                        else
-                        {
-                                --m_current_step;
-                        }
-                }
-
-                unsigned int first = reverse ? length - 1 : 0;
-                unsigned int last = reverse ? 0 : length - 1;
-                m_eoc_generator.update(m_module->m_eoc, m_current_step == first, m_current_step == last);
-
-                m_beat_generator.update(isOnBeat(length, hits, shift, variation, m_current_step, invert));
-
-                if(!reverse)
-                {
-                        if(m_current_step == length - 1)
-                        {
-                                m_current_step = 0;
-                        }
-                        else
-                        {
-                                ++m_current_step;
-                        }
-                }
+                const OrbitsStepCounter::Step step = m_steps.advance(length, reverse);
+                m_eoc_generator.update(m_module->m_eoc, step.is_first, step.is_last);
+                m_beat_generator.update(isOnBeat(length, hits, shift, variation, step.index, invert));
         }
 
         auto out = m_beat_generator.process(m_module->m_beat, args.sampleTime) ? 10.f : 0.f;
@@ -250,7 +218,7 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(void)
                 ch->shift = m_channels[c].readShift(ch->length);
                 ch->variation = m_channels[c].readVariation(ch->length, ch->hits);
                 ch->invert = m_channels[c].m_invert.load(std::memory_order_relaxed);
-                ch->current_step = m_channels[c].readStep(ch->length);
+                ch->current_step = m_channels[c].m_steps.position(ch->length);
         }
         return data;
 }
@@ -412,7 +380,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
         {
                 if(m_channels[i].m_sync_trigger.process(getParameterizedVoltage(SYNC_INPUT, i)))
                 {
-                        m_channels[i].m_current_step = 0;
+                        m_channels[i].m_steps.reset();
                 }
         }
 
@@ -420,7 +388,7 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
         {
                 for(auto &chan : m_channels)
                 {
-                        chan.m_current_step = 0;
+                        chan.m_steps.reset();
                 }
         }
 

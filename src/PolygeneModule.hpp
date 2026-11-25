@@ -2,6 +2,7 @@
 
 #include "OrbitsModule.hpp"
 #include "OrbitsRhythm.hpp"
+#include "OrbitsStepCounter.hpp"
 #include "OrbitsUndoQueue.hpp"
 
 #include <atomic>
@@ -99,7 +100,7 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
 
         struct Channel
         {
-                unsigned int m_current_step = 0;
+                OrbitsStepCounter m_steps;
                 uint8_t m_channel;
                 dsp::SchmittTrigger m_clock_trigger;
                 dsp::SchmittTrigger m_sync_trigger;
@@ -123,10 +124,6 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
                 static bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
                                      unsigned int beat, bool invert);
                 unsigned int readLength();
-                unsigned int readStep(unsigned int length)
-                {
-                        return m_current_step >= length ? 0 : m_current_step;
-                }
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
                 unsigned int readVariation(unsigned int length, unsigned int shift);
