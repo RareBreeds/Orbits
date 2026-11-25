@@ -110,57 +110,14 @@ OrbitsSkinned::~OrbitsSkinned()
 OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig &config)
 {
         OrbitsSkinnedScrew *o = new OrbitsSkinnedScrew(config);
-        o->box.pos = config.pos.minus(o->box.size.div(2));
-        return o;
-}
-
-OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig &config, engine::Module *module,
-                                                       int paramId)
-{
-        OrbitsSkinnedSnappyKnob *o = new OrbitsSkinnedSnappyKnob(config);
-        o->box.pos = config.pos.minus(o->box.size.div(2));
-        o->app::ParamWidget::module = module;
-        o->app::ParamWidget::paramId = paramId;
-        o->initParamQuantity();
-        return o;
-}
-
-OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config, engine::Module *module, int paramId)
-{
-        OrbitsSkinnedKnob *o = new OrbitsSkinnedKnob(config);
-        o->box.pos = config.pos.minus(o->box.size.div(2));
-        o->app::ParamWidget::module = module;
-        o->app::ParamWidget::paramId = paramId;
-        o->initParamQuantity();
-        return o;
-}
-
-OrbitsSkinnedSwitch *createOrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config, engine::Module *module,
-                                               int paramId)
-{
-        OrbitsSkinnedSwitch *o = new OrbitsSkinnedSwitch(config);
-        o->box.pos = config.pos.minus(o->box.size.div(2));
-        o->app::ParamWidget::module = module;
-        o->app::ParamWidget::paramId = paramId;
-        o->initParamQuantity();
-        return o;
-}
-
-OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig &config, engine::Module *module,
-                                               int paramId)
-{
-        OrbitsSkinnedButton *o = new OrbitsSkinnedButton(config);
-        o->box.pos = config.pos.minus(o->box.size.div(2));
-        o->app::ParamWidget::module = module;
-        o->app::ParamWidget::paramId = paramId;
-        o->initParamQuantity();
+        orbitsCentreOn(o, config.pos);
         return o;
 }
 
 OrbitsSkinnedPort *createOrbitsSkinnedPort(const OrbitsSkinnedPortConfig &config, engine::Module *module, int portId)
 {
         OrbitsSkinnedPort *o = new OrbitsSkinnedPort(config);
-        o->box.pos = config.pos.minus(o->box.size.div(2));
+        orbitsCentreOn(o, config.pos);
         o->module = module;
         o->portId = portId;
         return o;

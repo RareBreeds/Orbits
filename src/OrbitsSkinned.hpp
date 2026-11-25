@@ -110,14 +110,25 @@ struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
         void loadTheme(OrbitsTheme theme) override;
 };
 
+// Moves a widget so it's centred on `pos`
+inline void orbitsCentreOn(widget::Widget *w, Vec pos)
+{
+        w->box.pos = pos.minus(w->box.size.div(2));
+}
+
 OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig &config);
-OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig &config, engine::Module *module,
-                                                       int paramId);
-OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config, engine::Module *module, int paramId);
-OrbitsSkinnedSwitch *createOrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config, engine::Module *module,
-                                               int paramId);
-OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig &config, engine::Module *module,
-                                               int paramId);
+
+// Creates a skinned knob, switch or button, TParamWidget, controlling `paramId` of `module`.
+template <typename TParamWidget, typename TConfig>
+TParamWidget *createOrbitsSkinnedParam(const TConfig &config, engine::Module *module, int paramId)
+{
+        TParamWidget *o = new TParamWidget(config);
+        orbitsCentreOn(o, config.pos);
+        o->app::ParamWidget::module = module;
+        o->app::ParamWidget::paramId = paramId;
+        o->initParamQuantity();
+        return o;
+}
 
 OrbitsSkinnedPort *createOrbitsSkinnedPort(const OrbitsSkinnedPortConfig &config, engine::Module *module, int portId);
 OrbitsSkinnedPort *createOrbitsSkinnedInput(const OrbitsSkinnedPortConfig &config, engine::Module *module, int inputId);
