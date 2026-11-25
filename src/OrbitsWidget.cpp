@@ -1,8 +1,22 @@
 #include "OrbitsWidget.hpp"
 #include "OrbitsSkinned.hpp"
+#include "OrbitsUndoQueue.hpp"
 
 OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig& config) : m_config(config)
 {
+}
+
+void OrbitsWidget::step()
+{
+        // Modules that make undoable changes on the engine thread queue them,
+        // they're are added to the undo history here on the UI thread.
+        OrbitsUndoSource *undo_source = dynamic_cast<OrbitsUndoSource *>(module);
+        if(undo_source)
+        {
+                undo_source->flushUndoHistory();
+        }
+
+        ModuleWidget::step();
 }
 
 void OrbitsWidget::appendContextMenu(Menu *menu)

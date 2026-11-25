@@ -2,28 +2,31 @@
 #include "PolygeneWidget.hpp"
 #include "Rhythm.hpp"
 
+// Undo/redo for one channel randomized with the Random button.
 struct RandomizeChannelAction : rack::history::ModuleAction
 {
+        uint8_t channel = 0;
         PolygeneChannelState new_state, old_state;
+
+        void apply(const PolygeneChannelState &state)
+        {
+                RareBreeds_Orbits_Polygene *polygene =
+                        static_cast<RareBreeds_Orbits_Polygene *>(APP->engine->getModule(moduleId));
+                if(polygene && channel < PORT_MAX_CHANNELS)
+                {
+                        polygene->m_channels[channel].m_state = state;
+                        polygene->syncParamsToActiveChannel();
+                }
+        }
 
         void undo() override
         {
-                RareBreeds_Orbits_Polygene* module = static_cast<RareBreeds_Orbits_Polygene *>(APP->engine->getModule(moduleId));
-                if (module)
-                {
-                        module->m_active_channel->m_state = old_state;
-                        module->syncParamsToActiveChannel();
-                }
+                apply(old_state);
         }
 
         void redo() override
         {
-                RareBreeds_Orbits_Polygene* module = static_cast<RareBreeds_Orbits_Polygene *>(APP->engine->getModule(moduleId));
-                if (module)
-                {
-                        module->m_active_channel->m_state = new_state;
-                        module->syncParamsToActiveChannel();
-                }
+                apply(new_state);
         }
 
         RandomizeChannelAction()
@@ -191,12 +194,12 @@ void RareBreeds_Orbits_Polygene::Channel::dataFromJson(json_t *root)
 
 void RareBreeds_Orbits_Polygene::Channel::onRandomizeWithHistory(unsigned int randomization_mask)
 {
-        RandomizeChannelAction* action = new RandomizeChannelAction;
-        action->moduleId = m_module->id;
-        action->old_state = m_state;
+        PolygeneRandomizeRecord record;
+        record.channel = m_channel;
+        record.old_state = m_state;
         onRandomize(randomization_mask);
-        action->new_state = m_state;
-        APP->history->push(action);
+        record.new_state = m_state;
+        m_module->m_randomize_undo.post(record);
 }
 
 void RareBreeds_Orbits_Polygene::Channel::onRandomize(unsigned int randomization_mask)
@@ -401,7 +404,8 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
         {
                 if(m_channels[i].m_random_trigger.process(getParameterizedVoltage(RANDOM_CV_INPUT, i)))
                 {
-                        m_channels[i].onRandomizeWithHistory(m_randomization_mask);
+                        // CV randomization is not a user edit, so it is not added to the undo history.
+                        m_channels[i].onRandomize(m_randomization_mask);
                         syncParamsToActiveChannel();
                 }
         }
@@ -580,6 +584,20 @@ void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& /*e*/)
 
         // Update the parameters so they reflect the active channels randomized parameters
         syncParamsToActiveChannel();
+}
+
+void RareBreeds_Orbits_Polygene::flushUndoHistory()
+{
+        PolygeneRandomizeRecord record;
+        while(m_randomize_undo.pop(record))
+        {
+                RandomizeChannelAction *action = new RandomizeChannelAction;
+                action->moduleId = id;
+                action->channel = record.channel;
+                action->old_state = record.old_state;
+                action->new_state = record.new_state;
+                orbitsPushUndoAction(action);
+        }
 }
 
 void RareBreeds_Orbits_Polygene::onReset(const ResetEvent& e)

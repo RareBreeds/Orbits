@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OrbitsModule.hpp"
+#include "OrbitsUndoQueue.hpp"
 #include "Rhythm.hpp"
 
 #include <atomic>
@@ -38,7 +39,13 @@ struct PolygeneChannelState
         bool reverse, invert;
 };
 
-struct RareBreeds_Orbits_Polygene : Module
+struct PolygeneRandomizeRecord
+{
+        uint8_t channel;
+        PolygeneChannelState old_state, new_state;
+};
+
+struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
 {
         enum ParamIds
         {
@@ -141,6 +148,10 @@ struct RareBreeds_Orbits_Polygene : Module
         dsp::BooleanTrigger m_sync_trigger;
         RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
         std::atomic<json_t *> m_widget_config{nullptr};
+
+        // Channels randomized by the Random button, waiting to be added to the undo history.
+        OrbitsUndoQueue<PolygeneRandomizeRecord> m_randomize_undo;
+
         BeatMode m_beat;
         EOCMode m_eoc;
         InputMode m_input_mode[NUM_INPUTS];
@@ -155,6 +166,7 @@ struct RareBreeds_Orbits_Polygene : Module
         void dataFromJson(json_t *root) override;
         void onRandomize(const RandomizeEvent& e) override;
         void onReset(const ResetEvent& e) override;
+        void flushUndoHistory() override;
         PolygeneDisplayData getDisplayData(void);
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
         float getParameterizedVoltage(int input_id, uint8_t channel);
