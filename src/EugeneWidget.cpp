@@ -24,8 +24,9 @@ void EugeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
 
         nvgSave(args.vg);
 
+        // Everything drawn stays inside the box, so there's no scissor.
+        // On MetaModule a scissor makes every path slower to draw.
         const Rect b = Rect(Vec(0, 0), box.size);
-        nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
 
         // Everything drawn after here is in the foreground colour
         nvgStrokeColor(args.vg, foreground_color);
@@ -152,7 +153,6 @@ void EugeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
                 nvgRestore(args.vg);
         }
 
-        nvgResetScissor(args.vg);
         nvgRestore(args.vg);
 }
 
