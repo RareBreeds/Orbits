@@ -298,9 +298,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         rhythm_display = new EugeneRhythmDisplay(eugene, EUGENE_POS(DISPLAY), EUGENE_SIZE(DISPLAY));
         addChild(rhythm_display);
 
-        std::string panelPath =
-                asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(kOrbitsThemeDefault)]);
-        setPanel(APP->window->loadSvg(panelPath));
+        loadInitialTheme();
 }
 
 void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)

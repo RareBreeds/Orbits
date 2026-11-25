@@ -45,6 +45,16 @@ void OrbitsWidget::step()
                 undo_source->flushUndoHistory();
         }
 
+#if ORBITS_THEME_SELECTION_ENABLED
+        // Rack has no event for its dark panels setting changing, so check it
+        // every frame.
+        const OrbitsTheme shown = m_theme_setting.shownTheme();
+        if(shown != m_theme)
+        {
+                switchTheme(shown);
+        }
+#endif
+
         ModuleWidget::step();
 }
 
@@ -164,10 +174,26 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         menu->addChild(new MenuSeparator);
 
 #if ORBITS_THEME_SELECTION_ENABLED
+        // "Follow Rack", then the themes in order
+        std::vector<std::string> theme_names = {"Follow Rack"};
+        theme_names.insert(theme_names.end(), kOrbitsThemeNames.begin(), kOrbitsThemeNames.end());
         menu->addChild(createIndexSubmenuItem(
-                "Theme", std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()),
-                [this]() { return orbitsThemeIndex(this->m_theme); },
-                [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }));
+                "Theme", theme_names,
+                [this]()
+                {
+                        const OrbitsThemeSetting &setting = this->m_theme_setting;
+                        return setting.m_follow_rack ? 0 : static_cast<size_t>(orbitsThemeIndex(setting.m_theme)) + 1;
+                },
+                [this](size_t index)
+                {
+                        OrbitsThemeSetting &setting = this->m_theme_setting;
+                        setting.m_follow_rack = index == 0;
+                        if(index > 0)
+                        {
+                                setting.m_theme = static_cast<OrbitsTheme>(index - 1);
+                        }
+                        switchTheme(setting.shownTheme());
+                }));
 #endif
 
 #if ORBITS_ROOM_LIGHTING_ENABLED
@@ -179,20 +205,54 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         appendModuleContextMenu(menu);
 }
 
-void OrbitsWidget::switchTheme(const char *theme)
+OrbitsTheme OrbitsThemeSetting::shownTheme() const
+{
+        if(m_follow_rack)
+        {
+#if ORBITS_THEME_SELECTION_ENABLED
+                return settings::preferDarkPanels ? OrbitsTheme::Dark : OrbitsTheme::Light;
+#else
+                // Only the default theme is shown
+                return kOrbitsThemeDefault;
+#endif
+        }
+        return m_theme;
+}
+
+void OrbitsThemeSetting::toJson(json_t *root) const
+{
+        // The theme shown, which is what versions before Follow Rack load
+        json_t *theme = json_string(orbitsThemeName(shownTheme()));
+        if(theme)
+        {
+                json_object_set_new(root, "theme", theme);
+        }
+        json_object_set_new(root, "follow_rack", json_boolean(m_follow_rack));
+}
+
+void OrbitsThemeSetting::fromJson(json_t *root)
+{
+        OrbitsTheme theme;
+        if(orbitsThemeFromName(json_string_value(json_object_get(root, "theme")), theme))
+        {
+                m_theme = theme;
+                m_follow_rack = false;
+        }
+
+        json_t *follow_rack = json_object_get(root, "follow_rack");
+        if(json_is_boolean(follow_rack))
+        {
+                m_follow_rack = json_is_true(follow_rack);
+        }
+}
+
+void OrbitsWidget::loadInitialTheme()
 {
 #if ORBITS_THEME_SELECTION_ENABLED
-        OrbitsTheme t;
-        if(orbitsThemeFromName(theme, t))
-        {
-                switchTheme(t);
-        }
-        else
-        {
-                switchTheme(kOrbitsThemeDefault);
-        }
+        switchTheme(m_theme_setting.shownTheme());
 #else
-        UNUSED(theme);
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(m_theme)]);
+        setPanel(APP->window->loadSvg(panelPath));
 #endif
 }
 
@@ -222,29 +282,18 @@ json_t *OrbitsWidget::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_t *theme = json_string(orbitsThemeName(m_theme));
-                if(theme)
-                {
-                        json_object_set_new(root, "theme", theme);
-                }
+                m_theme_setting.toJson(root);
         }
         return root;
 }
 
 void OrbitsWidget::dataFromJson(json_t *root)
 {
-#if ORBITS_THEME_SELECTION_ENABLED
         if(root)
         {
-                json_t *obj = json_object_get(root, "theme");
-                if(obj)
-                {
-                        switchTheme(json_string_value(obj));
-                }
+                m_theme_setting.fromJson(root);
+                switchTheme(m_theme_setting.shownTheme());
         }
-#else
-        UNUSED(root);
-#endif
 }
 
 void EOCWidget::appendContextMenu(Menu *menu)

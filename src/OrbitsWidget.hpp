@@ -4,9 +4,23 @@
 #include "OrbitsSkinned.hpp"
 #include "OrbitsWidgetData.hpp"
 
+// The theme chosen in a module's menu: either follow Rack's "Use dark panels if available" setting,
+// or always use one theme.
+struct OrbitsThemeSetting
+{
+        bool m_follow_rack = true;
+        // The theme to use when not following Rack
+        OrbitsTheme m_theme = kOrbitsThemeDefault;
+
+        OrbitsTheme shownTheme() const;
+        void toJson(json_t *root) const;
+        void fromJson(json_t *root);
+};
+
 struct OrbitsWidget : ModuleWidget
 {
         OrbitsTheme m_theme = kOrbitsThemeDefault;
+        OrbitsThemeSetting m_theme_setting;
         OrbitsSkinnedPanelConfig m_config;
         OrbitsWidgetData *m_widget_data = NULL;
 
@@ -20,7 +34,7 @@ struct OrbitsWidget : ModuleWidget
         void appendContextMenu(Menu *menu) override;
         void step() override;
         virtual void appendModuleContextMenu(Menu *menu) = 0;
-        void switchTheme(const char *theme);
+        void loadInitialTheme();
         void switchTheme(OrbitsTheme theme);
         json_t *dataToJson();
         void dataFromJson(json_t *root);

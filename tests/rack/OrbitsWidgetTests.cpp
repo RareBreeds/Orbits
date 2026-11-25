@@ -146,3 +146,125 @@ TEST_CASE("The light boost setting is clamped")
         orbitsSetLightBoost(-1.f);
         CHECK(orbitsLightBoost() == 0.f);
 }
+
+// Restores Rack's dark panels setting when a test ends.
+struct DarkPanelsRestorer
+{
+        bool prefer_dark_panels = settings::preferDarkPanels;
+        ~DarkPanelsRestorer()
+        {
+                settings::preferDarkPanels = prefer_dark_panels;
+        }
+};
+
+// Loads a theme setting from a module widget's JSON, given as text.
+static void loadThemeSetting(OrbitsThemeSetting &setting, const char *text)
+{
+        json_t *root = json_loads(text, 0, NULL);
+        REQUIRE(root);
+        setting.fromJson(root);
+        json_decref(root);
+}
+
+TEST_CASE("New modules follow Rack's dark panels setting")
+{
+        DarkPanelsRestorer restorer;
+        OrbitsThemeSetting setting;
+        CHECK(setting.m_follow_rack);
+
+        settings::preferDarkPanels = true;
+        CHECK(setting.shownTheme() == OrbitsTheme::Dark);
+        settings::preferDarkPanels = false;
+        CHECK(setting.shownTheme() == OrbitsTheme::Light);
+}
+
+TEST_CASE("A chosen theme ignores Rack's dark panels setting")
+{
+        DarkPanelsRestorer restorer;
+        OrbitsThemeSetting setting;
+        setting.m_follow_rack = false;
+        setting.m_theme = OrbitsTheme::Dark;
+
+        settings::preferDarkPanels = false;
+        CHECK(setting.shownTheme() == OrbitsTheme::Dark);
+}
+
+TEST_CASE("The theme setting is saved and loaded")
+{
+        DarkPanelsRestorer restorer;
+        settings::preferDarkPanels = true;
+
+        SUBCASE("Following Rack")
+        {
+                OrbitsThemeSetting saved;
+                saved.m_follow_rack = true;
+                json_t *root = json_object();
+                saved.toJson(root);
+
+                OrbitsThemeSetting loaded;
+                loaded.m_follow_rack = false;
+                loaded.fromJson(root);
+                CHECK(loaded.m_follow_rack);
+                json_decref(root);
+        }
+        SUBCASE("A chosen theme")
+        {
+                OrbitsThemeSetting saved;
+                saved.m_follow_rack = false;
+                saved.m_theme = OrbitsTheme::Light;
+                json_t *root = json_object();
+                saved.toJson(root);
+
+                OrbitsThemeSetting loaded;
+                loaded.fromJson(root);
+                CHECK_FALSE(loaded.m_follow_rack);
+                CHECK(loaded.m_theme == OrbitsTheme::Light);
+                json_decref(root);
+        }
+}
+
+TEST_CASE("The saved theme is the one shown, for versions before Follow Rack")
+{
+        DarkPanelsRestorer restorer;
+        settings::preferDarkPanels = false;
+        OrbitsThemeSetting setting;
+        json_t *root = json_object();
+        setting.toJson(root);
+        CHECK(std::string(json_string_value(json_object_get(root, "theme"))) == "Light");
+        json_decref(root);
+}
+
+TEST_CASE("Patches from before Follow Rack keep their theme")
+{
+        DarkPanelsRestorer restorer;
+        settings::preferDarkPanels = true;
+        OrbitsThemeSetting setting;
+        loadThemeSetting(setting, "{\"theme\": \"Light\"}");
+        CHECK_FALSE(setting.m_follow_rack);
+        CHECK(setting.shownTheme() == OrbitsTheme::Light);
+
+        // Before Follow Rack, Dark was the default, which can't be told apart from choosing it.
+        loadThemeSetting(setting, "{\"theme\": \"Dark\"}");
+        CHECK_FALSE(setting.m_follow_rack);
+        CHECK(setting.shownTheme() == OrbitsTheme::Dark);
+}
+
+TEST_CASE("Missing or invalid theme settings keep the current setting")
+{
+        OrbitsThemeSetting setting;
+        setting.m_follow_rack = true;
+        setting.m_theme = OrbitsTheme::Light;
+
+        loadThemeSetting(setting, "{}");
+        loadThemeSetting(setting, "{\"theme\": \"Purple\"}");
+        loadThemeSetting(setting, "{\"theme\": 1}");
+        loadThemeSetting(setting, "{\"follow_rack\": 1}");
+        loadThemeSetting(setting, "{\"follow_rack\": \"yes\"}");
+        CHECK(setting.m_follow_rack);
+        CHECK(setting.m_theme == OrbitsTheme::Light);
+
+        // A valid theme is still loaded when the follow setting is invalid.
+        loadThemeSetting(setting, "{\"theme\": \"Dark\", \"follow_rack\": null}");
+        CHECK_FALSE(setting.m_follow_rack);
+        CHECK(setting.m_theme == OrbitsTheme::Dark);
+}

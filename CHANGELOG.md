@@ -3,10 +3,12 @@
  - Support for the 4ms MetaModule
  - The INV, REV, RND and SYNC buttons behave as lights, so they stay lit when Rack's room lights are dimmed
  - "Orbits light boost" option in the context menu, for how much brighter than the room the lights and displays are
+ - "Follow Rack" theme, the default for new modules, which uses the Light or Dark theme to match Rack's "Use dark panels if available" setting. Modules in existing patches keep their theme
 
 ### Changed
  - Polygene's RND input no longer adds to the undo history each time it randomizes a channel
  - The displays follow Rack's room brightness, 30% brighter by default, instead of always being fully bright
+ - New modules use the Light theme unless "Use dark panels if available" is on in Rack's View menu, instead of always starting Dark
 
 ### Fixed
  - Length, Hits and Shift CV well below 0V could jump to the maximum value instead of the minimum

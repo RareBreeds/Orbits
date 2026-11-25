@@ -344,9 +344,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
                 {POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
         addChild(new PolygeneRhythmDisplay(polygene, display_config, POLYGENE_POS(DISPLAY), POLYGENE_SIZE(DISPLAY)));
 
-        std::string panelPath =
-                asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(kOrbitsThemeDefault)]);
-        setPanel(APP->window->loadSvg(panelPath));
+        loadInitialTheme();
 }
 
 static void ToggleInputMode(InputMode *mode)
