@@ -98,7 +98,10 @@ uint8_t EOCMode::getMode(void)
 
 void EOCMode::setMode(uint8_t mode)
 {
-        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, eoc_mode_count));
+        if(mode < eoc_mode_count)
+        {
+                m_mode = mode;
+        }
 }
 
 std::vector<std::string> EOCMode::getOptions(void)
@@ -123,8 +126,11 @@ void EOCMode::dataFromJson(json_t *root)
 {
         if(root)
         {
-                uint8_t mode = static_cast<uint8_t>(json_integer_value(root));
-                setMode(mode);
+                json_int_t mode = json_integer_value(root);
+                if(json_is_integer(root) && mode >= 0 && mode < static_cast<json_int_t>(eoc_mode_count))
+                {
+                        setMode(static_cast<uint8_t>(mode));
+                }
         }
 }
 
@@ -183,7 +189,10 @@ uint8_t BeatMode::getMode(void)
 
 void BeatMode::setMode(uint8_t mode)
 {
-        m_mode = static_cast<uint8_t>(math::clamp(mode, 0, beat_mode_count));
+        if(mode < beat_mode_count)
+        {
+                m_mode = mode;
+        }
 }
 
 std::vector<std::string> BeatMode::getOptions(void)
@@ -208,8 +217,11 @@ void BeatMode::dataFromJson(json_t *root)
 {
         if(root)
         {
-                uint8_t mode = static_cast<uint8_t>(json_integer_value(root));
-                setMode(mode);
+                json_int_t mode = json_integer_value(root);
+                if(json_is_integer(root) && mode >= 0 && mode < static_cast<json_int_t>(beat_mode_count))
+                {
+                        setMode(static_cast<uint8_t>(mode));
+                }
         }
 }
 
