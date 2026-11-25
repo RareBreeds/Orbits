@@ -34,6 +34,46 @@ void PolygeneRhythmDisplay::loadTheme(OrbitsTheme theme)
 #endif
 }
 
+// The gap between a channel's dashes, in radians
+static const float kBeatGap = 0.06f;
+
+// The angle step `k` of a channel's ring starts at, so step 0 is at the top
+static float stepAngle(const PolygeneChannelDisplayData &channel, unsigned int k)
+{
+        const float pi2_len = 2.0f * static_cast<float>(M_PI) / static_cast<float>(channel.length);
+        return static_cast<float>(k) * pi2_len + static_cast<float>(M_PI_2);
+}
+
+// Adds a dash for each of a channel's beats to the current path
+static void addBeatArcs(NVGcontext *vg, const PolygeneChannelDisplayData &channel, float radius)
+{
+        const float pi2_len = 2.0f * static_cast<float>(M_PI) / static_cast<float>(channel.length);
+        const float len = pi2_len - kBeatGap;
+        for(unsigned int k = 0; k < channel.length; ++k)
+        {
+                if(RareBreeds_Orbits_Polygene::Channel::isOnBeat(channel.length, channel.hits, channel.shift,
+                                                                 channel.variation, k, channel.invert))
+                {
+                        const float a0 = stepAngle(channel, k);
+                        // Start a new subpath, or nvgArc() joins the dash to the previous one
+                        nvgMoveTo(vg, radius * cosf(a0), radius * sinf(a0));
+                        nvgArc(vg, 0.0f, 0.0f, radius, a0, a0 + len, NVG_CW);
+                }
+        }
+}
+
+// Adds a dot just before a channel's current step to the current path
+static void addCurrentStepDot(NVGcontext *vg, const PolygeneChannelDisplayData &channel, float radius, float dot_radius)
+{
+        // The engine is run in a different thread and only wraps the step position to a new length on
+        // the next clock, so getDisplayData() shows a position beyond the length as 0.
+        if(channel.current_step < channel.length)
+        {
+                const float center = stepAngle(channel, channel.current_step) - kBeatGap / 2.f;
+                nvgCircle(vg, radius * cosf(center), radius * sinf(center), dot_radius);
+        }
+}
+
 void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 {
         // Drawings to layer 1 don't dim when the room lights are dimmed
@@ -95,61 +135,55 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgScale(args.vg, 1.0f - channel_width, 1.0f - channel_width);
 
                 nvgStrokeWidth(args.vg, arc_stroke_width);
+
+                // Each channel is drawn in one of three colours. Drawing every channel of a colour as one
+                // path, rather than a path per beat, needs a few draw calls instead of hundreds. The rings
+                // don't overlap, so the order they're drawn in doesn't matter.
+                const NVGcolor colours[] = {m_display_accent, nvgRGB(0xff, 0xff, 0xff), nvgRGB(0x50, 0x50, 0x50)};
+                uint8_t channel_colours[PORT_MAX_CHANNELS];
                 for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
                 {
-                        const unsigned int length = data.channels[c].length;
-                        const float radius = 1.0f - c * channel_width;
-                        const float mpif = static_cast<float>(M_PI);
-                        const float lenf = static_cast<float>(length);
-                        const float pi2_len = 2.0f * mpif / lenf;
-                        const float beat_gap = 0.06f;
-                        const float len = pi2_len - beat_gap;
-
-                        NVGcolor dash_colour;
                         if(c == data.active_channel_id)
                         {
-                                dash_colour = m_display_accent;
+                                channel_colours[c] = 0;
                         }
                         else if(c < data.active_channels)
                         {
-                                dash_colour = nvgRGB(0xff, 0xff, 0xff);
+                                channel_colours[c] = 1;
                         }
                         else
                         {
-                                dash_colour = nvgRGB(0x50, 0x50, 0x50);
+                                channel_colours[c] = 2;
                         }
+                }
 
-                        nvgStrokeColor(args.vg, dash_colour);
-                        nvgFillColor(args.vg, dash_colour);
-                        // The engine is run in a different thread and only wraps the step position to a new
-                        // length on the next clock, so getDisplayData() shows a position beyond the length as 0.
-                        unsigned int current_step = data.channels[c].current_step;
-                        for(unsigned int k = 0; k < length; ++k)
+                for(uint8_t colour = 0; colour < sizeof(colours) / sizeof(colours[0]); ++colour)
+                {
+                        nvgStrokeColor(args.vg, colours[colour]);
+                        nvgFillColor(args.vg, colours[colour]);
+
+                        // A dash for each beat
+                        nvgBeginPath(args.vg);
+                        for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
                         {
-                                const float mpif2 = static_cast<float>(M_PI_2);
-                                const float kf = static_cast<float>(k);
-                                const float a0 = kf * pi2_len + mpif2;
-                                const float a1 = a0 + len;
-
-                                if(current_step == k)
+                                if(channel_colours[c] == colour)
                                 {
-                                        const auto center = a0 - beat_gap / 2.f;
-                                        nvgBeginPath(args.vg);
-                                        nvgCircle(args.vg, radius * cosf(center), radius * sinf(center),
-                                                  arc_stroke_width / 2.0f);
-                                        nvgFill(args.vg);
-                                }
-
-                                auto on_beat = RareBreeds_Orbits_Polygene::Channel::isOnBeat(
-                                        length, data.channels[c].hits, data.channels[c].shift,
-                                        data.channels[c].variation, k, data.channels[c].invert);
-                                if(on_beat)
-                                {
-                                        nvgBeginPath(args.vg);
-                                        nvgArc(args.vg, 0.0f, 0.0f, radius, a0, a1, NVG_CW);
-                                        nvgStroke(args.vg);
+                                        addBeatArcs(args.vg, data.channels[c], 1.0f - c * channel_width);
                                 }
                         }
+                        nvgStroke(args.vg);
+
+                        // A dot before the current step
+                        nvgBeginPath(args.vg);
+                        for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
+                        {
+                                if(channel_colours[c] == colour)
+                                {
+                                        addCurrentStepDot(args.vg, data.channels[c], 1.0f - c * channel_width,
+                                                          arc_stroke_width / 2.0f);
+                                }
+                        }
+                        nvgFill(args.vg);
                 }
 
                 nvgResetScissor(args.vg);

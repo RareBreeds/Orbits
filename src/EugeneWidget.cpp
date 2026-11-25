@@ -87,61 +87,70 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
                 // Add a border of half a circle so we don't draw over the edge
                 nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
 
+                // Everything is in the foreground colour, so the steps' circles are drawn as one path, then
+                // the current beat marker and the shift pointer, rather than a path for every step. Points
+                // are transformed as they're added to a path, so each step can still be rotated into place.
+                const float mpif = static_cast<float>(M_PI);
+                const float lenf = static_cast<float>(m_data.length);
+                const unsigned int length = m_data.length;
+                auto step_y = [length, inner_ring_scale](unsigned int k)
+                { return (length > 16 && k % 2) ? inner_ring_scale : 1.f; };
+                auto rotate_to_step = [&args, mpif, lenf](unsigned int k)
+                { nvgRotate(args.vg, 2.f * static_cast<float>(k) * mpif / lenf); };
+
+                nvgBeginPath(args.vg);
                 for(unsigned int k = 0; k < m_data.length; ++k)
                 {
-                        float y_pos = 1.f;
-                        if(m_data.length > 16 and k % 2)
-                        {
-                                y_pos = inner_ring_scale;
-                        }
-
                         float radius = off_radius;
-
                         if(orbitsEuclideanBeat(m_data.length, m_data.hits, m_data.shift, k, m_data.invert))
                         {
                                 radius = on_radius;
                         }
 
                         nvgSave(args.vg);
-                        const float kf = static_cast<float>(k);
-                        const float mpif = static_cast<float>(M_PI);
-                        const float lenf = static_cast<float>(m_data.length);
-                        nvgRotate(args.vg, 2.f * kf * mpif / lenf);
-                        nvgBeginPath(args.vg);
-                        nvgCircle(args.vg, 0.f, y_pos, radius);
-                        if(m_data.invert)
-                        {
-                                nvgStroke(args.vg);
-                        }
-                        else
-                        {
-                                nvgFill(args.vg);
-                        }
+                        rotate_to_step(k);
+                        nvgCircle(args.vg, 0.f, step_y(k), radius);
+                        nvgRestore(args.vg);
+                }
+                if(m_data.invert)
+                {
+                        nvgStroke(args.vg);
+                }
+                else
+                {
+                        nvgFill(args.vg);
+                }
 
-                        // Current beat marker
-                        // Highlight the beat that has just played
-                        // For forward moving rhythms this is the previous index
-                        // For reversed rhythms this is index
+                // Current beat marker
+                // Highlight the beat that has just played
+                // For forward moving rhythms this is the previous index
+                // For reversed rhythms this is index
+                nvgBeginPath(args.vg);
+                for(unsigned int k = 0; k < m_data.length; ++k)
+                {
                         if((m_data.reverse && m_data.current_step == k) ||
                            (!m_data.reverse &&
                             ((k == m_data.length - 1) ? (0 == m_data.current_step) : (k + 1 == m_data.current_step))))
                         {
-                                nvgBeginPath(args.vg);
-                                nvgCircle(args.vg, 0.f, y_pos, outline_radius);
-                                nvgStroke(args.vg);
+                                nvgSave(args.vg);
+                                rotate_to_step(k);
+                                nvgCircle(args.vg, 0.f, step_y(k), outline_radius);
+                                nvgRestore(args.vg);
                         }
+                }
+                nvgStroke(args.vg);
 
-                        // shift pointer
-                        if(m_data.shift == k)
-                        {
-                                nvgBeginPath(args.vg);
-                                nvgMoveTo(args.vg, 0.f, 0.5f);
-                                nvgLineTo(args.vg, -0.05f, 0.4f);
-                                nvgLineTo(args.vg, 0.05f, 0.4f);
-                                nvgClosePath(args.vg);
-                                nvgFill(args.vg);
-                        }
-
+                // shift pointer
+                if(m_data.shift < m_data.length)
+                {
+                        nvgSave(args.vg);
+                        rotate_to_step(m_data.shift);
+                        nvgBeginPath(args.vg);
+                        nvgMoveTo(args.vg, 0.f, 0.5f);
+                        nvgLineTo(args.vg, -0.05f, 0.4f);
+                        nvgLineTo(args.vg, 0.05f, 0.4f);
+                        nvgClosePath(args.vg);
+                        nvgFill(args.vg);
                         nvgRestore(args.vg);
                 }
 
