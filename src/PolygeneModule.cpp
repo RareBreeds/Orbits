@@ -439,6 +439,21 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
         }
 }
 
+static InputMode loadInputMode(json_t *root, const char *key)
+{
+        json_t *obj = json_object_get(root, key);
+        if(json_is_integer(obj))
+        {
+                json_int_t mode = json_integer_value(obj);
+                if(mode == INPUT_MODE_MONOPHONIC_COPIES_TO_ALL || mode == INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST)
+                {
+                        return static_cast<InputMode>(mode);
+                }
+        }
+
+        return INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+}
+
 json_t *RareBreeds_Orbits_Polygene::dataToJson()
 {
         json_t *root = json_object();
@@ -452,6 +467,7 @@ json_t *RareBreeds_Orbits_Polygene::dataToJson()
                 json_object_set_new(root, "hits_cv", json_integer(m_input_mode[HITS_CV_INPUT]));
                 json_object_set_new(root, "shift_cv", json_integer(m_input_mode[SHIFT_CV_INPUT]));
                 json_object_set_new(root, "variation_cv", json_integer(m_input_mode[VARIATION_CV_INPUT]));
+                json_object_set_new(root, "random_cv", json_integer(m_input_mode[RANDOM_CV_INPUT]));
 
                 json_object_set_new(root, "randomization_mask", json_integer(m_randomization_mask));
 
@@ -521,26 +537,15 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 }
                 else
                 {
-                        int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                        json_load_int(root, "sync_cv", &mode);
-                        m_input_mode[SYNC_INPUT] = static_cast<InputMode>(mode);
+                        m_input_mode[SYNC_INPUT] = loadInputMode(root, "sync_cv");
                 }
 
-                int mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                json_load_int(root, "length_cv", &mode);
-                m_input_mode[LENGTH_CV_INPUT] = static_cast<InputMode>(mode);
-
-                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                json_load_int(root, "hits_cv", &mode);
-                m_input_mode[HITS_CV_INPUT] = static_cast<InputMode>(mode);
-
-                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                json_load_int(root, "shift_cv", &mode);
-                m_input_mode[SHIFT_CV_INPUT] = static_cast<InputMode>(mode);
-
-                mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                json_load_int(root, "variation_cv", &mode);
-                m_input_mode[VARIATION_CV_INPUT] = static_cast<InputMode>(mode);
+                m_input_mode[LENGTH_CV_INPUT] = loadInputMode(root, "length_cv");
+                m_input_mode[HITS_CV_INPUT] = loadInputMode(root, "hits_cv");
+                m_input_mode[SHIFT_CV_INPUT] = loadInputMode(root, "shift_cv");
+                m_input_mode[VARIATION_CV_INPUT] = loadInputMode(root, "variation_cv");
+                // Not saved by v2.0.4 and earlier, so those patches get the default.
+                m_input_mode[RANDOM_CV_INPUT] = loadInputMode(root, "random_cv");
 
                 m_randomization_mask = RANDOMIZE_ALL;
                 json_load_unsigned_int(root, "randomization_mask", &m_randomization_mask);
