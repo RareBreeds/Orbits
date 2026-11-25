@@ -31,7 +31,7 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
         configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 }
 
-EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(void)
+EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData()
 {
         EugeneDisplayData data;
         data.length = readLength();

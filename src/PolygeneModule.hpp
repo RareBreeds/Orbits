@@ -118,8 +118,8 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
                 RareBreeds_Orbits_Polygene *m_module = NULL;
 
                 void init(RareBreeds_Orbits_Polygene *module, uint8_t channel);
-                bool readReverse(void);
-                bool readInvert(void);
+                bool readReverse();
+                bool readInvert();
                 static bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
                                      unsigned int beat, bool invert);
                 unsigned int readLength();
@@ -159,8 +159,8 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
         void onRandomize(const RandomizeEvent &e) override;
         void onReset(const ResetEvent &e) override;
         void flushUndoHistory() override;
-        PolygeneDisplayData getDisplayData(void);
+        PolygeneDisplayData getDisplayData();
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
         float getParameterizedVoltage(int input_id, uint8_t channel);
-        InputMode getInputMode(int input_id);
+        InputMode getInputMode(int input_id) const;
 };

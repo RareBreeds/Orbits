@@ -80,7 +80,7 @@ static constexpr EOCModeOption eoc_mode_options[] = {
 
 static constexpr size_t eoc_mode_count = sizeof(eoc_mode_options) / sizeof(eoc_mode_options[0]);
 
-uint8_t EOCMode::getMode(void)
+uint8_t EOCMode::getMode() const
 {
         return m_mode;
 }
@@ -93,7 +93,7 @@ void EOCMode::setMode(uint8_t mode)
         }
 }
 
-std::vector<std::string> EOCMode::getOptions(void)
+std::vector<std::string> EOCMode::getOptions() const
 {
         std::vector<std::string> names;
         names.reserve(eoc_mode_count);
@@ -106,7 +106,7 @@ std::vector<std::string> EOCMode::getOptions(void)
         return names;
 }
 
-json_t *EOCMode::dataToJson(void)
+json_t *EOCMode::dataToJson() const
 {
         return json_integer(m_mode);
 }
@@ -123,7 +123,7 @@ void EOCMode::dataFromJson(json_t *root)
         }
 }
 
-void EOCGenerator::update(EOCMode &mode, bool is_first, bool is_last)
+void EOCGenerator::update(const EOCMode &mode, bool is_first, bool is_last)
 {
         if(eoc_mode_options[mode.getMode()].process(is_first, is_last, m_previous_beat_was_last))
         {
@@ -170,7 +170,7 @@ static constexpr BeatModeOption beat_mode_options[] = {
 
 static constexpr size_t beat_mode_count = sizeof(beat_mode_options) / sizeof(beat_mode_options[0]);
 
-uint8_t BeatMode::getMode(void)
+uint8_t BeatMode::getMode() const
 {
         return m_mode;
 }
@@ -183,7 +183,7 @@ void BeatMode::setMode(uint8_t mode)
         }
 }
 
-std::vector<std::string> BeatMode::getOptions(void)
+std::vector<std::string> BeatMode::getOptions() const
 {
         std::vector<std::string> names;
         names.reserve(beat_mode_count);
@@ -196,7 +196,7 @@ std::vector<std::string> BeatMode::getOptions(void)
         return names;
 }
 
-json_t *BeatMode::dataToJson(void)
+json_t *BeatMode::dataToJson() const
 {
         return json_integer(m_mode);
 }
@@ -222,7 +222,7 @@ void BeatGenerator::update(bool is_on)
         }
 }
 
-bool BeatGenerator::process(BeatMode &mode, float delta)
+bool BeatGenerator::process(const BeatMode &mode, float delta)
 {
         bool pulse = m_generator.process(delta);
         return beat_mode_options[mode.getMode()].process(pulse, m_state);

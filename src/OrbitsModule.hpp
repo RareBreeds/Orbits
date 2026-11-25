@@ -13,10 +13,10 @@ struct EOCMode
 {
         uint8_t m_mode = 0;
 
-        uint8_t getMode(void);
+        uint8_t getMode() const;
         void setMode(uint8_t mode);
-        std::vector<std::string> getOptions(void);
-        json_t *dataToJson(void);
+        std::vector<std::string> getOptions() const;
+        json_t *dataToJson() const;
         void dataFromJson(json_t *root);
 };
 
@@ -24,7 +24,7 @@ struct EOCGenerator
 {
         dsp::PulseGenerator m_generator;
         bool m_previous_beat_was_last = false;
-        void update(EOCMode &mode, bool is_first, bool is_last);
+        void update(const EOCMode &mode, bool is_first, bool is_last);
         bool process(float delta);
 };
 
@@ -32,10 +32,10 @@ struct BeatMode
 {
         uint8_t m_mode = 0;
 
-        uint8_t getMode(void);
+        uint8_t getMode() const;
         void setMode(uint8_t mode);
-        std::vector<std::string> getOptions(void);
-        json_t *dataToJson(void);
+        std::vector<std::string> getOptions() const;
+        json_t *dataToJson() const;
         void dataFromJson(json_t *root);
 };
 
@@ -44,7 +44,7 @@ struct BeatGenerator
         dsp::PulseGenerator m_generator;
         bool m_state = false;
         void update(bool is_on);
-        bool process(BeatMode &mode, float delta);
+        bool process(const BeatMode &mode, float delta);
 };
 
 struct RepeatTrigger

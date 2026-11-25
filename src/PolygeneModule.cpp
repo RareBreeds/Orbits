@@ -50,7 +50,7 @@ void RareBreeds_Orbits_Polygene::Channel::init(RareBreeds_Orbits_Polygene *modul
         m_state.invert = false;
 }
 
-bool RareBreeds_Orbits_Polygene::Channel::readReverse(void)
+bool RareBreeds_Orbits_Polygene::Channel::readReverse()
 {
         if(m_module->getInput(REVERSE_CV_INPUT).isConnected())
         {
@@ -63,7 +63,7 @@ bool RareBreeds_Orbits_Polygene::Channel::readReverse(void)
         }
 }
 
-bool RareBreeds_Orbits_Polygene::Channel::readInvert(void)
+bool RareBreeds_Orbits_Polygene::Channel::readInvert()
 {
         if(m_module->getInput(INVERT_CV_INPUT).isConnected())
         {
@@ -205,7 +205,7 @@ void RareBreeds_Orbits_Polygene::Channel::onRandomize(unsigned int randomization
         }
 }
 
-PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(void)
+PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData()
 {
         PolygeneDisplayData data;
         data.active_channel_id = m_active_channel_id;
@@ -313,7 +313,7 @@ void RareBreeds_Orbits_Polygene::syncParamsToActiveChannel()
         getParamQuantity(INVERT_KNOB_PARAM)->setImmediateValue(m_active_channel->m_state.invert);
 }
 
-InputMode RareBreeds_Orbits_Polygene::getInputMode(int input_id)
+InputMode RareBreeds_Orbits_Polygene::getInputMode(int input_id) const
 {
         return m_input_mode[input_id];
 }
