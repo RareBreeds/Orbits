@@ -188,7 +188,7 @@ void BeatMode::setMode(uint8_t mode)
 std::vector<std::string> BeatMode::getOptions(void)
 {
         std::vector<std::string> names;
-        names.reserve(eoc_mode_count);
+        names.reserve(beat_mode_count);
 
         for (const BeatModeOption &option : beat_mode_options)
         {
