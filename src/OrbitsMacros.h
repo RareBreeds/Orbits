@@ -9,3 +9,11 @@
 #else
 #define ORBITS_THEME_SELECTION_ENABLED 1
 #endif
+
+// MetaModule's FramebufferWidget doesn't draw anything, and MetaModule redraws displays every frame
+// anyway, so displays are drawn directly there instead of being cached in a framebuffer.
+#ifdef METAMODULE
+#define ORBITS_FRAMEBUFFER_CACHING_ENABLED 0
+#else
+#define ORBITS_FRAMEBUFFER_CACHING_ENABLED 1
+#endif

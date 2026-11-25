@@ -10,28 +10,69 @@ struct PolygeneRhythmDisplayConfig
         std::array<NVGcolor, orbitsThemeIndex(OrbitsTheme::Count)> accent;
 };
 
-struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
+// Draws the display, for PolygeneRhythmDisplay to show.
+struct PolygeneRhythmDisplayUnbuffered : Widget
 {
-        RareBreeds_Orbits_Polygene *module = NULL;
-        PolygeneRhythmDisplayConfig m_config{};
+        PolygeneDisplayData m_data{};
         NVGcolor m_display_accent{};
 
-        PolygeneRhythmDisplay();
-        void drawLayer(const DrawArgs &args, int layer) override;
+        explicit PolygeneRhythmDisplayUnbuffered(Vec size);
+        void draw(const DrawArgs &args) override;
+};
+
+PolygeneRhythmDisplayUnbuffered::PolygeneRhythmDisplayUnbuffered(Vec size)
+{
+        box.pos = Vec(0.0, 0.0);
+        box.size = size;
+}
+
+struct PolygeneRhythmDisplay : OrbitsDisplay, OrbitsSkinned
+{
+        RareBreeds_Orbits_Polygene *m_module = NULL;
+        PolygeneRhythmDisplayConfig m_config{};
+        PolygeneRhythmDisplayUnbuffered *m_ub = NULL;
+
+        PolygeneRhythmDisplay(RareBreeds_Orbits_Polygene *module, const PolygeneRhythmDisplayConfig &config, Vec pos,
+                              Vec size);
+        void setAccent(NVGcolor accent);
+        void step() override;
         void loadTheme(OrbitsTheme theme) override;
 };
 
-PolygeneRhythmDisplay::PolygeneRhythmDisplay()
+PolygeneRhythmDisplay::PolygeneRhythmDisplay(RareBreeds_Orbits_Polygene *module,
+                                             const PolygeneRhythmDisplayConfig &config, Vec pos, Vec size)
+        : OrbitsDisplay(pos, size), m_module(module), m_config(config)
 {
+        m_ub = new PolygeneRhythmDisplayUnbuffered(size);
+        setContent(m_ub);
+        setAccent(m_config.accent[orbitsThemeIndex(kOrbitsThemeDefault)]);
+}
+
+void PolygeneRhythmDisplay::setAccent(NVGcolor accent)
+{
+        m_ub->m_display_accent = accent;
+        setDirty();
 }
 
 void PolygeneRhythmDisplay::loadTheme(OrbitsTheme theme)
 {
 #if ORBITS_THEME_SELECTION_ENABLED
-        m_display_accent = m_config.accent[orbitsThemeIndex(theme)];
+        setAccent(m_config.accent[orbitsThemeIndex(theme)]);
 #else
         UNUSED(theme);
 #endif
+}
+
+void PolygeneRhythmDisplay::step()
+{
+        PolygeneDisplayData data = RareBreeds_Orbits_Polygene::getDisplayData(m_module);
+        if(data != m_ub->m_data)
+        {
+                m_ub->m_data = data;
+                setDirty();
+        }
+
+        OrbitsDisplay::step();
 }
 
 // The gap between a channel's dashes, in radians
@@ -74,123 +115,116 @@ static void addCurrentStepDot(NVGcontext *vg, const PolygeneChannelDisplayData &
         }
 }
 
-void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
+void PolygeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
 {
-        // Drawings to layer 1 don't dim when the room lights are dimmed
-        if(layer == 1)
+        const PolygeneDisplayData &data = m_data;
+
+        const auto foreground_color = color::WHITE;
+        nvgStrokeColor(args.vg, foreground_color);
+        nvgSave(args.vg);
+
+        const Rect b = Rect(Vec(0, 0), box.size);
+        nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
+
+        // Everything drawn after here is in the foreground colour
+        nvgStrokeColor(args.vg, foreground_color);
+        nvgFillColor(args.vg, foreground_color);
+
+        // Translate so (0, 0) is the center of the screen
+        nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+        // Draw length text center bottom and hits text center top
+        std::shared_ptr<Font> font =
+                APP->window->loadFont(asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
+        if(font)
         {
-                PolygeneDisplayData data = RareBreeds_Orbits_Polygene::getDisplayData(module);
+                nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+                nvgFontSize(args.vg, 18);
 
-                nvgGlobalTint(args.vg, color::WHITE);
-                const auto foreground_color = color::WHITE;
-                nvgStrokeColor(args.vg, foreground_color);
-                nvgSave(args.vg);
+                nvgFontFaceId(args.vg, font->handle);
 
-                const Rect b = Rect(Vec(0, 0), box.size);
-                nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
+                const auto active_hits = data.channels[data.active_channel_id].hits;
+                nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
 
-                // Everything drawn after here is in the foreground colour
-                nvgStrokeColor(args.vg, foreground_color);
-                nvgFillColor(args.vg, foreground_color);
+                const auto active_length = data.channels[data.active_channel_id].length;
+                nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
 
-                // Translate so (0, 0) is the center of the screen
-                nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
-
-                // Draw length text center bottom and hits text center top
-                std::shared_ptr<Font> font = APP->window->loadFont(
-                        asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
-                if(font)
-                {
-                        nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-                        nvgFontSize(args.vg, 18);
-
-                        nvgFontFaceId(args.vg, font->handle);
-
-                        const auto active_hits = data.channels[data.active_channel_id].hits;
-                        nvgText(args.vg, 0.f, -6.f, std::to_string(active_hits).c_str(), NULL);
-
-                        const auto active_length = data.channels[data.active_channel_id].length;
-                        nvgText(args.vg, 0.f, 6.f, std::to_string(active_length).c_str(), NULL);
-
-                        const auto active_channel = data.active_channel_id + 1;
-                        nvgFontSize(args.vg, 12);
-                        nvgText(args.vg, -b.size.x / 2.f + 23.f, b.size.y / 2.f - 9.f,
-                                std::to_string(active_channel).c_str(), NULL);
-                }
-
-                // Scale to [-1, 1]
-                nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
-
-                // Flip x and y so we start at the top and positive angle
-                // increments go clockwise
-                nvgScale(args.vg, -1.f, -1.f);
-
-                // Inner circle radius
-                const float inner_circle_radius = 0.17f;
-                const float channel_width = (1.0f - inner_circle_radius) / static_cast<float>(PORT_MAX_CHANNELS);
-                // Width of the line when drawing circles
-                const float arc_stroke_width = channel_width / 2.0f;
-
-                // Add a border so we don't draw over the edge
-                nvgScale(args.vg, 1.0f - channel_width, 1.0f - channel_width);
-
-                nvgStrokeWidth(args.vg, arc_stroke_width);
-
-                // Each channel is drawn in one of three colours. Drawing every channel of a colour as one
-                // path, rather than a path per beat, needs a few draw calls instead of hundreds. The rings
-                // don't overlap, so the order they're drawn in doesn't matter.
-                const NVGcolor colours[] = {m_display_accent, nvgRGB(0xff, 0xff, 0xff), nvgRGB(0x50, 0x50, 0x50)};
-                uint8_t channel_colours[PORT_MAX_CHANNELS];
-                for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
-                {
-                        if(c == data.active_channel_id)
-                        {
-                                channel_colours[c] = 0;
-                        }
-                        else if(c < data.active_channels)
-                        {
-                                channel_colours[c] = 1;
-                        }
-                        else
-                        {
-                                channel_colours[c] = 2;
-                        }
-                }
-
-                for(uint8_t colour = 0; colour < sizeof(colours) / sizeof(colours[0]); ++colour)
-                {
-                        nvgStrokeColor(args.vg, colours[colour]);
-                        nvgFillColor(args.vg, colours[colour]);
-
-                        // A dash for each beat
-                        nvgBeginPath(args.vg);
-                        for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
-                        {
-                                if(channel_colours[c] == colour)
-                                {
-                                        addBeatArcs(args.vg, data.channels[c], 1.0f - c * channel_width);
-                                }
-                        }
-                        nvgStroke(args.vg);
-
-                        // A dot before the current step
-                        nvgBeginPath(args.vg);
-                        for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
-                        {
-                                if(channel_colours[c] == colour)
-                                {
-                                        addCurrentStepDot(args.vg, data.channels[c], 1.0f - c * channel_width,
-                                                          arc_stroke_width / 2.0f);
-                                }
-                        }
-                        nvgFill(args.vg);
-                }
-
-                nvgResetScissor(args.vg);
-                nvgRestore(args.vg);
+                const auto active_channel = data.active_channel_id + 1;
+                nvgFontSize(args.vg, 12);
+                nvgText(args.vg, -b.size.x / 2.f + 23.f, b.size.y / 2.f - 9.f, std::to_string(active_channel).c_str(),
+                        NULL);
         }
 
-        Widget::drawLayer(args, layer);
+        // Scale to [-1, 1]
+        nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+        // Flip x and y so we start at the top and positive angle
+        // increments go clockwise
+        nvgScale(args.vg, -1.f, -1.f);
+
+        // Inner circle radius
+        const float inner_circle_radius = 0.17f;
+        const float channel_width = (1.0f - inner_circle_radius) / static_cast<float>(PORT_MAX_CHANNELS);
+        // Width of the line when drawing circles
+        const float arc_stroke_width = channel_width / 2.0f;
+
+        // Add a border so we don't draw over the edge
+        nvgScale(args.vg, 1.0f - channel_width, 1.0f - channel_width);
+
+        nvgStrokeWidth(args.vg, arc_stroke_width);
+
+        // Each channel is drawn in one of three colours. Drawing every channel of a colour as one
+        // path, rather than a path per beat, needs a few draw calls instead of hundreds. The rings
+        // don't overlap, so the order they're drawn in doesn't matter.
+        const NVGcolor colours[] = {m_display_accent, nvgRGB(0xff, 0xff, 0xff), nvgRGB(0x50, 0x50, 0x50)};
+        uint8_t channel_colours[PORT_MAX_CHANNELS];
+        for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
+        {
+                if(c == data.active_channel_id)
+                {
+                        channel_colours[c] = 0;
+                }
+                else if(c < data.active_channels)
+                {
+                        channel_colours[c] = 1;
+                }
+                else
+                {
+                        channel_colours[c] = 2;
+                }
+        }
+
+        for(uint8_t colour = 0; colour < sizeof(colours) / sizeof(colours[0]); ++colour)
+        {
+                nvgStrokeColor(args.vg, colours[colour]);
+                nvgFillColor(args.vg, colours[colour]);
+
+                // A dash for each beat
+                nvgBeginPath(args.vg);
+                for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
+                {
+                        if(channel_colours[c] == colour)
+                        {
+                                addBeatArcs(args.vg, data.channels[c], 1.0f - c * channel_width);
+                        }
+                }
+                nvgStroke(args.vg);
+
+                // A dot before the current step
+                nvgBeginPath(args.vg);
+                for(uint8_t c = 0; c < PORT_MAX_CHANNELS; ++c)
+                {
+                        if(channel_colours[c] == colour)
+                        {
+                                addCurrentStepDot(args.vg, data.channels[c], 1.0f - c * channel_width,
+                                                  arc_stroke_width / 2.0f);
+                        }
+                }
+                nvgFill(args.vg);
+        }
+
+        nvgResetScissor(args.vg);
+        nvgRestore(args.vg);
 }
 
 #define POLYGENE_POS(NAME) ORBITS_POS(POLYGENE_##NAME)
@@ -306,12 +340,9 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         addOutput(createOrbitsSkinnedOutput(port, polygene, Polygene::EOC_OUTPUT));
         // clang-format on
 
-        PolygeneRhythmDisplay *r = createWidget<PolygeneRhythmDisplay>(POLYGENE_POS(DISPLAY));
-        r->m_config = {{POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
-        r->module = polygene;
-        r->box.size = POLYGENE_SIZE(DISPLAY);
-        r->m_display_accent = r->m_config.accent[orbitsThemeIndex(kOrbitsThemeDefault)];
-        addChild(r);
+        const PolygeneRhythmDisplayConfig display_config = {
+                {POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
+        addChild(new PolygeneRhythmDisplay(polygene, display_config, POLYGENE_POS(DISPLAY), POLYGENE_SIZE(DISPLAY)));
 
         std::string panelPath =
                 asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(kOrbitsThemeDefault)]);

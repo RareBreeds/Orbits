@@ -23,12 +23,44 @@ enum InputMode
 struct PolygeneChannelDisplayData
 {
         unsigned int length, hits, shift, variation, invert, current_step;
+
+        bool operator==(const PolygeneChannelDisplayData &rhs) const
+        {
+                return length == rhs.length && hits == rhs.hits && shift == rhs.shift && variation == rhs.variation &&
+                       invert == rhs.invert && current_step == rhs.current_step;
+        }
+
+        bool operator!=(const PolygeneChannelDisplayData &rhs) const
+        {
+                return !(*this == rhs);
+        }
 };
 
 struct PolygeneDisplayData
 {
         uint8_t active_channel_id, active_channels;
         PolygeneChannelDisplayData channels[PORT_MAX_CHANNELS];
+
+        bool operator==(const PolygeneDisplayData &rhs) const
+        {
+                if(active_channel_id != rhs.active_channel_id || active_channels != rhs.active_channels)
+                {
+                        return false;
+                }
+                for(int c = 0; c < PORT_MAX_CHANNELS; ++c)
+                {
+                        if(channels[c] != rhs.channels[c])
+                        {
+                                return false;
+                        }
+                }
+                return true;
+        }
+
+        bool operator!=(const PolygeneDisplayData &rhs) const
+        {
+                return !(*this == rhs);
+        }
 };
 
 struct PolygeneChannelState

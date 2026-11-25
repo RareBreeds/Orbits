@@ -26,6 +26,27 @@ struct OrbitsWidget : ModuleWidget
         void dataFromJson(json_t *root);
 };
 
+// A display, drawn in layer 1 so it doesn't dim when the room lights are dimmed. The content widget
+// draws the display in its draw(). Where framebuffer caching is enabled the content is cached, and
+// only redrawn after setDirty(), so call that whenever what the display shows changes.
+struct OrbitsDisplay : TransparentWidget
+{
+        OrbitsDisplay(Vec pos, Vec size);
+        // Sets the widget that draws the display. Call once; the display takes ownership of it.
+        void setContent(Widget *content);
+        void setDirty();
+        void draw(const DrawArgs &args) override;
+        void drawLayer(const DrawArgs &args, int layer) override;
+
+      private:
+        Widget *m_content = NULL;
+#if ORBITS_FRAMEBUFFER_CACHING_ENABLED
+        // A FramebufferWidget only caches what its children draw in draw(), not drawLayer(), so the
+        // content draws in draw() and the framebuffer is shown in layer 1.
+        FramebufferWidget *m_fb = NULL;
+#endif
+};
+
 struct EOCWidget
 {
         EOCMode *m_module = NULL;

@@ -200,3 +200,50 @@ json_t *OrbitsWidgetData::takeLoaded()
 {
         return m_loaded.exchange(nullptr);
 }
+
+OrbitsDisplay::OrbitsDisplay(Vec pos, Vec size)
+{
+        box.pos = pos;
+        box.size = size;
+#if ORBITS_FRAMEBUFFER_CACHING_ENABLED
+        m_fb = new FramebufferWidget;
+        m_fb->box.size = size;
+        addChild(m_fb);
+#endif
+}
+
+void OrbitsDisplay::setContent(Widget *content)
+{
+        m_content = content;
+#if ORBITS_FRAMEBUFFER_CACHING_ENABLED
+        m_fb->addChild(content);
+        m_fb->setDirty();
+#else
+        addChild(content);
+#endif
+}
+
+void OrbitsDisplay::setDirty()
+{
+#if ORBITS_FRAMEBUFFER_CACHING_ENABLED
+        m_fb->setDirty();
+#endif
+}
+
+void OrbitsDisplay::draw(const DrawArgs & /*args*/)
+{
+        // Everything is drawn in layer 1
+}
+
+void OrbitsDisplay::drawLayer(const DrawArgs &args, int layer)
+{
+        if(layer == 1 && m_content)
+        {
+                nvgGlobalTint(args.vg, color::WHITE);
+#if ORBITS_FRAMEBUFFER_CACHING_ENABLED
+                drawChild(m_fb, args);
+#else
+                drawChild(m_content, args);
+#endif
+        }
+}

@@ -4,11 +4,12 @@
 #include "EugeneThemes.h"
 #include "OrbitsSkinned.hpp"
 
+// Draws the display, for EugeneRhythmDisplay to show.
 struct EugeneRhythmDisplayUnbuffered : Widget
 {
         EugeneDisplayData m_data{};
         EugeneRhythmDisplayUnbuffered(Vec size);
-        void drawLayer(const DrawArgs &args, int layer) override;
+        void draw(const DrawArgs &args) override;
 };
 
 EugeneRhythmDisplayUnbuffered::EugeneRhythmDisplayUnbuffered(Vec size)
@@ -17,185 +18,170 @@ EugeneRhythmDisplayUnbuffered::EugeneRhythmDisplayUnbuffered(Vec size)
         box.size = size;
 }
 
-void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
+void EugeneRhythmDisplayUnbuffered::draw(const DrawArgs &args)
 {
-        // Drawings to layer 1 don't dim when the room lights are dimmed
-        if(layer == 1)
+        const auto foreground_color = color::WHITE;
+
+        nvgSave(args.vg);
+
+        const Rect b = Rect(Vec(0, 0), box.size);
+        nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
+
+        // Everything drawn after here is in the foreground colour
+        nvgStrokeColor(args.vg, foreground_color);
+        nvgFillColor(args.vg, foreground_color);
+
+        // Translate so (0, 0) is the center of the screen
+        nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+        // Draw length text center bottom and hits text center top
+        nvgBeginPath(args.vg);
+        nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+        nvgFontSize(args.vg, 20);
+        std::shared_ptr<Font> font =
+                APP->window->loadFont(asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
+        nvgFontFaceId(args.vg, font->handle);
+        nvgText(args.vg, 0.f, -7.f, std::to_string(m_data.hits).c_str(), NULL);
+        nvgText(args.vg, 0.f, 7.f, std::to_string(m_data.length).c_str(), NULL);
+        // nvgFill(args.vg);
+
+        // Scale to [-1, 1]
+        nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
+
+        // Flip x and y so we start at the top and positive angle increments go clockwise
+        nvgScale(args.vg, -1.f, -1.f);
+
+        // nvgBeginPath(args.vg);
+        if(m_data.reverse)
         {
-                const auto foreground_color = color::WHITE;
+                nvgMoveTo(args.vg, 0.23f, -0.2f);
+                nvgLineTo(args.vg, 0.3f, 0.f);
+                nvgLineTo(args.vg, 0.23f, 0.2f);
+        }
+        else
+        {
+                nvgMoveTo(args.vg, -0.23f, 0.2f);
+                nvgLineTo(args.vg, -0.3f, -0.f);
+                nvgLineTo(args.vg, -0.23f, -0.2f);
+        }
+        nvgFill(args.vg);
+
+        // set the on beat radius so 8 can fit on the screen
+        const auto on_radius = 1.f / 8.f;
+
+        // set outline radius so it's bigger than the on_radius
+        const auto outline_radius = on_radius * 1.3f;
+
+        // set the off beat radius so it's almost a dot
+        const auto off_radius = on_radius / 10.f;
+
+        // Placement of the inner ring of circles when there's too many of them for one ring
+        const auto inner_ring_scale = 0.75f;
+
+        // Width of the line when drawing circles
+        const auto circle_stroke_width = 0.03f;
+        nvgStrokeWidth(args.vg, circle_stroke_width);
+
+        // Add a border of half a circle so we don't draw over the edge
+        nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
+
+        // Everything is in the foreground colour, so the steps' circles are drawn as one path, then
+        // the current beat marker and the shift pointer, rather than a path for every step. Points
+        // are transformed as they're added to a path, so each step can still be rotated into place.
+        const float mpif = static_cast<float>(M_PI);
+        const float lenf = static_cast<float>(m_data.length);
+        const unsigned int length = m_data.length;
+        auto step_y = [length, inner_ring_scale](unsigned int k)
+        { return (length > 16 && k % 2) ? inner_ring_scale : 1.f; };
+        auto rotate_to_step = [&args, mpif, lenf](unsigned int k)
+        { nvgRotate(args.vg, 2.f * static_cast<float>(k) * mpif / lenf); };
+
+        nvgBeginPath(args.vg);
+        for(unsigned int k = 0; k < m_data.length; ++k)
+        {
+                float radius = off_radius;
+                if(orbitsEuclideanBeat(m_data.length, m_data.hits, m_data.shift, k, m_data.invert))
+                {
+                        radius = on_radius;
+                }
 
                 nvgSave(args.vg);
-
-                const Rect b = Rect(Vec(0, 0), box.size);
-                nvgScissor(args.vg, b.pos.x, b.pos.y, b.size.x, b.size.y);
-
-                // Everything drawn after here is in the foreground colour
-                nvgStrokeColor(args.vg, foreground_color);
-                nvgFillColor(args.vg, foreground_color);
-
-                // Translate so (0, 0) is the center of the screen
-                nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
-
-                // Draw length text center bottom and hits text center top
-                nvgBeginPath(args.vg);
-                nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-                nvgFontSize(args.vg, 20);
-                std::shared_ptr<Font> font = APP->window->loadFont(
-                        asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
-                nvgFontFaceId(args.vg, font->handle);
-                nvgText(args.vg, 0.f, -7.f, std::to_string(m_data.hits).c_str(), NULL);
-                nvgText(args.vg, 0.f, 7.f, std::to_string(m_data.length).c_str(), NULL);
-                // nvgFill(args.vg);
-
-                // Scale to [-1, 1]
-                nvgScale(args.vg, b.size.x / 2.f, b.size.y / 2.f);
-
-                // Flip x and y so we start at the top and positive angle increments go clockwise
-                nvgScale(args.vg, -1.f, -1.f);
-
-                // nvgBeginPath(args.vg);
-                if(m_data.reverse)
-                {
-                        nvgMoveTo(args.vg, 0.23f, -0.2f);
-                        nvgLineTo(args.vg, 0.3f, 0.f);
-                        nvgLineTo(args.vg, 0.23f, 0.2f);
-                }
-                else
-                {
-                        nvgMoveTo(args.vg, -0.23f, 0.2f);
-                        nvgLineTo(args.vg, -0.3f, -0.f);
-                        nvgLineTo(args.vg, -0.23f, -0.2f);
-                }
-                nvgFill(args.vg);
-
-                // set the on beat radius so 8 can fit on the screen
-                const auto on_radius = 1.f / 8.f;
-
-                // set outline radius so it's bigger than the on_radius
-                const auto outline_radius = on_radius * 1.3f;
-
-                // set the off beat radius so it's almost a dot
-                const auto off_radius = on_radius / 10.f;
-
-                // Placement of the inner ring of circles when there's too many of them for one ring
-                const auto inner_ring_scale = 0.75f;
-
-                // Width of the line when drawing circles
-                const auto circle_stroke_width = 0.03f;
-                nvgStrokeWidth(args.vg, circle_stroke_width);
-
-                // Add a border of half a circle so we don't draw over the edge
-                nvgScale(args.vg, 1.f - outline_radius, 1.f - outline_radius);
-
-                // Everything is in the foreground colour, so the steps' circles are drawn as one path, then
-                // the current beat marker and the shift pointer, rather than a path for every step. Points
-                // are transformed as they're added to a path, so each step can still be rotated into place.
-                const float mpif = static_cast<float>(M_PI);
-                const float lenf = static_cast<float>(m_data.length);
-                const unsigned int length = m_data.length;
-                auto step_y = [length, inner_ring_scale](unsigned int k)
-                { return (length > 16 && k % 2) ? inner_ring_scale : 1.f; };
-                auto rotate_to_step = [&args, mpif, lenf](unsigned int k)
-                { nvgRotate(args.vg, 2.f * static_cast<float>(k) * mpif / lenf); };
-
-                nvgBeginPath(args.vg);
-                for(unsigned int k = 0; k < m_data.length; ++k)
-                {
-                        float radius = off_radius;
-                        if(orbitsEuclideanBeat(m_data.length, m_data.hits, m_data.shift, k, m_data.invert))
-                        {
-                                radius = on_radius;
-                        }
-
-                        nvgSave(args.vg);
-                        rotate_to_step(k);
-                        nvgCircle(args.vg, 0.f, step_y(k), radius);
-                        nvgRestore(args.vg);
-                }
-                if(m_data.invert)
-                {
-                        nvgStroke(args.vg);
-                }
-                else
-                {
-                        nvgFill(args.vg);
-                }
-
-                // Current beat marker
-                // Highlight the beat that has just played
-                // For forward moving rhythms this is the previous index
-                // For reversed rhythms this is index
-                nvgBeginPath(args.vg);
-                for(unsigned int k = 0; k < m_data.length; ++k)
-                {
-                        if((m_data.reverse && m_data.current_step == k) ||
-                           (!m_data.reverse &&
-                            ((k == m_data.length - 1) ? (0 == m_data.current_step) : (k + 1 == m_data.current_step))))
-                        {
-                                nvgSave(args.vg);
-                                rotate_to_step(k);
-                                nvgCircle(args.vg, 0.f, step_y(k), outline_radius);
-                                nvgRestore(args.vg);
-                        }
-                }
-                nvgStroke(args.vg);
-
-                // shift pointer
-                if(m_data.shift < m_data.length)
-                {
-                        nvgSave(args.vg);
-                        rotate_to_step(m_data.shift);
-                        nvgBeginPath(args.vg);
-                        nvgMoveTo(args.vg, 0.f, 0.5f);
-                        nvgLineTo(args.vg, -0.05f, 0.4f);
-                        nvgLineTo(args.vg, 0.05f, 0.4f);
-                        nvgClosePath(args.vg);
-                        nvgFill(args.vg);
-                        nvgRestore(args.vg);
-                }
-
-                nvgResetScissor(args.vg);
+                rotate_to_step(k);
+                nvgCircle(args.vg, 0.f, step_y(k), radius);
                 nvgRestore(args.vg);
         }
+        if(m_data.invert)
+        {
+                nvgStroke(args.vg);
+        }
+        else
+        {
+                nvgFill(args.vg);
+        }
+
+        // Current beat marker
+        // Highlight the beat that has just played
+        // For forward moving rhythms this is the previous index
+        // For reversed rhythms this is index
+        nvgBeginPath(args.vg);
+        for(unsigned int k = 0; k < m_data.length; ++k)
+        {
+                if((m_data.reverse && m_data.current_step == k) ||
+                   (!m_data.reverse &&
+                    ((k == m_data.length - 1) ? (0 == m_data.current_step) : (k + 1 == m_data.current_step))))
+                {
+                        nvgSave(args.vg);
+                        rotate_to_step(k);
+                        nvgCircle(args.vg, 0.f, step_y(k), outline_radius);
+                        nvgRestore(args.vg);
+                }
+        }
+        nvgStroke(args.vg);
+
+        // shift pointer
+        if(m_data.shift < m_data.length)
+        {
+                nvgSave(args.vg);
+                rotate_to_step(m_data.shift);
+                nvgBeginPath(args.vg);
+                nvgMoveTo(args.vg, 0.f, 0.5f);
+                nvgLineTo(args.vg, -0.05f, 0.4f);
+                nvgLineTo(args.vg, 0.05f, 0.4f);
+                nvgClosePath(args.vg);
+                nvgFill(args.vg);
+                nvgRestore(args.vg);
+        }
+
+        nvgResetScissor(args.vg);
+        nvgRestore(args.vg);
 }
 
-struct EugeneRhythmDisplay : Widget
+struct EugeneRhythmDisplay : OrbitsDisplay
 {
-        FramebufferWidget *m_fb = NULL;
         EugeneRhythmDisplayUnbuffered *m_ub = NULL;
         RareBreeds_Orbits_Eugene *m_module = NULL;
 
         EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size);
-        void drawLayer(const DrawArgs &args, int layer) override;
+        void step() override;
 };
 
 EugeneRhythmDisplay::EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size)
+        : OrbitsDisplay(pos, size), m_module(module)
 {
-        m_module = module;
-        box.pos = pos;
-        box.size = size;
-        m_fb = new FramebufferWidget;
-        addChild(m_fb);
         m_ub = new EugeneRhythmDisplayUnbuffered(size);
-        m_fb->addChild(m_ub);
+        setContent(m_ub);
 }
 
-void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
+void EugeneRhythmDisplay::step()
 {
-        // Drawings to layer 1 don't dim when the room lights are dimmed
-        if(layer == 1)
+        EugeneDisplayData data = RareBreeds_Orbits_Eugene::getDisplayData(m_module);
+        if(data != m_ub->m_data)
         {
-                nvgGlobalTint(args.vg, color::WHITE);
-
-                EugeneDisplayData data = RareBreeds_Orbits_Eugene::getDisplayData(m_module);
-                if(data != m_ub->m_data)
-                {
-                        m_ub->m_data = data;
-                        m_fb->dirty = true;
-                }
+                m_ub->m_data = data;
+                setDirty();
         }
 
-        Widget::drawLayer(args, layer);
+        OrbitsDisplay::step();
 }
 
 #define EUGENE_POS(NAME) ORBITS_POS(EUGENE_##NAME)

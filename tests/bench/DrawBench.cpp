@@ -80,11 +80,10 @@ static FrameTimes runFrames(std::vector<DrawInstance> &instances, int clock_inpu
                         }
                 }
 
+                // The frame is drawn the way Rack's Window::step() draws it.
                 const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-                glViewport(0, 0, fb_width, fb_height);
-                glClearColor(0.f, 0.f, 0.f, 1.f);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-                nvgBeginFrame(vg, static_cast<float>(win_width), static_cast<float>(win_height), pixel_ratio);
+                nvgBeginFrame(vg, static_cast<float>(fb_width), static_cast<float>(fb_height), pixel_ratio);
+                nvgScale(vg, pixel_ratio, pixel_ratio);
                 for(size_t i = 0; i < instances.size(); ++i)
                 {
                         app::ModuleWidget *widget = instances[i].widget;
@@ -100,6 +99,10 @@ static FrameTimes runFrames(std::vector<DrawInstance> &instances, int clock_inpu
                         widget->draw(draw_args);
                         widget->drawLayer(draw_args, 1);
                 }
+                // Only now, as rendering framebuffers while drawing changes the viewport.
+                glViewport(0, 0, fb_width, fb_height);
+                glClearColor(0.f, 0.f, 0.f, 1.f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
                 nvgEndFrame(vg);
                 const std::chrono::steady_clock::time_point cpu_end = std::chrono::steady_clock::now();
                 glFinish();
