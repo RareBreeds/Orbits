@@ -1,0 +1,11 @@
+# Commits that only change line endings or formatting, so `git blame` can skip them and
+# show the commit that last really changed each line. GitHub's blame view reads this file
+# automatically. For the command line, run once in your clone:
+#
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Standardize on LF for all line endings
+f29fbc832e79f2239844fc05f8958f41bb669888
+
+# Large formatting change
+d92c9b6239e33067917a45ea5c1e52bd7521fabe

@@ -1,0 +1,4 @@
+# Files clang-format must not change (clang-format 18 or newer reads this file).
+
+# Third-party code, kept exactly as released.
+tests/doctest/*
