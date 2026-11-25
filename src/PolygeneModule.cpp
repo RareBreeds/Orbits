@@ -8,7 +8,7 @@
 struct RandomizeChannelAction : rack::history::ModuleAction
 {
         uint8_t channel = 0;
-        PolygeneChannelState new_state, old_state;
+        PolygeneChannelState new_state{}, old_state{};
 
         void apply(const PolygeneChannelState &state)
         {
