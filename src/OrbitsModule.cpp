@@ -1,5 +1,8 @@
 #include "OrbitsModule.hpp"
 
+#include <algorithm>
+#include <limits>
+
 unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
         float r = std::round(value);
@@ -19,9 +22,14 @@ unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 void json_load_real(json_t *root, const char *param, float *result)
 {
         json_t *obj = json_object_get(root, param);
-        if(obj)
+        // Accept integers as well as reals, e.g. from a hand-edited patch.
+        if(json_is_number(obj))
         {
-                *result = static_cast<float>(json_real_value(obj));
+                // Keep the value finite. json_real() can't store them and the plugin
+                // doesn't need them for anything.
+                const double max = static_cast<double>(std::numeric_limits<float>::max());
+                const double value = std::max(-max, std::min(json_number_value(obj), max));
+                *result = static_cast<float>(value);
         }
 }
 
