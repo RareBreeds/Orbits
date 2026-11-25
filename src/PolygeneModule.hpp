@@ -4,10 +4,9 @@
 #include "OrbitsRhythm.hpp"
 #include "OrbitsStepCounter.hpp"
 #include "OrbitsUndoQueue.hpp"
+#include "OrbitsWidgetData.hpp"
 
 #include <atomic>
-
-struct RareBreeds_Orbits_PolygeneWidget;
 
 enum InputMode
 {
@@ -141,8 +140,7 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
         dsp::BooleanTrigger m_invert_trigger;
         RepeatTrigger m_random_trigger;
         dsp::BooleanTrigger m_sync_trigger;
-        RareBreeds_Orbits_PolygeneWidget *m_widget = NULL;
-        std::atomic<json_t *> m_widget_config{nullptr};
+        OrbitsWidgetData m_widget_data;
 
         // Channels randomized by the Random button, waiting to be added to the undo history.
         OrbitsUndoQueue<PolygeneRandomizeRecord> m_randomize_undo;
@@ -153,7 +151,6 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
         unsigned int m_randomization_mask = RANDOMIZE_ALL;
 
         RareBreeds_Orbits_Polygene();
-        virtual ~RareBreeds_Orbits_Polygene();
         void reset();
         void syncParamsToActiveChannel();
         void process(const ProcessArgs &process_args) override;

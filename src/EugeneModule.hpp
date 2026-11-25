@@ -3,10 +3,9 @@
 #include "OrbitsModule.hpp"
 #include "OrbitsRhythm.hpp"
 #include "OrbitsStepCounter.hpp"
+#include "OrbitsWidgetData.hpp"
 
 #include <atomic>
-
-struct RareBreeds_Orbits_EugeneWidget;
 
 struct EugeneDisplayData
 {
@@ -95,10 +94,8 @@ struct RareBreeds_Orbits_Eugene : Module
         std::atomic<bool> m_reverse{false};
         std::atomic<bool> m_invert{false};
 
-        RareBreeds_Orbits_EugeneWidget *m_widget = NULL;
-        std::atomic<json_t *> m_widget_config{nullptr};
+        OrbitsWidgetData m_widget_data;
         RareBreeds_Orbits_Eugene();
-        virtual ~RareBreeds_Orbits_Eugene();
 
         unsigned int readLength();
         unsigned int readHits(unsigned int length);

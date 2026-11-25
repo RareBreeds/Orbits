@@ -6,6 +6,35 @@ OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig &config) : m_config(co
 {
 }
 
+OrbitsWidget::~OrbitsWidget()
+{
+        if(m_widget_data)
+        {
+                m_widget_data->detach();
+        }
+}
+
+void OrbitsWidget::attachWidgetData(OrbitsWidgetData *data)
+{
+        m_widget_data = data;
+        m_widget_data->attach(this);
+}
+
+void OrbitsWidget::draw(const DrawArgs &args)
+{
+        if(m_widget_data)
+        {
+                json_t *loaded = m_widget_data->takeLoaded();
+                if(loaded)
+                {
+                        dataFromJson(loaded);
+                        json_decref(loaded);
+                }
+        }
+
+        ModuleWidget::draw(args);
+}
+
 void OrbitsWidget::step()
 {
         // Modules that make undoable changes on the engine thread queue them,
@@ -109,4 +138,47 @@ void EOCWidget::appendContextMenu(Menu *menu)
 void BeatWidget::appendContextMenu(Menu *menu)
 {
         menu->addChild(createIndexPtrSubmenuItem("Beat Mode", m_module->getOptions(), &m_module->m_mode));
+}
+
+OrbitsWidgetData::~OrbitsWidgetData()
+{
+        json_decref(m_loaded.exchange(nullptr));
+}
+
+void OrbitsWidgetData::save(json_t *root)
+{
+        if(m_widget)
+        {
+                json_t *data = m_widget->dataToJson();
+                if(data)
+                {
+                        json_object_set_new(root, "widget", data);
+                }
+        }
+}
+
+void OrbitsWidgetData::load(json_t *root)
+{
+        json_t *data = json_object_get(root, "widget");
+        if(data)
+        {
+                // Release data loaded earlier that the widget hasn't applied yet, e.g. when two
+                // presets are loaded before the widget next draws.
+                json_decref(m_loaded.exchange(json_incref(data)));
+        }
+}
+
+void OrbitsWidgetData::attach(OrbitsWidget *widget)
+{
+        m_widget = widget;
+}
+
+void OrbitsWidgetData::detach()
+{
+        m_widget = NULL;
+}
+
+json_t *OrbitsWidgetData::takeLoaded()
+{
+        return m_loaded.exchange(nullptr);
 }

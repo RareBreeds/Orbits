@@ -167,14 +167,7 @@ json_t *RareBreeds_Orbits_Eugene::dataToJson()
                 json_object_set_new(root, "eoc", m_eoc.dataToJson());
                 json_object_set_new(root, "randomization_mask", json_integer(m_randomization_mask));
 
-                if(m_widget)
-                {
-                        json_t *w = m_widget->dataToJson();
-                        if(w)
-                        {
-                                json_object_set_new(root, "widget", w);
-                        }
-                }
+                m_widget_data.save(root);
         }
         return root;
 }
@@ -188,27 +181,13 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
                 m_randomization_mask = RANDOMIZE_ALL;
                 json_load_unsigned_int(root, "randomization_mask", &m_randomization_mask);
 
-                json_t *obj = json_object_get(root, "widget");
-                if(obj)
-                {
-                        // Always defer the widget config to the widget draw method for 2 reasons
-                        // 1. The widget isn't created before dataFromJson is called in Rack-2
-                        //    so store the config and initialize when it's first used.
-                        // 2. EightFaceMk2 calls dataFromJson from a different thread than the
-                        //    main thread which may cause GL operations to fail.
-                        json_decref(m_widget_config.exchange(json_incref(obj)));
-                }
+                m_widget_data.load(root);
         }
 }
 
 void RareBreeds_Orbits_Eugene::onReset()
 {
         m_steps.reset();
-}
-
-RareBreeds_Orbits_Eugene::~RareBreeds_Orbits_Eugene()
-{
-        json_decref(m_widget_config);
 }
 
 void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent & /*e*/)

@@ -203,7 +203,7 @@ RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits
         // Module may be NULL if this is the module selection screen
         if(eugene)
         {
-                eugene->m_widget = this;
+                attachWidgetData(&eugene->m_widget_data);
                 beat_widget.m_module = &eugene->m_beat;
                 eoc_widget.m_module = &eugene->m_eoc;
         }
@@ -337,23 +337,4 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
                                         [=]() { eugene->m_randomization_mask ^= (1u << i.second); }));
                         }
                 }));
-}
-
-void RareBreeds_Orbits_EugeneWidget::draw(const DrawArgs &args)
-{
-        RareBreeds_Orbits_Eugene *eugene = static_cast<RareBreeds_Orbits_Eugene *>(getModule());
-
-        // In Rack-2 dataFromJson is called on the module before the widget is created
-        // The module remembers the json object so we can initialise it here
-        if(eugene)
-        {
-                json_t *config = eugene->m_widget_config.exchange(nullptr);
-                if(config)
-                {
-                        dataFromJson(config);
-                        json_decref(config);
-                }
-        }
-
-        OrbitsWidget::draw(args);
 }

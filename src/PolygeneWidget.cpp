@@ -173,7 +173,7 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         // Module may be NULL if this is the module selection screen
         if(polygene)
         {
-                polygene->m_widget = this;
+                attachWidgetData(&polygene->m_widget_data);
                 beat_widget.m_module = &polygene->m_beat;
                 eoc_widget.m_module = &polygene->m_eoc;
         }
@@ -352,23 +352,4 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
                                         [=]() { ToggleInputMode(&input_mode_array[i.second]); }));
                         }
                 }));
-}
-
-void RareBreeds_Orbits_PolygeneWidget::draw(const DrawArgs &args)
-{
-        RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(getModule());
-
-        // In Rack-2 dataFromJson is called on the module before the widget is created
-        // The module remembers the json object so we can initialise it here
-        if(polygene)
-        {
-                json_t *config = polygene->m_widget_config.exchange(nullptr);
-                if(config)
-                {
-                        dataFromJson(config);
-                        json_decref(config);
-                }
-        }
-
-        OrbitsWidget::draw(args);
 }
