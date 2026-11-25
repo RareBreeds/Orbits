@@ -20,17 +20,15 @@ enum InputMode
         INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST
 };
 
-// Maximum number of channels Polygene can support
-// Actual number of channels will be the minimum of this and PORT_MAX_CHANNELS
-#define POLYGENE_MAX_CHANNELS 16
+struct PolygeneChannelDisplayData
+{
+        unsigned int length, hits, shift, variation, invert, current_step;
+};
 
 struct PolygeneDisplayData
 {
         uint8_t active_channel_id, active_channels;
-        struct
-        {
-                unsigned int length, hits, shift, variation, invert, current_step;
-        } channels[POLYGENE_MAX_CHANNELS];
+        PolygeneChannelDisplayData channels[PORT_MAX_CHANNELS];
 };
 
 struct PolygeneChannelState

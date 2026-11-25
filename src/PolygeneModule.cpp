@@ -2,6 +2,8 @@
 #include "PolygeneWidget.hpp"
 #include "Rhythm.hpp"
 
+#include <algorithm>
+
 // Undo/redo for one channel randomized with the Random button.
 struct RandomizeChannelAction : rack::history::ModuleAction
 {
@@ -261,29 +263,35 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits
         }
         else
         {
-                // Default data shown in the module browser
-                PolygeneDisplayData data = {
-                        /* active_channel_id */ 3,
-                        /* active_channels */ PORT_MAX_CHANNELS,
-                        /* channels */ {
-                                {32, 6, 0, 0, 0, 4},
-                                {16, 9, 3, 0, 0, 0},
-                                {7, 3, 6, 0, 0, 5},
-                                {9, 7, 2, 0, 0, 3},
-                                {17, 4, 12, 0, 0, 14},
-                                {30, 20, 15, 0, 0, 20},
-                                {19, 4, 14, 0, 0, 10},
-                                {4, 2, 3, 0, 0, 2},
-                                {7, 1, 0, 0, 0, 6},
-                                {8, 5, 3, 0, 0, 1},
-                                {16, 10, 4, 0, 0, 4},
-                                {19, 16, 2, 0, 0, 18},
-                                {24, 20, 8, 0, 0, 14},
-                                {28, 14, 6, 0, 0, 20},
-                                {21, 12, 4, 0, 0, 4},
-                                {9, 3, 3, 0, 0, 7},
-                        }
+                // Example rhythms shown in the module browser, repeated if there are more
+                // channels than examples.
+                static const PolygeneChannelDisplayData examples[] = {
+                        {32, 6, 0, 0, 0, 4},
+                        {16, 9, 3, 0, 0, 0},
+                        {7, 3, 6, 0, 0, 5},
+                        {9, 7, 2, 0, 0, 3},
+                        {17, 4, 12, 0, 0, 14},
+                        {30, 20, 15, 0, 0, 20},
+                        {19, 4, 14, 0, 0, 10},
+                        {4, 2, 3, 0, 0, 2},
+                        {7, 1, 0, 0, 0, 6},
+                        {8, 5, 3, 0, 0, 1},
+                        {16, 10, 4, 0, 0, 4},
+                        {19, 16, 2, 0, 0, 18},
+                        {24, 20, 8, 0, 0, 14},
+                        {28, 14, 6, 0, 0, 20},
+                        {21, 12, 4, 0, 0, 4},
+                        {9, 3, 3, 0, 0, 7},
                 };
+                const int num_examples = static_cast<int>(sizeof(examples) / sizeof(examples[0]));
+
+                PolygeneDisplayData data;
+                data.active_channel_id = static_cast<uint8_t>(std::min(3, PORT_MAX_CHANNELS - 1));
+                data.active_channels = PORT_MAX_CHANNELS;
+                for(int c = 0; c < PORT_MAX_CHANNELS; ++c)
+                {
+                        data.channels[c] = examples[c % num_examples];
+                }
 
                 return data;
         }
