@@ -372,7 +372,8 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
         getOutput(BEAT_OUTPUT).setChannels(m_active_channels);
         getOutput(EOC_OUTPUT).setChannels(m_active_channels);
 
-        m_active_channel_id = static_cast<uint8_t>(std::round(getParam(CHANNEL_KNOB_PARAM).getValue()));
+        m_active_channel_id = static_cast<uint8_t>(
+                clampRounded(getParam(CHANNEL_KNOB_PARAM).getValue(), 0, PORT_MAX_CHANNELS - 1));
         m_active_channel = &m_channels[m_active_channel_id];
 
         // Update the knob positions when the channel changes
@@ -550,7 +551,15 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 m_randomization_mask = RANDOMIZE_ALL;
                 json_load_unsigned_int(root, "randomization_mask", &m_randomization_mask);
 
-                json_load_uint8_t(root, "active_channel_id", &m_active_channel_id);
+                json_t *active_channel = json_object_get(root, "active_channel_id");
+                if(json_is_integer(active_channel))
+                {
+                        json_int_t channel_id = json_integer_value(active_channel);
+                        if(channel_id >= 0 && channel_id < PORT_MAX_CHANNELS)
+                        {
+                                m_active_channel_id = static_cast<uint8_t>(channel_id);
+                        }
+                }
                 json_t *channels = json_object_get(root, "channels");
                 if(channels)
                 {

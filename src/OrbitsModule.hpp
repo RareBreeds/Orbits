@@ -7,9 +7,7 @@
 unsigned int clampRounded(float value, unsigned int min, unsigned int max);
 void json_load_real(json_t *root, const char *param, float *result);
 void json_load_bool(json_t *root, const char *param, bool *result);
-void json_load_int(json_t *root, const char *param, int *result);
 void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result);
-void json_load_uint8_t(json_t *root, const char *param, uint8_t *result);
 
 struct EOCMode
 {

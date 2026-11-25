@@ -42,30 +42,12 @@ void json_load_bool(json_t *root, const char *param, bool *result)
         }
 }
 
-void json_load_int(json_t *root, const char *param, int *result)
-{
-        json_t *obj = json_object_get(root, param);
-        if(obj)
-        {
-                *result = static_cast<int>(json_integer_value(obj));
-        }
-}
-
 void json_load_unsigned_int(json_t *root, const char *param, unsigned int *result)
 {
         json_t *obj = json_object_get(root, param);
         if(obj)
         {
                 *result = static_cast<unsigned int>(json_integer_value(obj));
-        }
-}
-
-void json_load_uint8_t(json_t *root, const char *param, uint8_t *result)
-{
-        json_t *obj = json_object_get(root, param);
-        if(obj)
-        {
-                *result = static_cast<uint8_t>(json_integer_value(obj));
         }
 }
 
