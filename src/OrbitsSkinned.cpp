@@ -29,6 +29,9 @@ OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config) : m_
 {
         minAngle = -0.83f * static_cast<float>(M_PI);
         maxAngle = 0.83f * static_cast<float>(M_PI);
+        // Rack smooths knob changes by default, which is for parameters that affect audio. These
+        // are only read on clock edges and rounded to whole steps.
+        smooth = false;
         loadTheme(kOrbitsThemeDefault);
 }
 

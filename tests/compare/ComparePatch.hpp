@@ -36,12 +36,13 @@ struct ComparePatch
         void setClock(const char *input, int period);
         void setClock(const char *input, int channel, int period);
 
-        // Sets a param immediately, as a switch, a button or a knob that doesn't smooth its changes
-        // would. Snapping knobs (Length, Shift, Channel) don't smooth, and nor does MIDI mapping.
+        // Sets a param immediately, as turning a knob, a switch or a button, typing a value or MIDI
+        // mapping does.
         void setParam(const char *param, float value);
-        // Sets a param as dragging or typing into a knob that smooths its changes does in Rack: the
-        // engine moves the param towards the value over the next few milliseconds. Hits, Variation
-        // and Eugene's CV knobs smooth. Only one param is smoothed at a time.
+        // Sets a param as turning a knob that smooths its changes does in Rack: the engine moves the
+        // param towards the value over the next few hundred milliseconds. In v2.0.4, Hits,
+        // Variation and Eugene's CV knobs smoothed; since then, none of the knobs do. Only one param
+        // is smoothed at a time.
         void turnKnob(const char *param, float value);
         // Presses and releases a button, holding it for `samples` samples.
         void pressButton(const char *param, int samples);
