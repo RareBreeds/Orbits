@@ -71,13 +71,15 @@ RELEASE_CXXFLAGS += -march=armv8-a+fp+simd
 endif
 RELEASE_CXXFLAGS += -pthread -isystem $(RACK_DIR)/include -isystem $(RACK_DIR)/dep/include $(WARNINGS)
 RELEASE_LDFLAGS = -pthread -L$(RACK_DIR) -lRack
-ifeq ($(shell uname -s),Darwin)
-RELEASE_LDFLAGS += -framework OpenGL
-else
-RELEASE_LDFLAGS += -lGL
-endif
 
 BENCH_CXXFLAGS = $(RELEASE_CXXFLAGS) -I$(BENCH_SRC_DIR) -Irack
+# Only the drawing benchmarks use OpenGL directly.
+BENCH_LDFLAGS = $(RELEASE_LDFLAGS)
+ifeq ($(shell uname -s),Darwin)
+BENCH_LDFLAGS += -framework OpenGL
+else
+BENCH_LDFLAGS += -lGL
+endif
 # -iquote, as the plugin's plugin.hpp would hide Rack's from #include <plugin.hpp>.
 COMPARE_CXXFLAGS = $(RELEASE_CXXFLAGS) -iquote $(COMPARE_SRC_DIR)
 COMPARE_LDFLAGS = $(RELEASE_LDFLAGS)
@@ -137,7 +139,7 @@ $(RACK_TARGET): $(RACK_OBJECTS)
 	$(CXX) $^ $(RACK_LDFLAGS) -o $@
 
 $(BENCH_TARGET): $(BENCH_OBJECTS)
-	$(CXX) $^ $(RELEASE_LDFLAGS) -o $@
+	$(CXX) $^ $(BENCH_LDFLAGS) -o $@
 
 $(COMPARE_TARGET): $(COMPARE_OBJECTS)
 	$(CXX) $^ $(COMPARE_LDFLAGS) -o $@
