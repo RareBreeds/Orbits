@@ -25,8 +25,9 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 
 #if ORBITS_THEME_SELECTION_ENABLED
         menu->addChild(createIndexSubmenuItem(
-                "Theme", std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()), [this]()
-                { return toIndex(this->m_theme); }, [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }));
+                "Theme", std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()),
+                [this]() { return orbitsThemeIndex(this->m_theme); },
+                [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }));
 #endif
 
         appendModuleContextMenu(menu);
@@ -36,7 +37,7 @@ void OrbitsWidget::switchTheme(const char *theme)
 {
 #if ORBITS_THEME_SELECTION_ENABLED
         OrbitsTheme t;
-        if(fromString(theme, t))
+        if(orbitsThemeFromName(theme, t))
         {
                 switchTheme(t);
         }
@@ -63,7 +64,7 @@ void OrbitsWidget::switchTheme(OrbitsTheme theme)
                 }
         }
 
-        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(theme)]);
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(theme)]);
         setPanel(APP->window->loadSvg(panelPath));
 #else
         UNUSED(theme);
@@ -75,7 +76,7 @@ json_t *OrbitsWidget::dataToJson()
         json_t *root = json_object();
         if(root)
         {
-                json_t *theme = json_string(toString(m_theme));
+                json_t *theme = json_string(orbitsThemeName(m_theme));
                 if(theme)
                 {
                         json_object_set_new(root, "theme", theme);

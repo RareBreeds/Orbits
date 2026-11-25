@@ -17,17 +17,17 @@ constexpr std::array<const char *, static_cast<size_t>(OrbitsTheme::Count)> kOrb
 };
 constexpr OrbitsTheme kOrbitsThemeDefault = OrbitsTheme::Dark;
 
-constexpr uint8_t toIndex(OrbitsTheme t)
+constexpr uint8_t orbitsThemeIndex(OrbitsTheme t)
 {
         return static_cast<uint8_t>(t);
 }
 
-constexpr const char *toString(OrbitsTheme t)
+constexpr const char *orbitsThemeName(OrbitsTheme t)
 {
         return kOrbitsThemeNames[static_cast<size_t>(t)];
 }
 
-bool fromString(const char *name, OrbitsTheme &outTheme);
+bool orbitsThemeFromName(const char *name, OrbitsTheme &outTheme);
 
 #define ORBITS_POS(NAME) OrbitsPos(NAME##_X, NAME##_Y)
 #define ORBITS_SIZE(NAME) OrbitsPos(NAME##_WIDTH, NAME##_HEIGHT)
@@ -44,12 +44,12 @@ struct OrbitsSkinnedPanelConfig
 {
         // This struct is used as a global and the C string
         // prevents exit-time-destructor warnings
-        const char *panelPaths[toIndex(OrbitsTheme::Count)];
+        const char *panelPaths[orbitsThemeIndex(OrbitsTheme::Count)];
 };
 
 struct OrbitsSkinnedKnobConfig
 {
-        std::array<std::string, toIndex(OrbitsTheme::Count)> imagePaths;
+        std::array<std::string, orbitsThemeIndex(OrbitsTheme::Count)> imagePaths;
         Vec pos;
 };
 
@@ -67,7 +67,7 @@ struct OrbitsSkinnedSnappyKnob : OrbitsSkinnedKnob
 
 struct OrbitsSkinnedScrewConfig
 {
-        std::array<std::string, toIndex(OrbitsTheme::Count)> imagePaths;
+        std::array<std::string, orbitsThemeIndex(OrbitsTheme::Count)> imagePaths;
         Vec pos;
 };
 
@@ -80,8 +80,8 @@ struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
 
 struct OrbitsSkinnedSwitchConfig
 {
-        std::array<std::string, toIndex(OrbitsTheme::Count)> onImagePaths;
-        std::array<std::string, toIndex(OrbitsTheme::Count)> offImagePaths;
+        std::array<std::string, orbitsThemeIndex(OrbitsTheme::Count)> onImagePaths;
+        std::array<std::string, orbitsThemeIndex(OrbitsTheme::Count)> offImagePaths;
         Vec pos;
 };
 
@@ -99,7 +99,7 @@ struct OrbitsSkinnedButton : OrbitsSkinnedSwitch
 
 struct OrbitsSkinnedPortConfig
 {
-        std::array<std::string, toIndex(OrbitsTheme::Count)> imagePaths;
+        std::array<std::string, orbitsThemeIndex(OrbitsTheme::Count)> imagePaths;
         Vec pos;
 };
 

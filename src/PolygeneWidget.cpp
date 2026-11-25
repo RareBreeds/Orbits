@@ -7,7 +7,7 @@
 
 struct PolygeneRhythmDisplayConfig
 {
-        std::array<NVGcolor, toIndex(OrbitsTheme::Count)> accent;
+        std::array<NVGcolor, orbitsThemeIndex(OrbitsTheme::Count)> accent;
 };
 
 struct PolygeneRhythmDisplay : TransparentWidget, OrbitsSkinned
@@ -28,7 +28,7 @@ PolygeneRhythmDisplay::PolygeneRhythmDisplay()
 void PolygeneRhythmDisplay::loadTheme(OrbitsTheme theme)
 {
 #if ORBITS_THEME_SELECTION_ENABLED
-        m_display_accent = m_config.accent[toIndex(theme)];
+        m_display_accent = m_config.accent[orbitsThemeIndex(theme)];
 #else
         UNUSED(theme);
 #endif
@@ -274,10 +274,11 @@ RareBreeds_Orbits_PolygeneWidget::RareBreeds_Orbits_PolygeneWidget(RareBreeds_Or
         r->m_config = {{POLYGENE_DARK_DISPLAY_ACCENT, POLYGENE_LIGHT_DISPLAY_ACCENT}};
         r->module = polygene;
         r->box.size = POLYGENE_SIZE(DISPLAY);
-        r->m_display_accent = r->m_config.accent[toIndex(kOrbitsThemeDefault)];
+        r->m_display_accent = r->m_config.accent[orbitsThemeIndex(kOrbitsThemeDefault)];
         addChild(r);
 
-        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[toIndex(kOrbitsThemeDefault)]);
+        std::string panelPath =
+                asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(kOrbitsThemeDefault)]);
         setPanel(APP->window->loadSvg(panelPath));
 }
 

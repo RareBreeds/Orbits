@@ -124,23 +124,22 @@ TEST_CASE("json_load_real keeps values finite")
 
 TEST_CASE("Themes are found by their saved names")
 {
-        // Compared by index because doctest would use the plugin's toString(OrbitsTheme) to print them.
         OrbitsTheme theme = OrbitsTheme::Dark;
-        CHECK(fromString("Light", theme));
-        CHECK(toIndex(theme) == toIndex(OrbitsTheme::Light));
-        CHECK(fromString("Dark", theme));
-        CHECK(toIndex(theme) == toIndex(OrbitsTheme::Dark));
+        CHECK(orbitsThemeFromName("Light", theme));
+        CHECK(theme == OrbitsTheme::Light);
+        CHECK(orbitsThemeFromName("Dark", theme));
+        CHECK(theme == OrbitsTheme::Dark);
 
-        CHECK(std::string(toString(OrbitsTheme::Dark)) == "Dark");
-        CHECK(std::string(toString(OrbitsTheme::Light)) == "Light");
+        CHECK(std::string(orbitsThemeName(OrbitsTheme::Dark)) == "Dark");
+        CHECK(std::string(orbitsThemeName(OrbitsTheme::Light)) == "Light");
 }
 
 TEST_CASE("Unknown, empty and missing theme names aren't found")
 {
         OrbitsTheme theme = OrbitsTheme::Light;
-        CHECK_FALSE(fromString("Purple", theme));
-        CHECK_FALSE(fromString("", theme));
+        CHECK_FALSE(orbitsThemeFromName("Purple", theme));
+        CHECK_FALSE(orbitsThemeFromName("", theme));
         // A patch's theme that isn't a string gives NULL from json_string_value(). This used to crash.
-        CHECK_FALSE(fromString(NULL, theme));
-        CHECK(toIndex(theme) == toIndex(OrbitsTheme::Light));
+        CHECK_FALSE(orbitsThemeFromName(NULL, theme));
+        CHECK(theme == OrbitsTheme::Light);
 }

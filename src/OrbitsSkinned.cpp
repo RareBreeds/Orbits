@@ -6,7 +6,7 @@ Vec OrbitsPos(float x, float y)
         return mm2px(Vec(x, y));
 }
 
-bool fromString(const char *name, OrbitsTheme &outTheme)
+bool orbitsThemeFromName(const char *name, OrbitsTheme &outTheme)
 {
         if(!name)
         {
@@ -33,7 +33,7 @@ OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config) : m_
 
 void OrbitsSkinnedKnob::loadTheme(OrbitsTheme theme)
 {
-        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[toIndex(theme)]);
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[orbitsThemeIndex(theme)]);
         setSvg(APP->window->loadSvg(imagePath));
         fb->dirty = true;
 }
@@ -50,15 +50,17 @@ OrbitsSkinnedScrew::OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig &config) :
 
 void OrbitsSkinnedScrew::loadTheme(OrbitsTheme theme)
 {
-        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[toIndex(theme)]);
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[orbitsThemeIndex(theme)]);
         setSvg(APP->window->loadSvg(imagePath));
         fb->dirty = true;
 }
 
 OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config) : m_config(config)
 {
-        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[toIndex(kOrbitsThemeDefault)]);
-        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[toIndex(kOrbitsThemeDefault)]);
+        std::string offImagePath =
+                asset::plugin(pluginInstance, m_config.offImagePaths[orbitsThemeIndex(kOrbitsThemeDefault)]);
+        std::string onImagePath =
+                asset::plugin(pluginInstance, m_config.onImagePaths[orbitsThemeIndex(kOrbitsThemeDefault)]);
 
         addFrame(APP->window->loadSvg(offImagePath));
         addFrame(APP->window->loadSvg(onImagePath));
@@ -68,8 +70,8 @@ OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config
 void OrbitsSkinnedSwitch::loadTheme(OrbitsTheme theme)
 {
 #if ORBITS_THEME_SELECTION_ENABLED
-        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[toIndex(theme)]);
-        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[toIndex(theme)]);
+        std::string offImagePath = asset::plugin(pluginInstance, m_config.offImagePaths[orbitsThemeIndex(theme)]);
+        std::string onImagePath = asset::plugin(pluginInstance, m_config.onImagePaths[orbitsThemeIndex(theme)]);
 
         // Metamodule does not like the frames being changed, seems to corrupt the image path.
         // This happens whether I directly assign to frame[0] or clear the vector and re-add the frames.
@@ -96,7 +98,7 @@ OrbitsSkinnedPort::OrbitsSkinnedPort(const OrbitsSkinnedPortConfig &config) : m_
 
 void OrbitsSkinnedPort::loadTheme(OrbitsTheme theme)
 {
-        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[toIndex(theme)]);
+        std::string imagePath = asset::plugin(pluginInstance, m_config.imagePaths[orbitsThemeIndex(theme)]);
         setSvg(APP->window->loadSvg(imagePath));
         // fb->dirty = true; // Already set by setSvg for SvgPorts
 }
