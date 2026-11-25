@@ -13,5 +13,11 @@ VCV Rack Plugin
 
 See https://vcvrack.com/manual/Building#building-rack-plugins for how to build VCV Rack plugins in general.
 
+## Testing
+
+    make -C tests
+
+Builds and runs the unit tests in `tests/` with AddressSanitizer and UndefinedBehaviorSanitizer. They use [doctest](https://github.com/doctest/doctest), which is included in `tests/doctest/`, and don't need the Rack SDK.
+
 ## Manual
 https://rarebreeds.github.io/Orbits/
