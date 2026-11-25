@@ -20,13 +20,13 @@
 				EugeneModule.cpp,
 				EugeneWidget.cpp,
 				OrbitsModule.cpp,
+				OrbitsRhythm.cpp,
 				OrbitsSkinned.cpp,
 				OrbitsWidget.cpp,
 				plugin.cpp,
 				Polygene.cpp,
 				PolygeneModule.cpp,
 				PolygeneWidget.cpp,
-				Rhythm.cpp,
 			);
 			target = D2CAD8B12A53798100613E5A /* Orbits */;
 		};

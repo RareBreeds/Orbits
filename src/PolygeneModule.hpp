@@ -2,7 +2,7 @@
 
 #include "OrbitsModule.hpp"
 #include "OrbitsUndoQueue.hpp"
-#include "Rhythm.hpp"
+#include "OrbitsRhythm.hpp"
 
 #include <atomic>
 

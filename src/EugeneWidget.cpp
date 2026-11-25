@@ -96,7 +96,7 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
 
                         float radius = off_radius;
 
-                        if(rhythm::beat(m_data.length, m_data.hits, m_data.shift, k, m_data.invert))
+                        if(orbitsEuclideanBeat(m_data.length, m_data.hits, m_data.shift, k, m_data.invert))
                         {
                                 radius = on_radius;
                         }

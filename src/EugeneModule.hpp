@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OrbitsModule.hpp"
-#include "Rhythm.hpp"
+#include "OrbitsRhythm.hpp"
 
 #include <atomic>
 

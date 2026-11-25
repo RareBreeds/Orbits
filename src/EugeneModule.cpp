@@ -1,14 +1,14 @@
 #include "EugeneModule.hpp"
 #include "EugeneWidget.hpp"
-#include "Rhythm.hpp"
+#include "OrbitsRhythm.hpp"
 
 RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
-        configParam(LENGTH_KNOB_PARAM, 1.f, rhythm::max_length, rhythm::max_length, "Length");
+        configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
-        configParam(SHIFT_KNOB_PARAM, 0.f, rhythm::max_length - 1, 0.f, "Shift");
+        configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift");
         configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV");
         configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV");
         configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
@@ -52,8 +52,8 @@ EugeneDisplayData RareBreeds_Orbits_Eugene::getDisplayData(RareBreeds_Orbits_Eug
         else
         {
                 EugeneDisplayData data;
-                data.length = rhythm::max_length;
-                data.hits = rhythm::max_length / 2;
+                data.length = kOrbitsRhythmMaxLength;
+                data.hits = kOrbitsRhythmMaxLength / 2;
                 data.shift = 0;
                 data.current_step = 0;
                 data.reverse = false;
@@ -68,9 +68,9 @@ unsigned int RareBreeds_Orbits_Eugene::readLength()
         float input = getInput(LENGTH_CV_INPUT).getVoltage();
         float normalized_input = input / 5.f;
         float attenuation = getParam(LENGTH_CV_KNOB_PARAM).getValue();
-        value += attenuation * normalized_input * (rhythm::max_length - 1);
+        value += attenuation * normalized_input * (kOrbitsRhythmMaxLength - 1);
 
-        return clampRounded(value, 1, rhythm::max_length);
+        return clampRounded(value, 1, kOrbitsRhythmMaxLength);
 }
 
 unsigned int RareBreeds_Orbits_Eugene::readHits(unsigned int length)
@@ -90,8 +90,8 @@ unsigned int RareBreeds_Orbits_Eugene::readShift(unsigned int length)
         float input = getInput(SHIFT_CV_INPUT).getVoltage();
         float normalized_input = input / 5.f;
         float attenuation = getParam(SHIFT_CV_KNOB_PARAM).getValue();
-        value += attenuation * normalized_input * (rhythm::max_length - 1);
-        return clampRounded(value, 0, rhythm::max_length - 1) % length;
+        value += attenuation * normalized_input * (kOrbitsRhythmMaxLength - 1);
+        return clampRounded(value, 0, kOrbitsRhythmMaxLength - 1) % length;
 }
 
 bool RareBreeds_Orbits_Eugene::readReverse()
@@ -172,7 +172,7 @@ void RareBreeds_Orbits_Eugene::process(const ProcessArgs &process_args)
                 unsigned int last = reverse ? 0 : length - 1;
                 m_eoc_generator.update(m_eoc, m_current_step == first, m_current_step == last);
 
-                m_beat_generator.update(rhythm::beat(length, hits, shift, m_current_step, invert));
+                m_beat_generator.update(orbitsEuclideanBeat(length, hits, shift, m_current_step, invert));
 
                 if(!reverse)
                 {
@@ -248,7 +248,7 @@ void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& /*e*/)
 {
         if (m_randomization_mask & (1 << RANDOMIZE_LENGTH))
         {
-                float length = random::uniform() * rhythm::max_length;
+                float length = random::uniform() * kOrbitsRhythmMaxLength;
                 getParamQuantity(LENGTH_KNOB_PARAM)->setImmediateValue(length);
         }
 
@@ -269,7 +269,7 @@ void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& /*e*/)
 
         if (m_randomization_mask & (1 << RANDOMIZE_SHIFT))
         {
-                float shift = random::uniform() * (rhythm::max_length - 1);
+                float shift = random::uniform() * (kOrbitsRhythmMaxLength - 1);
                 getParamQuantity(SHIFT_KNOB_PARAM)->setImmediateValue(shift);
         }
 
