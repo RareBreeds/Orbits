@@ -8,6 +8,11 @@ Vec OrbitsPos(float x, float y)
 
 bool fromString(const char *name, OrbitsTheme &outTheme)
 {
+        if(!name)
+        {
+                return false;
+        }
+
         for(uint8_t i = 0; i < static_cast<uint8_t>(OrbitsTheme::Count); ++i)
         {
                 if(strcmp(name, kOrbitsThemeNames[i]) == 0)
