@@ -23,13 +23,6 @@ static OrbitsRhythm nearEvenRhythm(unsigned int length, unsigned int hits, unsig
         return near_even_rhythms[near_even_offsets[tableIndex(length, hits)] + variation];
 }
 
-// Rotates a rhythm of `length` steps by `amount` steps. Bits above `length` aren't cleared,
-// so only steps below `length` of the result are meaningful.
-static OrbitsRhythm rotate(OrbitsRhythm rhythm, unsigned int length, unsigned int amount)
-{
-        return (rhythm << amount | rhythm >> (length - amount));
-}
-
 unsigned int orbitsNearEvenRhythmCount(unsigned int length, unsigned int hits)
 {
         return near_even_counts[tableIndex(length, hits)];
@@ -38,7 +31,8 @@ unsigned int orbitsNearEvenRhythmCount(unsigned int length, unsigned int hits)
 bool orbitsNearEvenBeat(unsigned int length, unsigned int hits, unsigned int variation, unsigned int shift,
                         unsigned int step)
 {
-        return rotate(nearEvenRhythm(length, hits, variation), length, shift)[step];
+        const unsigned int unrotated_step = step >= shift ? step - shift : step + length - shift;
+        return nearEvenRhythm(length, hits, variation)[unrotated_step];
 }
 
 bool orbitsEuclideanBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int step,
