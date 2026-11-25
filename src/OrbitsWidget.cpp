@@ -48,6 +48,117 @@ void OrbitsWidget::step()
         ModuleWidget::step();
 }
 
+#if ORBITS_ROOM_LIGHTING_ENABLED
+static const float kOrbitsDefaultLightBoost = 0.3f;
+static float g_light_boost = kOrbitsDefaultLightBoost;
+
+float orbitsLightBrightness()
+{
+        return std::min(settings::rackBrightness + g_light_boost, 1.f);
+}
+
+float orbitsLightBoost()
+{
+        return g_light_boost;
+}
+
+void orbitsSetLightBoost(float boost)
+{
+        g_light_boost = clamp(boost, 0.f, 1.f);
+}
+
+// Rack calls these to save and load plugin-wide settings.
+extern "C" json_t *settingsToJson()
+{
+        json_t *root = json_object();
+        if(root)
+        {
+                json_object_set_new(root, "light_boost", json_real(g_light_boost));
+        }
+        return root;
+}
+
+extern "C" void settingsFromJson(json_t *root)
+{
+        json_t *boost = json_object_get(root, "light_boost");
+        if(json_is_number(boost))
+        {
+                const double value = json_number_value(boost);
+                // Rejects NaN as well as values out of range, keeping the default.
+                if(value >= 0.0 && value <= 1.0)
+                {
+                        g_light_boost = static_cast<float>(value);
+                }
+        }
+}
+
+struct OrbitsLightBoostQuantity : Quantity
+{
+        void setValue(float value) override
+        {
+                orbitsSetLightBoost(value);
+        }
+        float getValue() override
+        {
+                return orbitsLightBoost();
+        }
+        float getMinValue() override
+        {
+                return 0.f;
+        }
+        float getMaxValue() override
+        {
+                return 1.f;
+        }
+        float getDefaultValue() override
+        {
+                return kOrbitsDefaultLightBoost;
+        }
+        float getDisplayValue() override
+        {
+                return getValue() * 100.f;
+        }
+        void setDisplayValue(float displayValue) override
+        {
+                setValue(displayValue / 100.f);
+        }
+        std::string getLabel() override
+        {
+                return "Orbits light boost";
+        }
+        std::string getUnit() override
+        {
+                return "%";
+        }
+        int getDisplayPrecision() override
+        {
+                return 3;
+        }
+};
+
+struct OrbitsLightBoostSlider : ui::Slider
+{
+        OrbitsLightBoostSlider()
+        {
+                quantity = new OrbitsLightBoostQuantity;
+        }
+        ~OrbitsLightBoostSlider()
+        {
+                delete quantity;
+        }
+};
+#endif
+
+NVGcolor orbitsLightTint()
+{
+#if ORBITS_ROOM_LIGHTING_ENABLED
+        const float brightness = orbitsLightBrightness();
+        return nvgRGBAf(brightness, brightness, brightness, 1.f);
+#else
+        return color::WHITE;
+#endif
+}
+
 void OrbitsWidget::appendContextMenu(Menu *menu)
 {
         menu->addChild(new MenuSeparator);
@@ -57,6 +168,12 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
                 "Theme", std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()),
                 [this]() { return orbitsThemeIndex(this->m_theme); },
                 [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }));
+#endif
+
+#if ORBITS_ROOM_LIGHTING_ENABLED
+        OrbitsLightBoostSlider *boost = new OrbitsLightBoostSlider;
+        boost->box.size.x = 220.f;
+        menu->addChild(boost);
 #endif
 
         appendModuleContextMenu(menu);
@@ -239,7 +356,7 @@ void OrbitsDisplay::drawLayer(const DrawArgs &args, int layer)
 {
         if(layer == 1 && m_content)
         {
-                nvgGlobalTint(args.vg, color::WHITE);
+                nvgGlobalTint(args.vg, orbitsLightTint());
 #if ORBITS_FRAMEBUFFER_CACHING_ENABLED
                 drawChild(m_fb, args);
 #else

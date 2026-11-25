@@ -26,6 +26,21 @@ struct OrbitsWidget : ModuleWidget
         void dataFromJson(json_t *root);
 };
 
+// The tint to draw Orbits' displays with in layer 1, which isn't dimmed with the room lights:
+// orbitsLightBrightness() in each colour channel.
+NVGcolor orbitsLightTint();
+
+#if ORBITS_ROOM_LIGHTING_ENABLED
+// How bright Orbits' lights and displays are, from 0 (off) to 1: the room brightness plus the light
+// boost setting, so they follow the room lights and stay that much brighter.
+float orbitsLightBrightness();
+
+// The light boost setting, from 0 (lights dim with the room like the rest of the panel) to 1
+// (always fully lit). One setting for all Orbits modules, saved in Rack's settings.
+float orbitsLightBoost();
+void orbitsSetLightBoost(float boost);
+#endif
+
 // A display, drawn in layer 1 so it doesn't dim when the room lights are dimmed. The content widget
 // draws the display in its draw(). Where framebuffer caching is enabled the content is cached, and
 // only redrawn after setDirty(), so call that whenever what the display shows changes.

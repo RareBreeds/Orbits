@@ -17,3 +17,12 @@
 #else
 #define ORBITS_FRAMEBUFFER_CACHING_ENABLED 1
 #endif
+
+// Rack's room lighting: buttons' "on" images are drawn as lights, which don't dim with the room
+// lights, and there's a brightness setting for Orbits' lights. MetaModule has no room lighting and
+// draws switches itself, so it doesn't need either.
+#ifdef METAMODULE
+#define ORBITS_ROOM_LIGHTING_ENABLED 0
+#else
+#define ORBITS_ROOM_LIGHTING_ENABLED 1
+#endif

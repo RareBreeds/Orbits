@@ -1,5 +1,7 @@
 #pragma once
 
+#include "OrbitsMacros.h"
+
 #include "plugin.hpp"
 
 #include <array>
@@ -85,11 +87,36 @@ struct OrbitsSkinnedSwitchConfig
         Vec pos;
 };
 
+#if ORBITS_ROOM_LIGHTING_ENABLED
+// Draws an SVG as a light: in layer 1, which isn't dimmed with the room lights, faded by the light
+// brightness setting. Nothing is drawn in layer 0.
+struct OrbitsLitOverlay : Widget
+{
+        OrbitsLitOverlay();
+        void setSvg(std::shared_ptr<window::Svg> svg);
+        void draw(const DrawArgs &args) override;
+        void drawLayer(const DrawArgs &args, int layer) override;
+
+      private:
+        // The SVG's shapes overlap, so it's drawn into a framebuffer and faded as one image.
+        FramebufferWidget *m_fb = NULL;
+        SvgWidget *m_svg = NULL;
+};
+#endif
+
+// A switch whose "on" state is a light, like a button with an LED in it: it always shows its unlit
+// "off" image, which dims with the room lights, and while it's on the "on" image is drawn on top as
+// a light.
 struct OrbitsSkinnedSwitch : app::SvgSwitch, OrbitsSkinned
 {
         OrbitsSkinnedSwitchConfig m_config;
+#if ORBITS_ROOM_LIGHTING_ENABLED
+        // Draws the "on" image
+        OrbitsLitOverlay *m_lit = NULL;
+#endif
         OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config);
         void loadTheme(OrbitsTheme theme) override;
+        void onChange(const ChangeEvent &e) override;
 };
 
 struct OrbitsSkinnedButton : OrbitsSkinnedSwitch

@@ -1,5 +1,6 @@
 #include "OrbitsSkinned.hpp"
 #include "OrbitsMacros.h"
+#include "OrbitsWidget.hpp"
 
 Vec OrbitsPos(float x, float y)
 {
@@ -65,6 +66,13 @@ OrbitsSkinnedSwitch::OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config
         addFrame(APP->window->loadSvg(offImagePath));
         addFrame(APP->window->loadSvg(onImagePath));
         shadow->opacity = 0.0;
+
+#if ORBITS_ROOM_LIGHTING_ENABLED
+        m_lit = new OrbitsLitOverlay;
+        m_lit->setSvg(frames[1]);
+        m_lit->setVisible(false);
+        addChild(m_lit);
+#endif
 }
 
 void OrbitsSkinnedSwitch::loadTheme(OrbitsTheme theme)
@@ -79,11 +87,61 @@ void OrbitsSkinnedSwitch::loadTheme(OrbitsTheme theme)
         addFrame(APP->window->loadSvg(offImagePath));
         addFrame(APP->window->loadSvg(onImagePath));
 
+#if ORBITS_ROOM_LIGHTING_ENABLED
+        m_lit->setSvg(frames[1]);
+#endif
+
         onChange(event::Change());
 #else
         UNUSED(theme);
 #endif
 }
+
+void OrbitsSkinnedSwitch::onChange(const ChangeEvent &e)
+{
+        SvgSwitch::onChange(e);
+#if ORBITS_ROOM_LIGHTING_ENABLED
+        // SvgSwitch shows the "on" frame when the value rounds to 1 or more. Show the unlit "off" frame
+        // instead, and the "on" frame as a light on top of it.
+        engine::ParamQuantity *pq = getParamQuantity();
+        m_lit->setVisible(pq && std::round(pq->getValue() - pq->getMinValue()) >= 1.f);
+        sw->setSvg(frames[0]);
+        fb->setDirty();
+#endif
+}
+
+#if ORBITS_ROOM_LIGHTING_ENABLED
+OrbitsLitOverlay::OrbitsLitOverlay()
+{
+        m_fb = new FramebufferWidget;
+        addChild(m_fb);
+        m_svg = new SvgWidget;
+        m_fb->addChild(m_svg);
+}
+
+void OrbitsLitOverlay::setSvg(std::shared_ptr<window::Svg> svg)
+{
+        m_svg->setSvg(svg);
+        box.size = m_svg->box.size;
+        m_fb->box.size = m_svg->box.size;
+        m_fb->setDirty();
+}
+
+void OrbitsLitOverlay::draw(const DrawArgs & /*args*/)
+{
+        // Only drawn in layer 1
+}
+
+void OrbitsLitOverlay::drawLayer(const DrawArgs &args, int layer)
+{
+        const float brightness = orbitsLightBrightness();
+        if(layer == 1 && brightness > 0.f)
+        {
+                nvgGlobalTint(args.vg, nvgRGBAf(1.f, 1.f, 1.f, brightness));
+                drawChild(m_fb, args);
+        }
+}
+#endif
 
 OrbitsSkinnedButton::OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig &config) : OrbitsSkinnedSwitch(config)
 {
