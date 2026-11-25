@@ -2,7 +2,7 @@
 #include "OrbitsSkinned.hpp"
 #include "OrbitsUndoQueue.hpp"
 
-OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig& config) : m_config(config)
+OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig &config) : m_config(config)
 {
 }
 
@@ -24,11 +24,9 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
         menu->addChild(new MenuSeparator);
 
 #if ORBITS_THEME_SELECTION_ENABLED
-        menu->addChild(createIndexSubmenuItem("Theme",
-                std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()),
-                [this]() { return toIndex(this->m_theme); },
-                [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }
-        ));
+        menu->addChild(createIndexSubmenuItem(
+                "Theme", std::vector<std::string>(kOrbitsThemeNames.begin(), kOrbitsThemeNames.end()), [this]()
+                { return toIndex(this->m_theme); }, [this](int mode) { switchTheme(static_cast<OrbitsTheme>(mode)); }));
 #endif
 
         appendModuleContextMenu(menu);
@@ -38,7 +36,7 @@ void OrbitsWidget::switchTheme(const char *theme)
 {
 #if ORBITS_THEME_SELECTION_ENABLED
         OrbitsTheme t;
-        if (fromString(theme, t))
+        if(fromString(theme, t))
         {
                 switchTheme(t);
         }
@@ -104,16 +102,10 @@ void OrbitsWidget::dataFromJson(json_t *root)
 
 void EOCWidget::appendContextMenu(Menu *menu)
 {
-        menu->addChild(createIndexPtrSubmenuItem("EOC Mode",
-                m_module->getOptions(),
-                &m_module->m_mode
-        ));
+        menu->addChild(createIndexPtrSubmenuItem("EOC Mode", m_module->getOptions(), &m_module->m_mode));
 }
 
 void BeatWidget::appendContextMenu(Menu *menu)
 {
-        menu->addChild(createIndexPtrSubmenuItem("Beat Mode",
-                m_module->getOptions(),
-                &m_module->m_mode
-        ));
+        menu->addChild(createIndexPtrSubmenuItem("Beat Mode", m_module->getOptions(), &m_module->m_mode));
 }

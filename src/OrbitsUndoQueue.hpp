@@ -3,8 +3,7 @@
 #include "plugin.hpp"
 
 // Lets a module add undo history entries for changes it makes on the engine thread.
-template <typename Record, size_t Size = 32>
-struct OrbitsUndoQueue
+template <typename Record, size_t Size = 32> struct OrbitsUndoQueue
 {
         // Engine thread only. Never blocks or allocates.
         bool post(const Record &record)
@@ -30,7 +29,7 @@ struct OrbitsUndoQueue
                 return true;
         }
 
-private:
+      private:
         dsp::RingBuffer<Record, Size> m_records;
 };
 

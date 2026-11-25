@@ -12,5 +12,5 @@ struct RareBreeds_Orbits_EugeneWidget : OrbitsWidget
         EugeneRhythmDisplay *rhythm_display;
         RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *eugene);
         void appendModuleContextMenu(Menu *menu) override;
-        void draw(const DrawArgs& args) override;
+        void draw(const DrawArgs &args) override;
 };

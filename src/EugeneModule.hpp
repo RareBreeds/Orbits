@@ -110,5 +110,5 @@ struct RareBreeds_Orbits_Eugene : Module
         void onReset() override;
         EugeneDisplayData getDisplayData(void);
         static EugeneDisplayData getDisplayData(RareBreeds_Orbits_Eugene *module);
-        void onRandomize(const RandomizeEvent& e) override;
+        void onRandomize(const RandomizeEvent &e) override;
 };

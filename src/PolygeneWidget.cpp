@@ -1,9 +1,9 @@
-#include "PolygeneComponentPositions.h"
-#include "PolygeneThemes.h"
 #include "PolygeneWidget.hpp"
 #include "OrbitsAssets.h"
 #include "OrbitsSkinned.hpp"
+#include "PolygeneComponentPositions.h"
 #include "PolygeneModule.hpp"
+#include "PolygeneThemes.h"
 
 struct PolygeneRhythmDisplayConfig
 {
@@ -57,8 +57,9 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                 nvgTranslate(args.vg, b.size.x / 2.f, b.size.y / 2.f);
 
                 // Draw length text center bottom and hits text center top
-                std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
-                if (font)
+                std::shared_ptr<Font> font = APP->window->loadFont(
+                        asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
+                if(font)
                 {
                         nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
                         nvgFontSize(args.vg, 18);
@@ -73,7 +74,8 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 
                         const auto active_channel = data.active_channel_id + 1;
                         nvgFontSize(args.vg, 12);
-                        nvgText(args.vg, -b.size.x / 2.f + 23.f, b.size.y / 2.f - 9.f, std::to_string(active_channel).c_str(), NULL);
+                        nvgText(args.vg, -b.size.x / 2.f + 23.f, b.size.y / 2.f - 9.f,
+                                std::to_string(active_channel).c_str(), NULL);
                 }
 
                 // Scale to [-1, 1]
@@ -134,15 +136,14 @@ void PolygeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
                                 {
                                         const auto center = a0 - beat_gap / 2.f;
                                         nvgBeginPath(args.vg);
-                                        nvgCircle(args.vg,
-                                                  radius * cosf(center),
-                                                  radius * sinf(center),
+                                        nvgCircle(args.vg, radius * cosf(center), radius * sinf(center),
                                                   arc_stroke_width / 2.0f);
                                         nvgFill(args.vg);
                                 }
 
-                                auto on_beat = RareBreeds_Orbits_Polygene::Channel::isOnBeat(length, data.channels[c].hits, data.channels[c].shift,
-                                                                                   data.channels[c].variation, k, data.channels[c].invert);
+                                auto on_beat = RareBreeds_Orbits_Polygene::Channel::isOnBeat(
+                                        length, data.channels[c].hits, data.channels[c].shift,
+                                        data.channels[c].variation, k, data.channels[c].invert);
                                 if(on_beat)
                                 {
                                         nvgBeginPath(args.vg);
@@ -285,13 +286,13 @@ static void ToggleInputMode(InputMode *mode)
 {
         switch(*mode)
         {
-                case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
-                        *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
-                        break;
-                case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
-                default:
-                        *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
-                        break;
+        case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
+                *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
+                break;
+        case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
+        default:
+                *mode = INPUT_MODE_MONOPHONIC_COPIES_TO_ALL;
+                break;
         }
 }
 
@@ -302,8 +303,10 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 
         RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(module);
 
-        menu->addChild(createSubmenuItem("Randomize Filter", "",
-                [=](Menu* submenu) {
+        menu->addChild(createSubmenuItem(
+                "Randomize Filter", "",
+                [=](Menu *submenu)
+                {
                         submenu->addChild(createMenuLabel("Parameters that are randomized"));
 
                         std::vector<std::pair<std::string, size_t>> items = {
@@ -312,21 +315,20 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
                                 std::make_pair("Shift", RareBreeds_Orbits_Polygene::RANDOMIZE_SHIFT),
                                 std::make_pair("Variation", RareBreeds_Orbits_Polygene::RANDOMIZE_VARIATION),
                                 std::make_pair("Reverse", RareBreeds_Orbits_Polygene::RANDOMIZE_REVERSE),
-                                std::make_pair("Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT)
-                        };
+                                std::make_pair("Invert", RareBreeds_Orbits_Polygene::RANDOMIZE_INVERT)};
 
                         for(auto i : items)
                         {
-                                submenu->addChild(createCheckMenuItem(i.first, "",
-                                        [=]() {return polygene->m_randomization_mask & (1 << i.second);},
-                                        [=]() {polygene->m_randomization_mask ^= (1 << i.second);}
-                                ));
+                                submenu->addChild(createCheckMenuItem(
+                                        i.first, "", [=]() { return polygene->m_randomization_mask & (1 << i.second); },
+                                        [=]() { polygene->m_randomization_mask ^= (1 << i.second); }));
                         }
-                }
-        ));
+                }));
 
-        menu->addChild(createSubmenuItem("Mono Input Behavior", "",
-                [=](Menu* submenu) {
+        menu->addChild(createSubmenuItem(
+                "Mono Input Behavior", "",
+                [=](Menu *submenu)
+                {
                         submenu->addChild(createMenuLabel("Make mono cables only control the first channel"));
 
                         InputMode *input_mode_array = polygene->m_input_mode;
@@ -342,16 +344,14 @@ void RareBreeds_Orbits_PolygeneWidget::appendModuleContextMenu(Menu *menu)
 
                         for(auto i : items)
                         {
-                                submenu->addChild(createCheckMenuItem(i.first, "",
-                                        [=]() {return input_mode_array[i.second];},
-                                        [=]() {ToggleInputMode(&input_mode_array[i.second]);}
-                                ));
+                                submenu->addChild(createCheckMenuItem(
+                                        i.first, "", [=]() { return input_mode_array[i.second]; },
+                                        [=]() { ToggleInputMode(&input_mode_array[i.second]); }));
                         }
-                }
-        ));
+                }));
 }
 
-void RareBreeds_Orbits_PolygeneWidget::draw(const DrawArgs& args)
+void RareBreeds_Orbits_PolygeneWidget::draw(const DrawArgs &args)
 {
         RareBreeds_Orbits_Polygene *polygene = static_cast<RareBreeds_Orbits_Polygene *>(getModule());
 

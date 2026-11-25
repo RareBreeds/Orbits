@@ -6,12 +6,12 @@
 unsigned int clampRounded(float value, unsigned int min, unsigned int max)
 {
         float r = std::round(value);
-        if (std::isnan(r) || r <= static_cast<float>(min))
+        if(std::isnan(r) || r <= static_cast<float>(min))
         {
                 return min;
         }
 
-        if (r >= static_cast<float>(max))
+        if(r >= static_cast<float>(max))
         {
                 return max;
         }
@@ -72,8 +72,7 @@ static bool eocModeLast(bool /*is_first*/, bool is_last, bool /*prev_was_last*/)
         return is_last;
 }
 
-static constexpr EOCModeOption eoc_mode_options[] =
-{
+static constexpr EOCModeOption eoc_mode_options[] = {
         {"On Repeat", eocModeOnRepeat},
         {"First", eocModeFirst},
         {"Last", eocModeLast},
@@ -99,7 +98,7 @@ std::vector<std::string> EOCMode::getOptions(void)
         std::vector<std::string> names;
         names.reserve(eoc_mode_count);
 
-        for (const EOCModeOption &option : eoc_mode_options)
+        for(const EOCModeOption &option : eoc_mode_options)
         {
                 names.emplace_back(option.name);
         }
@@ -163,8 +162,7 @@ static bool beatModeHold(bool /*pulse*/, bool state)
         return state;
 }
 
-static constexpr BeatModeOption beat_mode_options[] =
-{
+static constexpr BeatModeOption beat_mode_options[] = {
         {"Pulse", beatModePulse},
         {"Gate", beatModeGate},
         {"Hold", beatModeHold},
@@ -190,7 +188,7 @@ std::vector<std::string> BeatMode::getOptions(void)
         std::vector<std::string> names;
         names.reserve(beat_mode_count);
 
-        for (const BeatModeOption &option : beat_mode_options)
+        for(const BeatModeOption &option : beat_mode_options)
         {
                 names.emplace_back(option.name);
         }

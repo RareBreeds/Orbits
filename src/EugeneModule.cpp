@@ -244,47 +244,47 @@ RareBreeds_Orbits_Eugene::~RareBreeds_Orbits_Eugene()
         json_decref(m_widget_config);
 }
 
-void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent& /*e*/)
+void RareBreeds_Orbits_Eugene::onRandomize(const RandomizeEvent & /*e*/)
 {
-        if (m_randomization_mask & (1 << RANDOMIZE_LENGTH))
+        if(m_randomization_mask & (1 << RANDOMIZE_LENGTH))
         {
                 float length = random::uniform() * kOrbitsRhythmMaxLength;
                 getParamQuantity(LENGTH_KNOB_PARAM)->setImmediateValue(length);
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_LENGTH_CV))
+        if(m_randomization_mask & (1 << RANDOMIZE_LENGTH_CV))
         {
                 getParamQuantity(LENGTH_CV_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_HITS))
+        if(m_randomization_mask & (1 << RANDOMIZE_HITS))
         {
                 getParamQuantity(HITS_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_HITS_CV))
+        if(m_randomization_mask & (1 << RANDOMIZE_HITS_CV))
         {
                 getParamQuantity(HITS_CV_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_SHIFT))
+        if(m_randomization_mask & (1 << RANDOMIZE_SHIFT))
         {
                 float shift = random::uniform() * (kOrbitsRhythmMaxLength - 1);
                 getParamQuantity(SHIFT_KNOB_PARAM)->setImmediateValue(shift);
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_SHIFT_CV))
+        if(m_randomization_mask & (1 << RANDOMIZE_SHIFT_CV))
         {
                 getParamQuantity(SHIFT_CV_KNOB_PARAM)->setImmediateValue(random::uniform());
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_REVERSE))
+        if(m_randomization_mask & (1 << RANDOMIZE_REVERSE))
         {
                 bool reverse = (random::uniform() < 0.5f);
                 getParamQuantity(REVERSE_KNOB_PARAM)->setImmediateValue(reverse);
         }
 
-        if (m_randomization_mask & (1 << RANDOMIZE_INVERT))
+        if(m_randomization_mask & (1 << RANDOMIZE_INVERT))
         {
                 bool invert = (random::uniform() < 0.5f);
                 getParamQuantity(INVERT_KNOB_PARAM)->setImmediateValue(invert);

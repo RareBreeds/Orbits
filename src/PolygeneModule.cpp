@@ -1,6 +1,6 @@
 #include "PolygeneModule.hpp"
-#include "PolygeneWidget.hpp"
 #include "OrbitsRhythm.hpp"
+#include "PolygeneWidget.hpp"
 
 #include <algorithm>
 
@@ -206,32 +206,32 @@ void RareBreeds_Orbits_Polygene::Channel::onRandomizeWithHistory(unsigned int ra
 
 void RareBreeds_Orbits_Polygene::Channel::onRandomize(unsigned int randomization_mask)
 {
-        if (randomization_mask & (1 << RANDOMIZE_LENGTH))
+        if(randomization_mask & (1 << RANDOMIZE_LENGTH))
         {
                 m_state.length = random::uniform() * kOrbitsRhythmMaxLength;
         }
 
-        if (randomization_mask & (1 << RANDOMIZE_HITS))
+        if(randomization_mask & (1 << RANDOMIZE_HITS))
         {
                 m_state.hits = random::uniform();
         }
 
-        if (randomization_mask & (1 << RANDOMIZE_SHIFT))
+        if(randomization_mask & (1 << RANDOMIZE_SHIFT))
         {
                 m_state.shift = random::uniform() * (kOrbitsRhythmMaxLength - 1);
         }
 
-        if (randomization_mask & (1 << RANDOMIZE_VARIATION))
+        if(randomization_mask & (1 << RANDOMIZE_VARIATION))
         {
                 m_state.variation = random::uniform();
         }
 
-        if (randomization_mask & (1 << RANDOMIZE_REVERSE))
+        if(randomization_mask & (1 << RANDOMIZE_REVERSE))
         {
                 m_state.reverse = (random::uniform() < 0.5f);
         }
 
-        if (randomization_mask & (1 << RANDOMIZE_INVERT))
+        if(randomization_mask & (1 << RANDOMIZE_INVERT))
         {
                 m_state.invert = (random::uniform() < 0.5f);
         }
@@ -266,22 +266,10 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits
                 // Example rhythms shown in the module browser, repeated if there are more
                 // channels than examples.
                 static const PolygeneChannelDisplayData examples[] = {
-                        {32, 6, 0, 0, 0, 4},
-                        {16, 9, 3, 0, 0, 0},
-                        {7, 3, 6, 0, 0, 5},
-                        {9, 7, 2, 0, 0, 3},
-                        {17, 4, 12, 0, 0, 14},
-                        {30, 20, 15, 0, 0, 20},
-                        {19, 4, 14, 0, 0, 10},
-                        {4, 2, 3, 0, 0, 2},
-                        {7, 1, 0, 0, 0, 6},
-                        {8, 5, 3, 0, 0, 1},
-                        {16, 10, 4, 0, 0, 4},
-                        {19, 16, 2, 0, 0, 18},
-                        {24, 20, 8, 0, 0, 14},
-                        {28, 14, 6, 0, 0, 20},
-                        {21, 12, 4, 0, 0, 4},
-                        {9, 3, 3, 0, 0, 7},
+                        {32, 6, 0, 0, 0, 4},   {16, 9, 3, 0, 0, 0},    {7, 3, 6, 0, 0, 5},    {9, 7, 2, 0, 0, 3},
+                        {17, 4, 12, 0, 0, 14}, {30, 20, 15, 0, 0, 20}, {19, 4, 14, 0, 0, 10}, {4, 2, 3, 0, 0, 2},
+                        {7, 1, 0, 0, 0, 6},    {8, 5, 3, 0, 0, 1},     {16, 10, 4, 0, 0, 4},  {19, 16, 2, 0, 0, 18},
+                        {24, 20, 8, 0, 0, 14}, {28, 14, 6, 0, 0, 20},  {21, 12, 4, 0, 0, 4},  {9, 3, 3, 0, 0, 7},
                 };
                 const int num_examples = static_cast<int>(sizeof(examples) / sizeof(examples[0]));
 
@@ -301,7 +289,8 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
-        configParam(CHANNEL_KNOB_PARAM, 0.f, static_cast<float>(PORT_MAX_CHANNELS - 1), 0.f, "Channel", "", 0.f, 1.f, 1.f);
+        configParam(CHANNEL_KNOB_PARAM, 0.f, static_cast<float>(PORT_MAX_CHANNELS - 1), 0.f, "Channel", "", 0.f, 1.f,
+                    1.f);
         configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length");
         configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
         configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift");
@@ -366,11 +355,11 @@ float RareBreeds_Orbits_Polygene::getParameterizedVoltage(int input_id, uint8_t 
         Input &input = getInput(input_id);
         switch(getInputMode(input_id))
         {
-                case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
-                        return input.getNormalPolyVoltage(0.0f, channel);
-                case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
-                default:
-                        return input.getNormalVoltage(0.0f, channel);
+        case INPUT_MODE_MONOPHONIC_COPIES_TO_ALL:
+                return input.getNormalPolyVoltage(0.0f, channel);
+        case INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST:
+        default:
+                return input.getNormalVoltage(0.0f, channel);
         }
 }
 
@@ -380,8 +369,8 @@ void RareBreeds_Orbits_Polygene::process(const ProcessArgs &process_args)
         getOutput(BEAT_OUTPUT).setChannels(m_active_channels);
         getOutput(EOC_OUTPUT).setChannels(m_active_channels);
 
-        m_active_channel_id = static_cast<uint8_t>(
-                clampRounded(getParam(CHANNEL_KNOB_PARAM).getValue(), 0, PORT_MAX_CHANNELS - 1));
+        m_active_channel_id =
+                static_cast<uint8_t>(clampRounded(getParam(CHANNEL_KNOB_PARAM).getValue(), 0, PORT_MAX_CHANNELS - 1));
         m_active_channel = &m_channels[m_active_channel_id];
 
         // Update the knob positions when the channel changes
@@ -535,7 +524,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
                 if(obj)
                 {
                         uint8_t old_sync = static_cast<uint8_t>(json_integer_value(obj));
-                        if (old_sync == /*SYNC_MODE_INDIVIDUAL_CHANNELS*/0)
+                        if(old_sync == /*SYNC_MODE_INDIVIDUAL_CHANNELS*/ 0)
                         {
                                 m_input_mode[SYNC_INPUT] = INPUT_MODE_MONOPHONIC_COPIES_TO_FIRST;
                         }
@@ -596,7 +585,7 @@ void RareBreeds_Orbits_Polygene::dataFromJson(json_t *root)
         }
 }
 
-void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent& /*e*/)
+void RareBreeds_Orbits_Polygene::onRandomize(const RandomizeEvent & /*e*/)
 {
         for(auto &chan : m_channels)
         {
@@ -621,7 +610,7 @@ void RareBreeds_Orbits_Polygene::flushUndoHistory()
         }
 }
 
-void RareBreeds_Orbits_Polygene::onReset(const ResetEvent& e)
+void RareBreeds_Orbits_Polygene::onReset(const ResetEvent &e)
 {
         Module::onReset(e);
         reset();

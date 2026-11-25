@@ -5,9 +5,13 @@
 #include <array>
 #include <string>
 
-enum class OrbitsTheme { Dark, Light, Count };
-constexpr std::array<const char*, static_cast<size_t>(OrbitsTheme::Count)> kOrbitsThemeNames =
+enum class OrbitsTheme
 {
+        Dark,
+        Light,
+        Count
+};
+constexpr std::array<const char *, static_cast<size_t>(OrbitsTheme::Count)> kOrbitsThemeNames = {
         "Dark",
         "Light",
 };
@@ -18,12 +22,12 @@ constexpr uint8_t toIndex(OrbitsTheme t)
         return static_cast<uint8_t>(t);
 }
 
-constexpr const char* toString(OrbitsTheme t)
+constexpr const char *toString(OrbitsTheme t)
 {
         return kOrbitsThemeNames[static_cast<size_t>(t)];
 }
 
-bool fromString(const char *name, OrbitsTheme& outTheme);
+bool fromString(const char *name, OrbitsTheme &outTheme);
 
 #define ORBITS_POS(NAME) OrbitsPos(NAME##_X, NAME##_Y)
 #define ORBITS_SIZE(NAME) OrbitsPos(NAME##_WIDTH, NAME##_HEIGHT)
@@ -52,13 +56,13 @@ struct OrbitsSkinnedKnobConfig
 struct OrbitsSkinnedKnob : SvgKnob, OrbitsSkinned
 {
         OrbitsSkinnedKnobConfig m_config;
-        OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config);
+        OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config);
         void loadTheme(OrbitsTheme theme) override;
 };
 
 struct OrbitsSkinnedSnappyKnob : OrbitsSkinnedKnob
 {
-        OrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& config);
+        OrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig &config);
 };
 
 struct OrbitsSkinnedScrewConfig
@@ -70,7 +74,7 @@ struct OrbitsSkinnedScrewConfig
 struct OrbitsSkinnedScrew : app::SvgScrew, OrbitsSkinned
 {
         OrbitsSkinnedScrewConfig m_config;
-        OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config);
+        OrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig &config);
         void loadTheme(OrbitsTheme theme) override;
 };
 
@@ -84,13 +88,13 @@ struct OrbitsSkinnedSwitchConfig
 struct OrbitsSkinnedSwitch : app::SvgSwitch, OrbitsSkinned
 {
         OrbitsSkinnedSwitchConfig m_config;
-        OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config);
+        OrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config);
         void loadTheme(OrbitsTheme theme) override;
 };
 
 struct OrbitsSkinnedButton : OrbitsSkinnedSwitch
 {
-        OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config);
+        OrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig &config);
 };
 
 struct OrbitsSkinnedPortConfig
@@ -102,19 +106,20 @@ struct OrbitsSkinnedPortConfig
 struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
 {
         OrbitsSkinnedPortConfig m_config;
-        OrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config);
+        OrbitsSkinnedPort(const OrbitsSkinnedPortConfig &config);
         void loadTheme(OrbitsTheme theme) override;
 };
 
-OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig& config);
-OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId);
-OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig& config, engine::Module *module, int paramId);
-OrbitsSkinnedSwitch *createOrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig& config, engine::Module *module, int paramId);
-OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig& config, engine::Module *module, int paramId);
+OrbitsSkinnedScrew *createOrbitsSkinnedScrew(const OrbitsSkinnedScrewConfig &config);
+OrbitsSkinnedSnappyKnob *createOrbitsSkinnedSnappyKnob(const OrbitsSkinnedKnobConfig &config, engine::Module *module,
+                                                       int paramId);
+OrbitsSkinnedKnob *createOrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config, engine::Module *module, int paramId);
+OrbitsSkinnedSwitch *createOrbitsSkinnedSwitch(const OrbitsSkinnedSwitchConfig &config, engine::Module *module,
+                                               int paramId);
+OrbitsSkinnedButton *createOrbitsSkinnedButton(const OrbitsSkinnedSwitchConfig &config, engine::Module *module,
+                                               int paramId);
 
-OrbitsSkinnedPort *createOrbitsSkinnedPort(const OrbitsSkinnedPortConfig& config, engine::Module *module,
-                                           int portId);
-OrbitsSkinnedPort *createOrbitsSkinnedInput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
-                                            int inputId);
-OrbitsSkinnedPort *createOrbitsSkinnedOutput(const OrbitsSkinnedPortConfig& config, engine::Module *module,
+OrbitsSkinnedPort *createOrbitsSkinnedPort(const OrbitsSkinnedPortConfig &config, engine::Module *module, int portId);
+OrbitsSkinnedPort *createOrbitsSkinnedInput(const OrbitsSkinnedPortConfig &config, engine::Module *module, int inputId);
+OrbitsSkinnedPort *createOrbitsSkinnedOutput(const OrbitsSkinnedPortConfig &config, engine::Module *module,
                                              int outputId);

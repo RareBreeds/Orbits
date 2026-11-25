@@ -8,7 +8,7 @@ struct OrbitsWidget : ModuleWidget
         OrbitsTheme m_theme = kOrbitsThemeDefault;
         OrbitsSkinnedPanelConfig m_config;
 
-        OrbitsWidget(const OrbitsSkinnedPanelConfig& config);
+        OrbitsWidget(const OrbitsSkinnedPanelConfig &config);
         void appendContextMenu(Menu *menu) override;
         void step() override;
         virtual void appendModuleContextMenu(Menu *menu) = 0;

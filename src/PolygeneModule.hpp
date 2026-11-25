@@ -1,8 +1,8 @@
 #pragma once
 
 #include "OrbitsModule.hpp"
-#include "OrbitsUndoQueue.hpp"
 #include "OrbitsRhythm.hpp"
+#include "OrbitsUndoQueue.hpp"
 
 #include <atomic>
 
@@ -162,8 +162,8 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
         void process(const ProcessArgs &process_args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
-        void onRandomize(const RandomizeEvent& e) override;
-        void onReset(const ResetEvent& e) override;
+        void onRandomize(const RandomizeEvent &e) override;
+        void onReset(const ResetEvent &e) override;
         void flushUndoHistory() override;
         PolygeneDisplayData getDisplayData(void);
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);

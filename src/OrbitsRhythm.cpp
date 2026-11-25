@@ -35,8 +35,7 @@ bool orbitsNearEvenBeat(unsigned int length, unsigned int hits, unsigned int var
         return nearEvenRhythm(length, hits, variation)[unrotated_step];
 }
 
-bool orbitsEuclideanBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int step,
-                         bool invert)
+bool orbitsEuclideanBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int step, bool invert)
 {
         return orbitsNearEvenBeat(length, hits, 0, shift, step) != invert;
 }

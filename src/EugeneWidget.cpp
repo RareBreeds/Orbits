@@ -1,7 +1,7 @@
-#include "EugeneComponentPositions.h"
-#include "EugeneThemes.h"
 #include "EugeneWidget.hpp"
+#include "EugeneComponentPositions.h"
 #include "EugeneModule.hpp"
+#include "EugeneThemes.h"
 #include "OrbitsSkinned.hpp"
 
 struct EugeneRhythmDisplayUnbuffered : Widget
@@ -40,7 +40,8 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
                 nvgBeginPath(args.vg);
                 nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
                 nvgFontSize(args.vg, 20);
-                std::shared_ptr<Font> font = APP->window->loadFont(asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
+                std::shared_ptr<Font> font = APP->window->loadFont(
+                        asset::plugin(pluginInstance, ORBITS_ASSET_FONTS_SHARETECHMONO_REGULAR_TTF));
                 nvgFontFaceId(args.vg, font->handle);
                 nvgText(args.vg, 0.f, -7.f, std::to_string(m_data.hits).c_str(), NULL);
                 nvgText(args.vg, 0.f, 7.f, std::to_string(m_data.length).c_str(), NULL);
@@ -122,8 +123,8 @@ void EugeneRhythmDisplayUnbuffered::drawLayer(const DrawArgs &args, int layer)
                         // For forward moving rhythms this is the previous index
                         // For reversed rhythms this is index
                         if((m_data.reverse && m_data.current_step == k) ||
-                        (!m_data.reverse &&
-                        ((k == m_data.length - 1) ? (0 == m_data.current_step) : (k + 1 == m_data.current_step))))
+                           (!m_data.reverse &&
+                            ((k == m_data.length - 1) ? (0 == m_data.current_step) : (k + 1 == m_data.current_step))))
                         {
                                 nvgBeginPath(args.vg);
                                 nvgCircle(args.vg, 0.f, y_pos, outline_radius);
@@ -156,7 +157,7 @@ struct EugeneRhythmDisplay : Widget
         RareBreeds_Orbits_Eugene *m_module;
 
         EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size);
-        void drawLayer(const DrawArgs& args, int layer) override;
+        void drawLayer(const DrawArgs &args, int layer) override;
 };
 
 EugeneRhythmDisplay::EugeneRhythmDisplay(RareBreeds_Orbits_Eugene *module, Vec pos, Vec size)
@@ -192,7 +193,8 @@ void EugeneRhythmDisplay::drawLayer(const DrawArgs &args, int layer)
 #define EUGENE_SIZE(NAME) ORBITS_SIZE(EUGENE_##NAME)
 
 static const OrbitsSkinnedPanelConfig g_config = {{EUGENE_DARK_PANEL, EUGENE_LIGHT_PANEL}};
-RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *eugene) : OrbitsWidget(g_config)
+RareBreeds_Orbits_EugeneWidget::RareBreeds_Orbits_EugeneWidget(RareBreeds_Orbits_Eugene *eugene)
+        : OrbitsWidget(g_config)
 {
         setModule(eugene);
 
@@ -309,8 +311,10 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
         eoc_widget.appendContextMenu(menu);
 
         RareBreeds_Orbits_Eugene *eugene = static_cast<RareBreeds_Orbits_Eugene *>(module);
-	menu->addChild(createSubmenuItem("Randomize Filter", "",
-                [=](Menu* submenu) {
+        menu->addChild(createSubmenuItem(
+                "Randomize Filter", "",
+                [=](Menu *submenu)
+                {
                         submenu->addChild(createMenuLabel("Parameters that are randomized"));
 
                         std::vector<std::pair<std::string, size_t>> items = {
@@ -321,21 +325,18 @@ void RareBreeds_Orbits_EugeneWidget::appendModuleContextMenu(Menu *menu)
                                 std::make_pair("Shift", RareBreeds_Orbits_Eugene::RANDOMIZE_SHIFT),
                                 std::make_pair("Shift CV", RareBreeds_Orbits_Eugene::RANDOMIZE_SHIFT_CV),
                                 std::make_pair("Reverse", RareBreeds_Orbits_Eugene::RANDOMIZE_REVERSE),
-                                std::make_pair("Invert", RareBreeds_Orbits_Eugene::RANDOMIZE_INVERT)
-                        };
+                                std::make_pair("Invert", RareBreeds_Orbits_Eugene::RANDOMIZE_INVERT)};
 
                         for(auto i : items)
                         {
-                                submenu->addChild(createCheckMenuItem(i.first, "",
-                                        [=]() {return eugene->m_randomization_mask & (1 << i.second);},
-                                        [=]() {eugene->m_randomization_mask ^= (1 << i.second);}
-                                ));
+                                submenu->addChild(createCheckMenuItem(
+                                        i.first, "", [=]() { return eugene->m_randomization_mask & (1 << i.second); },
+                                        [=]() { eugene->m_randomization_mask ^= (1 << i.second); }));
                         }
-		}
-	));
+                }));
 }
 
-void RareBreeds_Orbits_EugeneWidget::draw(const DrawArgs& args)
+void RareBreeds_Orbits_EugeneWidget::draw(const DrawArgs &args)
 {
         RareBreeds_Orbits_Eugene *eugene = static_cast<RareBreeds_Orbits_Eugene *>(getModule());
 
