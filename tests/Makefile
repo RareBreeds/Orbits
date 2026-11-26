@@ -4,6 +4,9 @@
 #                                          need VCV Rack
 #   make -C tests svg                      check that the SVGs are well-formed XML, with xmllint
 #   make -C tests rack RACK_DIR=<path>     build and run the tests that use VCV Rack
+#   make -C tests widgets RACK_DIR=<path>  check that the modules' widgets have every control and
+#                                          draw everything inside the panel, which opens a Rack
+#                                          window while they run
 #   make -C tests bench RACK_DIR=<path>    build and run the benchmarks, which use VCV Rack and
 #                                          open a Rack window while they run
 #   make -C tests compare RACK_DIR=<path>  compare the modules' behaviour in VCV Rack's engine with
@@ -24,6 +27,7 @@
 BUILD_DIR ?= build
 TARGET := $(BUILD_DIR)/orbits-tests
 RACK_TARGET := $(BUILD_DIR)/orbits-rack-tests
+WIDGETS_TARGET := $(BUILD_DIR)/orbits-widget-tests
 BENCH_TARGET := $(BUILD_DIR)/orbits-bench
 COMPARE_TARGET := $(BUILD_DIR)/orbits-compare
 
@@ -36,6 +40,9 @@ SOURCES += OrbitsStepCounterTests.cpp
 # All of the plugin's sources, then the Rack tests.
 RACK_SOURCES := $(wildcard ../src/*.cpp)
 RACK_SOURCES += $(wildcard rack/*.cpp)
+
+# The widget tests, linked with the plugin's objects from the Rack tests.
+WIDGETS_SOURCES := $(wildcard widgets/*.cpp)
 
 # All of the plugin's sources, then the benchmarks. BENCH_SRC_DIR lets bench/compare.sh build the
 # benchmarks against the plugin's sources from another revision.
@@ -73,13 +80,13 @@ RELEASE_CXXFLAGS += -pthread -isystem $(RACK_DIR)/include -isystem $(RACK_DIR)/d
 RELEASE_LDFLAGS = -pthread -L$(RACK_DIR) -lRack
 
 BENCH_CXXFLAGS = $(RELEASE_CXXFLAGS) -I$(BENCH_SRC_DIR) -Irack
-# Only the drawing benchmarks use OpenGL directly.
-BENCH_LDFLAGS = $(RELEASE_LDFLAGS)
+# Only the drawing benchmarks and widget tests use OpenGL directly.
 ifeq ($(shell uname -s),Darwin)
-BENCH_LDFLAGS += -framework OpenGL
+GL_LDFLAGS := -framework OpenGL
 else
-BENCH_LDFLAGS += -lGL
+GL_LDFLAGS := -lGL
 endif
+BENCH_LDFLAGS = $(RELEASE_LDFLAGS) $(GL_LDFLAGS)
 # -iquote, as the plugin's plugin.hpp would hide Rack's from #include <plugin.hpp>.
 COMPARE_CXXFLAGS = $(RELEASE_CXXFLAGS) -iquote $(COMPARE_SRC_DIR)
 COMPARE_LDFLAGS = $(RELEASE_LDFLAGS)
@@ -94,10 +101,13 @@ BENCH_PLUGIN_DIR ?= $(abspath ..)
 # Rack's headers are system headers so the warnings above only apply to the plugin and tests.
 RACK_CXXFLAGS = $(CXXFLAGS) -pthread -isystem $(RACK_DIR)/include -isystem $(RACK_DIR)/dep/include -DORBITS_TEST_RES_DIR=\"$(abspath ../res)\"
 RACK_LDFLAGS = $(LDFLAGS) -pthread -L$(RACK_DIR) -lRack
+# The widget tests load Rack's fonts from RACK_DIR and the plugin's SVGs and fonts from here.
+WIDGETS_CXXFLAGS = $(RACK_CXXFLAGS) -DORBITS_TEST_RACK_DIR=\"$(abspath $(RACK_DIR))\" -DORBITS_TEST_PLUGIN_DIR=\"$(abspath ..)\"
+WIDGETS_LDFLAGS = $(RACK_LDFLAGS) $(GL_LDFLAGS)
 
-ifneq ($(filter rack bench compare %/orbits-compare,$(MAKECMDGOALS)),)
+ifneq ($(filter rack widgets bench compare %/orbits-compare,$(MAKECMDGOALS)),)
 ifndef RACK_DIR
-$(error Set RACK_DIR to a Rack SDK or Rack source directory, e.g. make -C tests $(firstword $(filter rack bench compare,$(MAKECMDGOALS))) RACK_DIR=$$HOME/Rack-SDK)
+$(error Set RACK_DIR to a Rack SDK or Rack source directory, e.g. make -C tests $(firstword $(filter rack widgets bench compare,$(MAKECMDGOALS))) RACK_DIR=$$HOME/Rack-SDK)
 endif
 endif
 
@@ -105,6 +115,9 @@ vpath %.cpp $(sort $(dir $(SOURCES) $(RACK_SOURCES)))
 OBJECTS := $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.cpp=.o)))
 # Prefixed so they don't clash with the objects above, which are built without Rack.
 RACK_OBJECTS := $(addprefix $(BUILD_DIR)/rack-,$(notdir $(RACK_SOURCES:.cpp=.o)))
+PLUGIN_SOURCES := $(wildcard ../src/*.cpp)
+WIDGETS_OBJECTS := $(addprefix $(BUILD_DIR)/rack-,$(notdir $(PLUGIN_SOURCES:.cpp=.o)))
+WIDGETS_OBJECTS += $(addprefix $(BUILD_DIR)/widgets-,$(notdir $(WIDGETS_SOURCES:.cpp=.o)))
 # The benchmarks' objects have their own rules rather than using vpath, so that the plugin's
 # sources always come from BENCH_SRC_DIR.
 BENCH_OBJECTS := $(addprefix $(BUILD_DIR)/bench-src-,$(notdir $(BENCH_PLUGIN_SOURCES:.cpp=.o)))
@@ -112,7 +125,7 @@ BENCH_OBJECTS += $(addprefix $(BUILD_DIR)/bench-,$(notdir $(BENCH_SOURCES:.cpp=.
 COMPARE_OBJECTS := $(addprefix $(BUILD_DIR)/compare-src-,$(notdir $(COMPARE_PLUGIN_SOURCES:.cpp=.o)))
 COMPARE_OBJECTS += $(addprefix $(BUILD_DIR)/compare-,$(notdir $(COMPARE_SOURCES:.cpp=.o)))
 
-.PHONY: test svg rack bench compare clean
+.PHONY: test svg rack widgets bench compare clean
 
 test: svg $(TARGET)
 	$(abspath $(TARGET))
@@ -126,6 +139,9 @@ svg:
 rack: $(RACK_TARGET)
 	DYLD_LIBRARY_PATH="$(RACK_DIR)" LD_LIBRARY_PATH="$(RACK_DIR)" $(abspath $(RACK_TARGET))
 
+widgets: $(WIDGETS_TARGET)
+	DYLD_LIBRARY_PATH="$(RACK_DIR)" LD_LIBRARY_PATH="$(RACK_DIR)" $(abspath $(WIDGETS_TARGET))
+
 bench: $(BENCH_TARGET)
 	DYLD_LIBRARY_PATH="$(RACK_DIR)" LD_LIBRARY_PATH="$(RACK_DIR)" $(abspath $(BENCH_TARGET)) "$(RACK_DIR)" "$(BENCH_PLUGIN_DIR)"
 
@@ -138,6 +154,9 @@ $(TARGET): $(OBJECTS)
 $(RACK_TARGET): $(RACK_OBJECTS)
 	$(CXX) $^ $(RACK_LDFLAGS) -o $@
 
+$(WIDGETS_TARGET): $(WIDGETS_OBJECTS)
+	$(CXX) $^ $(WIDGETS_LDFLAGS) -o $@
+
 $(BENCH_TARGET): $(BENCH_OBJECTS)
 	$(CXX) $^ $(BENCH_LDFLAGS) -o $@
 
@@ -149,6 +168,9 @@ $(BUILD_DIR)/bench-src-%.o: $(BENCH_SRC_DIR)/%.cpp | $(BUILD_DIR)
 
 $(BUILD_DIR)/bench-%.o: bench/%.cpp | $(BUILD_DIR)
 	$(CXX) $(BENCH_CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/widgets-%.o: widgets/%.cpp | $(BUILD_DIR)
+	$(CXX) $(WIDGETS_CXXFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/compare-src-%.o: $(COMPARE_SRC_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(COMPARE_CXXFLAGS) -c $< -o $@
@@ -168,4 +190,4 @@ $(BUILD_DIR):
 clean:
 	rm -rf $(BUILD_DIR)
 
--include $(OBJECTS:.o=.d) $(RACK_OBJECTS:.o=.d) $(BENCH_OBJECTS:.o=.d) $(COMPARE_OBJECTS:.o=.d)
+-include $(OBJECTS:.o=.d) $(RACK_OBJECTS:.o=.d) $(WIDGETS_OBJECTS:.o=.d) $(BENCH_OBJECTS:.o=.d) $(COMPARE_OBJECTS:.o=.d)
