@@ -2,7 +2,7 @@
 ### Added
  - Support for the 4ms MetaModule
  - The INV, REV, RND and SYNC buttons behave as lights, so they stay lit when Rack's room lights are dimmed
- - "Orbits light boost" option in the context menu, for how much brighter than the room the lights and displays are
+ - "Light boost" plugin-wide setting in the context menu, for how much brighter than the room the lights and displays are
  - "Follow Rack" theme, the default for new modules, which uses the Light or Dark theme to match Rack's "Use dark panels if available" setting. Modules in existing patches keep their theme
  - Tooltip descriptions for most inputs, outputs and knobs, including what Length, Hits, Shift and Variation do
 

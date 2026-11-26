@@ -70,7 +70,7 @@ When reversed, the first and last steps are those in the direction of play.
 
 ##### Settings
 
-Right-click the panel for these settings, as well as the Theme and Orbits light boost settings described in the [Orbits manual](plugin.md).
+Right-click the panel for these settings, as well as the Theme and Light boost settings described in the [Orbits manual](plugin.md).
 
 - **Beat Mode** and **EOC Mode**: see Outputs above.
 - **Randomize Filter**: chooses which settings the RND button, the RND input and Randomize change: Length, Hits, Shift, Variation, Reverse and Invert. All are on by default.

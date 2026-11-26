@@ -136,7 +136,7 @@ struct OrbitsLightBoostQuantity : Quantity
         }
         std::string getLabel() override
         {
-                return "Orbits light boost";
+                return "Light boost";
         }
         std::string getUnit() override
         {
@@ -173,9 +173,14 @@ NVGcolor orbitsLightTint()
 
 void OrbitsWidget::appendContextMenu(Menu *menu)
 {
+        // Rack's section above is about this module too, so its own settings follow it without a heading
         menu->addChild(new MenuSeparator);
+        appendModuleContextMenu(menu);
 
 #if ORBITS_THEME_SELECTION_ENABLED
+        // After the settings that change what the module does, as it only changes how it looks
+        menu->addChild(new MenuSeparator);
+
         // "Follow Rack", then the themes in order
         std::vector<std::string> theme_names = {"Follow Rack"};
         theme_names.insert(theme_names.end(), kOrbitsThemeNames.begin(), kOrbitsThemeNames.end());
@@ -199,12 +204,13 @@ void OrbitsWidget::appendContextMenu(Menu *menu)
 #endif
 
 #if ORBITS_ROOM_LIGHTING_ENABLED
+        // Last, as it's shared by every Eugene and Polygene module and saved with Rack's settings
+        menu->addChild(new MenuSeparator);
+        menu->addChild(createMenuLabel("Plugin"));
         OrbitsLightBoostSlider *boost = new OrbitsLightBoostSlider;
         boost->box.size.x = 220.f;
         menu->addChild(boost);
 #endif
-
-        appendModuleContextMenu(menu);
 }
 
 OrbitsTheme OrbitsThemeSetting::shownTheme() const

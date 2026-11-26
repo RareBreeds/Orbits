@@ -12,7 +12,7 @@ Orbits is [open source](https://github.com/RareBreeds/Orbits/). See the [changel
 Right-click either module to find these:
 
 - **Theme**: **Follow Rack** (the default for new modules) uses the Light theme, or the Dark theme when "Use dark panels if available" is on in Rack's View menu. **Dark** and **Light** keep that theme whatever Rack's setting is. Modules in patches saved by older versions of Orbits keep the theme they were saved with.
-- **Orbits light boost**: how much brighter than Rack's room lighting the displays and lit buttons are, from 0% to 100%, 30% by default. It applies to every Orbits module and is saved with Rack's settings rather than the patch.
+- **Light boost**, under **Plugin**: how much brighter than Rack's room lighting the displays and lit buttons are, from 0% to 100%, 30% by default. It applies to every Eugene and Polygene module and is saved with Rack's settings rather than the patch.
 
 The modules in the Light theme:
 
