@@ -22,7 +22,7 @@ def float_value(value):
     return f"{formatted}f"
 
 def write_position_defines(out, module, label, x, y, width=None, height=None):
-    prefix = f"        #define {module.upper()}_{enum_name(label)}"
+    prefix = f"#define {module.upper()}_{enum_name(label)}"
     out.write(f"{prefix}_X ({x})\n")
     out.write(f"{prefix}_Y ({y})\n")
     if width is not None and height is not None:

@@ -1,8 +1,9 @@
 # Unit tests for the plugin.
 #
-#   make -C tests                          check the SVGs, then build and run the tests that don't
-#                                          need VCV Rack
+#   make -C tests                          check the SVGs and generated headers, then
+#                                          build and run the tests that don't need VCV Rack
 #   make -C tests svg                      check that the SVGs are well-formed XML, with xmllint
+#   make -C tests generated                check that the generated headers in src/ are up to date
 #   make -C tests rack RACK_DIR=<path>     build and run the tests that use VCV Rack
 #   make -C tests widgets RACK_DIR=<path>  check that the modules' widgets have every control and
 #                                          draw everything inside the panel, which opens a Rack
@@ -127,15 +128,25 @@ BENCH_OBJECTS += $(addprefix $(BUILD_DIR)/bench-,$(notdir $(BENCH_SOURCES:.cpp=.
 COMPARE_OBJECTS := $(addprefix $(BUILD_DIR)/compare-src-,$(notdir $(COMPARE_PLUGIN_SOURCES:.cpp=.o)))
 COMPARE_OBJECTS += $(addprefix $(BUILD_DIR)/compare-,$(notdir $(COMPARE_SOURCES:.cpp=.o)))
 
-.PHONY: test svg rack widgets all bench compare clean
+.PHONY: test svg generated rack widgets all bench compare clean
 
-test: svg $(TARGET)
+test: svg generated $(TARGET)
 	$(abspath $(TARGET))
 
 # Rack draws SVGs with nanosvg, which loads some malformed ones without an error and draws them
 # wrongly, e.g. the unterminated attributes svgopt left in two of v2.0.4's SVGs (273c07f).
 svg:
 	xmllint --noout ../res/*.svg
+
+# The headers generated from the panels and res/ must be regenerated after changing them, or
+# the widgets are drawn in the old positions or load assets that have moved.
+GENERATED_HEADERS := EugeneComponentPositions.h PolygeneComponentPositions.h OrbitsAssets.h
+generated:
+	../scripts/gen-headers.sh $(BUILD_DIR)/generated
+	@for h in $(GENERATED_HEADERS); do \
+		diff -u ../src/$$h $(BUILD_DIR)/generated/$$h || \
+		{ echo "src/$$h is out of date: run scripts/gen-headers.sh"; exit 1; }; \
+	done
 
 # libRack's install name on macOS is just "libRack.dylib", so tell the loader where it is.
 rack: $(RACK_TARGET)
