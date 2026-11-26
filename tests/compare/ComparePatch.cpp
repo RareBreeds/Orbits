@@ -211,7 +211,7 @@ int ComparePatch::findInput(const char *name) const
                 }
         }
 
-        // Eugene's Invert CV input was named "Invert" before v2.0.5.
+        // Eugene's Invert CV input was named "Invert" before v2.1.0.
         if(std::strcmp(name, "Invert CV") == 0)
         {
                 return findInput("Invert");
