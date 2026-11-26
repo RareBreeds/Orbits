@@ -24,7 +24,7 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
         configInput(HITS_CV_INPUT, "Hits CV");
         configInput(SHIFT_CV_INPUT, "Shift CV");
         configInput(REVERSE_CV_INPUT, "Reverse CV");
-        configInput(INVERT_CV_INPUT, "Invert");
+        configInput(INVERT_CV_INPUT, "Invert CV");
         configInput(RANDOM_CV_INPUT, "Random CV");
 
         configOutput(BEAT_OUTPUT, "Beat");
@@ -187,8 +187,9 @@ void RareBreeds_Orbits_Eugene::dataFromJson(json_t *root)
         }
 }
 
-void RareBreeds_Orbits_Eugene::onReset()
+void RareBreeds_Orbits_Eugene::onReset(const ResetEvent &e)
 {
+        Module::onReset(e);
         m_steps.reset();
 }
 

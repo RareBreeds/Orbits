@@ -205,16 +205,16 @@ static void reverseAndInvert(ComparePatch &patch)
         patch.setParam("Reverse", 1.f);
         patch.setParam("Invert", 1.f);
         patch.connect("Reverse CV", 1);
-        patch.connect("Invert", 1);
+        patch.connect("Invert CV", 1);
         patch.runClocks(10);
         static const float gates[] = {10.f, 0.f, 1.f, 2.f, 0.f, 5.f};
         for(int i = 0; i < 60; ++i)
         {
-                patch.setVoltage(random.next(2) ? "Reverse CV" : "Invert", gates[random.next(6)]);
+                patch.setVoltage(random.next(2) ? "Reverse CV" : "Invert CV", gates[random.next(6)]);
                 patch.run(1 + random.next(4 * kPeriod));
         }
         patch.disconnect("Reverse CV");
-        patch.disconnect("Invert");
+        patch.disconnect("Invert CV");
         patch.runClocks(10);
 }
 

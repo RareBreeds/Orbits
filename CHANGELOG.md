@@ -9,6 +9,7 @@
  - Polygene's RND input no longer adds to the undo history each time it randomizes a channel
  - The displays follow Rack's room brightness, 30% brighter by default, instead of always being fully bright
  - New modules use the Light theme unless "Use dark panels if available" is on in Rack's View menu, instead of always starting Dark
+ - Eugene's Invert input is named "Invert CV", like its other CV inputs and Polygene's
 
 ### Fixed
  - Length, Hits and Shift CV well below 0V could jump to the maximum value instead of the minimum

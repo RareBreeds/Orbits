@@ -107,7 +107,7 @@ struct RareBreeds_Orbits_Eugene : Module
         void process(const ProcessArgs &process_args) override;
         json_t *dataToJson() override;
         void dataFromJson(json_t *root) override;
-        void onReset() override;
+        void onReset(const ResetEvent &e) override;
         EugeneDisplayData getDisplayData();
         static EugeneDisplayData getDisplayData(RareBreeds_Orbits_Eugene *module);
         void onRandomize(const RandomizeEvent &e) override;
