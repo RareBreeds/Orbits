@@ -436,7 +436,7 @@ const CompareScenario kEugeneScenarios[] = {
         {"eugene-random-cv", kEugene, NULL, randomCV},
         {"eugene-initialize-randomize", kEugene, NULL, initializeAndRandomize},
         {"eugene-reload", kEugene, NULL, reload},
-        {"eugene-bypass", kEugene, NULL, bypass},
+        {"eugene-bypass", kEugene, kBypassSilences, bypass},
         {"eugene-sample-rates", kEugene, NULL, sampleRates},
         {"eugene-presets", kEugene, NULL, presets},
         {"eugene-preset-switching", kEugene, NULL, presetSwitching},

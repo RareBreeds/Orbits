@@ -150,6 +150,11 @@ static const char *const kHalfStepRounding = "Values a hair below half a step, e
 static const char *const kNegativeCV =
         "Length, Hits and Shift CV well below 0V could jump to the maximum value instead of the minimum";
 
+// Bypassing no longer passes the clock through to the beat output.
+static const char *const kBypassSilences =
+        "Bypassing Eugene or Polygene silences their outputs, instead of passing the clock input through to the "
+        "beat output";
+
 typedef void (*CompareScenarioFunction)(ComparePatch &patch);
 
 struct CompareScenario

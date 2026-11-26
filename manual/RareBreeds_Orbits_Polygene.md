@@ -76,8 +76,6 @@ Right-click the panel for these settings, as well as the Theme and Orbits light 
 - **Randomize Filter**: chooses which settings the RND button, the RND input and Randomize change: Length, Hits, Shift, Variation, Reverse and Invert. All are on by default.
 - **Mono Input Behavior**: see CV above.
 
-When Polygene is bypassed, its CLK input is passed straight through to OUT.
-
 ##### Presets
 
 Polygene comes with the same factory presets as Eugene, which set the channel being edited, and *[Poly]* presets that set a different rhythm on each channel, such as Four On The Floor, Samba and standard 8th and 16th note grooves. Find them under *Preset* in the context menu.

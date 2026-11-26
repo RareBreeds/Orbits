@@ -63,8 +63,6 @@ Right-click the panel for these settings, as well as the Theme and Orbits light 
 - **Beat Mode** and **EOC Mode**: see Outputs above.
 - **Randomize Filter**: chooses which settings Randomize and the RND input change: Length, Length CV, Hits, Hits CV, Shift, Shift CV, Reverse and Invert. All are on by default.
 
-When Eugene is bypassed, its CLK input is passed straight through to OUT.
-
 ##### Presets
 
 Eugene comes with factory presets of rhythms from around the world and from well-known songs, such as Bossa Nova, Samba, Tresillo and Take Five. Find them under *Preset* in the context menu.

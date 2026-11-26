@@ -368,7 +368,6 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configOutput(BEAT_OUTPUT, "Beat")->description = "Trigger or gate on each hit, set by Beat Mode";
         configOutput(EOC_OUTPUT, "End of cycle")->description = "Trigger once per cycle, timing set by EOC Mode";
 
-        configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 
         for(int i = 0; i < NUM_INPUTS; ++i)
         {

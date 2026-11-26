@@ -13,6 +13,7 @@
  - Eugene's Invert input is named "Invert CV", like its other CV inputs and Polygene's
  - Length, Hits, Shift and Variation show the value being played, including CV, e.g. Hits "5 / 16". Typing a number sets the value played
  - Eugene's CV knobs show percentages
+ - Bypassing Eugene or Polygene silences their outputs, instead of passing the clock input through to the beat output
 
 ### Fixed
  - Length, Hits and Shift CV well below 0V could jump to the maximum value instead of the minimum

@@ -79,6 +79,24 @@ TEST_CASE("Polygene plays each channel's own rhythm")
         CHECK(outputs.eoc[1] == ".....x....x....x");
 }
 
+TEST_CASE("Bypassed, Polygene's outputs are silent, and each rhythm carries on where it was afterwards")
+{
+        Polygene polygene;
+        selectChannel(polygene, 1);
+        setRhythm(polygene, 5, 2);
+        selectChannel(polygene, 0);
+        setRhythm(polygene, 8, 3);
+
+        ClockedOutputs before =
+                sendClocks(polygene, Polygene::CLOCK_INPUT, Polygene::BEAT_OUTPUT, Polygene::EOC_OUTPUT, 2, 3);
+        CHECK_FALSE(
+                sendBypassedClocks(polygene, Polygene::CLOCK_INPUT, Polygene::BEAT_OUTPUT, Polygene::EOC_OUTPUT, 2, 4));
+        ClockedOutputs after =
+                sendClocks(polygene, Polygene::CLOCK_INPUT, Polygene::BEAT_OUTPUT, Polygene::EOC_OUTPUT, 2, 13);
+        CHECK(before.beat[0] + after.beat[0] == euclideanPattern(8, 3, 16));
+        CHECK(before.beat[1] + after.beat[1] == euclideanPattern(5, 2, 16));
+}
+
 TEST_CASE("Polygene's shift, reverse and invert change the active channel's rhythm")
 {
         Polygene polygene;

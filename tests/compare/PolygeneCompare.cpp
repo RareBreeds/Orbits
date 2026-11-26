@@ -650,7 +650,7 @@ const CompareScenario kPolygeneScenarios[] = {
          "Polygene's mono input behaviour option for the RND input wasn't saved with the patch", randomCVMonoMode},
         {"polygene-initialize-randomize", kPolygene, NULL, initializeAndRandomize},
         {"polygene-reload", kPolygene, NULL, reload},
-        {"polygene-bypass", kPolygene, NULL, bypass},
+        {"polygene-bypass", kPolygene, kBypassSilences, bypass},
         {"polygene-sample-rates", kPolygene, NULL, sampleRates},
         {"polygene-presets", kPolygene, NULL, presets},
         {"polygene-preset-switching", kPolygene, NULL, presetSwitching},

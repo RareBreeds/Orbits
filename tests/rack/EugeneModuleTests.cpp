@@ -69,6 +69,15 @@ TEST_CASE("Eugene's end of cycle output follows its EOC mode")
         }
 }
 
+TEST_CASE("Bypassed, Eugene's outputs are silent, and its rhythm carries on where it was afterwards")
+{
+        Eugene eugene;
+        setRhythm(eugene, 8, 3);
+        CHECK(sendClocks(eugene, 3).beat[0] == "x.x");
+        CHECK_FALSE(sendBypassedClocks(eugene, Eugene::CLOCK_INPUT, Eugene::BEAT_OUTPUT, Eugene::EOC_OUTPUT, 1, 4));
+        CHECK(sendClocks(eugene, 5).beat[0] == "..x..");
+}
+
 TEST_CASE("Loading Eugene's widget config twice before the widget draws doesn't leak it")
 {
         // dataFromJson() keeps the "widget" object for the widget to apply when it next draws.

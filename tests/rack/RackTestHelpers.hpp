@@ -75,6 +75,45 @@ inline ClockedOutputs sendClocks(Module &module, int clock_input, int beat_outpu
         return outputs;
 }
 
+// Sends `clocks` clock pulses to a bypassed module, as Rack's engine runs it: bypassing clears the
+// outputs, then processBypass() runs instead of process(). Returns whether any channel of
+// `beat_output` or `eoc_output` was ever above 0V.
+inline bool sendBypassedClocks(Module &module, int clock_input, int beat_output, int eoc_output, int channels,
+                               unsigned int clocks)
+{
+        Module::ProcessArgs args = testProcessArgs();
+        Input &clock = module.getInput(clock_input);
+        connectInput(clock, channels);
+        for(Output &output : module.outputs)
+        {
+                output.setChannels(0);
+        }
+
+        bool any_output = false;
+        for(unsigned int pulse = 0; pulse < clocks; ++pulse)
+        {
+                for(int high = 1; high >= 0; --high)
+                {
+                        for(int c = 0; c < channels; ++c)
+                        {
+                                clock.setVoltage(high ? 10.f : 0.f, static_cast<uint8_t>(c));
+                        }
+                        for(int sample = 0; sample < 100; ++sample)
+                        {
+                                module.processBypass(args);
+                                for(int c = 0; c < channels; ++c)
+                                {
+                                        const uint8_t channel = static_cast<uint8_t>(c);
+                                        any_output = any_output ||
+                                                     module.getOutput(beat_output).getVoltage(channel) > 0.f ||
+                                                     module.getOutput(eoc_output).getVoltage(channel) > 0.f;
+                                }
+                        }
+                }
+        }
+        return any_output;
+}
+
 // Clears Rack's undo history. Defined in RackTestMain.cpp, see there for why.
 void clearTestUndoHistory();
 
