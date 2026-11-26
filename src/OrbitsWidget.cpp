@@ -4,6 +4,8 @@
 
 OrbitsWidget::OrbitsWidget(const OrbitsSkinnedPanelConfig &config) : m_config(config)
 {
+        std::string panelPath = asset::plugin(pluginInstance, m_config.panelPaths[orbitsThemeIndex(m_theme)]);
+        setPanel(APP->window->loadSvg(panelPath));
 }
 
 OrbitsWidget::~OrbitsWidget()
