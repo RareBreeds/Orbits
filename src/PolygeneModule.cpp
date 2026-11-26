@@ -258,28 +258,33 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
         configParam(CHANNEL_KNOB_PARAM, 0.f, static_cast<float>(PORT_MAX_CHANNELS - 1), 0.f, "Channel", "", 0.f, 1.f,
-                    1.f);
-        configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length");
-        configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
-        configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift");
-        configParam(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f, "Variation", "%", 0.f, 100.f);
-        configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"});
-        configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"});
+                    1.f)
+                ->description = "Channel edited by the knobs and buttons";
+        configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length")->description =
+                "Number of steps in the rhythm";
+        configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f)->description =
+                "Steps that play, spread as evenly as possible";
+        configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift")->description =
+                "Rotates the rhythm by this many steps";
+        configParam(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f, "Variation", "%", 0.f, 100.f)->description =
+                "Other ways to spread the hits, 0% is the most even";
+        configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"})->description = "Active channel only";
+        configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"})->description = "Active channel only";
         configButton(RANDOM_KNOB_PARAM, "Randomize channel");
-        configButton(SYNC_KNOB_PARAM, "Sync");
+        configButton(SYNC_KNOB_PARAM, "Sync")->description = "Restarts every channel";
 
-        configInput(CLOCK_INPUT, "Clock");
-        configInput(SYNC_INPUT, "Sync");
-        configInput(LENGTH_CV_INPUT, "Length CV");
-        configInput(HITS_CV_INPUT, "Hits CV");
-        configInput(SHIFT_CV_INPUT, "Shift CV");
-        configInput(VARIATION_CV_INPUT, "Variation CV");
-        configInput(REVERSE_CV_INPUT, "Reverse CV");
-        configInput(INVERT_CV_INPUT, "Invert CV");
-        configInput(RANDOM_CV_INPUT, "Random CV");
+        configInput(CLOCK_INPUT, "Clock")->description = "Polyphonic, one rhythm per channel";
+        configInput(SYNC_INPUT, "Sync")->description = "Trigger, restarts that channel's rhythm";
+        configInput(LENGTH_CV_INPUT, "Length CV")->description = "±5V, added to the knob";
+        configInput(HITS_CV_INPUT, "Hits CV")->description = "±5V, added to the knob";
+        configInput(SHIFT_CV_INPUT, "Shift CV")->description = "±5V, added to the knob";
+        configInput(VARIATION_CV_INPUT, "Variation CV")->description = "±5V, added to the knob";
+        configInput(REVERSE_CV_INPUT, "Reverse CV")->description = "Gate, overrides the switch";
+        configInput(INVERT_CV_INPUT, "Invert CV")->description = "Gate, overrides the switch";
+        configInput(RANDOM_CV_INPUT, "Random CV")->description = "Trigger, randomizes that channel";
 
-        configOutput(BEAT_OUTPUT, "Beat");
-        configOutput(EOC_OUTPUT, "End of cycle");
+        configOutput(BEAT_OUTPUT, "Beat")->description = "Trigger or gate on each hit, set by Beat Mode";
+        configOutput(EOC_OUTPUT, "End of cycle")->description = "Trigger once per cycle, timing set by EOC Mode";
 
         configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 

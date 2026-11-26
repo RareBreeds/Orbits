@@ -6,12 +6,16 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 
-        configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length");
-        configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f);
-        configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift");
-        configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV");
-        configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV");
-        configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
+        configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length")->description =
+                "Number of steps in the rhythm";
+        configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f)->description =
+                "Steps that play, spread as evenly as possible";
+        configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift")->description =
+                "Rotates the rhythm by this many steps";
+        configParam(LENGTH_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Length CV")->description =
+                "Attenuator for the Length CV input";
+        configParam(HITS_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Hits CV")->description = "Attenuator for the Hits CV input";
+        configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV")->description = "Attenuator for the Shift CV input";
         configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"});
         configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"});
         // Without a config Rack labels it "#9"
@@ -19,16 +23,16 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
         configButton(SYNC_KNOB_PARAM, "Sync");
 
         configInput(CLOCK_INPUT, "Clock");
-        configInput(SYNC_INPUT, "Sync");
-        configInput(LENGTH_CV_INPUT, "Length CV");
-        configInput(HITS_CV_INPUT, "Hits CV");
-        configInput(SHIFT_CV_INPUT, "Shift CV");
-        configInput(REVERSE_CV_INPUT, "Reverse CV");
-        configInput(INVERT_CV_INPUT, "Invert CV");
-        configInput(RANDOM_CV_INPUT, "Random CV");
+        configInput(SYNC_INPUT, "Sync")->description = "Trigger, restarts the rhythm";
+        configInput(LENGTH_CV_INPUT, "Length CV")->description = "±5V, scaled by the CV knob";
+        configInput(HITS_CV_INPUT, "Hits CV")->description = "±5V, scaled by the CV knob";
+        configInput(SHIFT_CV_INPUT, "Shift CV")->description = "±5V, scaled by the CV knob";
+        configInput(REVERSE_CV_INPUT, "Reverse CV")->description = "Gate, overrides the switch";
+        configInput(INVERT_CV_INPUT, "Invert CV")->description = "Gate, overrides the switch";
+        configInput(RANDOM_CV_INPUT, "Random CV")->description = "Trigger, randomizes the module";
 
-        configOutput(BEAT_OUTPUT, "Beat");
-        configOutput(EOC_OUTPUT, "End of cycle");
+        configOutput(BEAT_OUTPUT, "Beat")->description = "Trigger or gate on each hit, set by Beat Mode";
+        configOutput(EOC_OUTPUT, "End of cycle")->description = "Trigger once per cycle, timing set by EOC Mode";
 
         configBypass(CLOCK_INPUT, BEAT_OUTPUT);
 }
