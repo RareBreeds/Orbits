@@ -292,3 +292,56 @@ TEST_CASE("Every Polygene param is configured")
                 CHECK_FALSE(polygene.getParamQuantity(id)->name.empty());
         }
 }
+
+TEST_CASE("Polygene's Hits shows the active channel's number of hits, and takes a typed number of hits")
+{
+        Polygene polygene;
+        APP->engine->addModule(&polygene);
+        selectChannel(polygene, 2);
+        polygene.getParam(Polygene::LENGTH_KNOB_PARAM).setValue(8.f);
+        polygene.getParam(Polygene::HITS_KNOB_PARAM).setValue(0.375f);
+        polygene.process(testProcessArgs());
+        ParamQuantity *hits = polygene.getParamQuantity(Polygene::HITS_KNOB_PARAM);
+        CHECK(hits->getString() == "Hits: 3 / 8");
+
+        hits->setDisplayValueString("6");
+        polygene.process(testProcessArgs());
+        CHECK(polygene.m_channels[2].readHits(8) == 6);
+
+        APP->engine->removeModule(&polygene);
+}
+
+TEST_CASE("Polygene's Variation shows the active channel's variation, and takes a typed variation")
+{
+        Polygene polygene;
+        APP->engine->addModule(&polygene);
+        selectChannel(polygene, 1);
+        polygene.getParam(Polygene::LENGTH_KNOB_PARAM).setValue(8.f);
+        polygene.getParam(Polygene::HITS_KNOB_PARAM).setValue(0.375f);
+        polygene.process(testProcessArgs());
+        const unsigned int count = orbitsNearEvenRhythmCount(8, 3);
+        REQUIRE(count > 2);
+        ParamQuantity *variation = polygene.getParamQuantity(Polygene::VARIATION_KNOB_PARAM);
+        CHECK(variation->getString() == "Variation: 1 / " + std::to_string(count));
+
+        variation->setDisplayValueString("3");
+        polygene.process(testProcessArgs());
+        CHECK(polygene.m_channels[1].readVariation(8, 3) == 2);
+        CHECK(variation->getDisplayValueString() == "3 / " + std::to_string(count));
+
+        APP->engine->removeModule(&polygene);
+}
+
+TEST_CASE("Polygene's Length and Shift show the active channel's whole numbers played")
+{
+        Polygene polygene;
+        APP->engine->addModule(&polygene);
+        selectChannel(polygene, 0);
+        polygene.getParam(Polygene::LENGTH_KNOB_PARAM).setValue(12.4f);
+        polygene.getParam(Polygene::SHIFT_KNOB_PARAM).setValue(14.f);
+        polygene.process(testProcessArgs());
+        CHECK(polygene.getParamQuantity(Polygene::LENGTH_KNOB_PARAM)->getString() == "Length: 12");
+        CHECK(polygene.getParamQuantity(Polygene::SHIFT_KNOB_PARAM)->getString() == "Shift: 2");
+
+        APP->engine->removeModule(&polygene);
+}

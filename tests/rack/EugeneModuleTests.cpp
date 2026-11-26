@@ -106,3 +106,82 @@ TEST_CASE("Every Eugene param is configured, and Sync keeps the id that patches 
         CHECK(Eugene::SYNC_KNOB_PARAM == 9);
         CHECK_FALSE(eugene.getParamQuantity(Eugene::UNUSED_PARAM)->randomizeEnabled);
 }
+
+TEST_CASE("Eugene's Hits shows the number of hits played, and takes a typed number of hits")
+{
+        Eugene eugene;
+        APP->engine->addModule(&eugene);
+        setRhythm(eugene, 16, 5);
+        ParamQuantity *hits = eugene.getParamQuantity(Eugene::HITS_KNOB_PARAM);
+        CHECK(hits->getString() == "Hits: 5 / 16");
+
+        SUBCASE("A number of hits")
+        {
+                hits->setDisplayValueString("7");
+                CHECK(eugene.readHits(16) == 7);
+        }
+        SUBCASE("A percentage")
+        {
+                hits->setDisplayValueString("50%");
+                CHECK(hits->getValue() == 0.5f);
+        }
+        SUBCASE("The text shown, which the text field starts with, keeps the number of hits")
+        {
+                eugene.getParam(Eugene::HITS_KNOB_PARAM).setValue(0.33f);
+                hits->setDisplayValueString(hits->getDisplayValueString());
+                CHECK(eugene.readHits(16) == 5);
+        }
+        SUBCASE("Including Hits CV")
+        {
+                connectInput(eugene.getInput(Eugene::HITS_CV_INPUT), 1);
+                eugene.getInput(Eugene::HITS_CV_INPUT).setVoltage(5.f);
+                eugene.getParam(Eugene::HITS_CV_KNOB_PARAM).setValue(0.25f);
+                CHECK(hits->getString() == "Hits: 9 / 16");
+                hits->setDisplayValueString("12");
+                CHECK(eugene.readHits(16) == 12);
+        }
+
+        APP->engine->removeModule(&eugene);
+}
+
+TEST_CASE("Eugene's Length and Shift show what's played, and take a typed value")
+{
+        Eugene eugene;
+        APP->engine->addModule(&eugene);
+        ParamQuantity *length = eugene.getParamQuantity(Eugene::LENGTH_KNOB_PARAM);
+        ParamQuantity *shift = eugene.getParamQuantity(Eugene::SHIFT_KNOB_PARAM);
+
+        SUBCASE("A randomized length shows the whole number played")
+        {
+                eugene.getParam(Eugene::LENGTH_KNOB_PARAM).setValue(17.3f);
+                CHECK(length->getString() == "Length: 17");
+        }
+        SUBCASE("Including Length CV")
+        {
+                eugene.getParam(Eugene::LENGTH_KNOB_PARAM).setValue(17.f);
+                connectInput(eugene.getInput(Eugene::LENGTH_CV_INPUT), 1);
+                eugene.getInput(Eugene::LENGTH_CV_INPUT).setVoltage(5.f);
+                eugene.getParam(Eugene::LENGTH_CV_KNOB_PARAM).setValue(0.2f);
+                CHECK(length->getString() == "Length: 23");
+                length->setDisplayValueString("20");
+                CHECK(eugene.readLength() == 20);
+        }
+        SUBCASE("Shift wraps at the length")
+        {
+                setRhythm(eugene, 16, 5, 20);
+                CHECK(shift->getString() == "Shift: 4");
+                shift->setDisplayValueString("3");
+                CHECK(eugene.readShift(16) == 3);
+        }
+
+        APP->engine->removeModule(&eugene);
+}
+
+TEST_CASE("Eugene's CV knobs show percentages")
+{
+        Eugene eugene;
+        eugene.getParam(Eugene::LENGTH_CV_KNOB_PARAM).setValue(0.5f);
+        CHECK(eugene.getParamQuantity(Eugene::LENGTH_CV_KNOB_PARAM)->getString() == "Length CV: 50%");
+        CHECK(eugene.getParamQuantity(Eugene::HITS_CV_KNOB_PARAM)->getString() == "Hits CV: 0%");
+        CHECK(eugene.getParamQuantity(Eugene::SHIFT_CV_KNOB_PARAM)->getString() == "Shift CV: 0%");
+}

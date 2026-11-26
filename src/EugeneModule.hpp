@@ -24,7 +24,7 @@ struct EugeneDisplayData
         }
 };
 
-struct RareBreeds_Orbits_Eugene : Module
+struct RareBreeds_Orbits_Eugene : Module, OrbitsKnobInputs
 {
         enum ParamIds
         {
@@ -99,8 +99,11 @@ struct RareBreeds_Orbits_Eugene : Module
         OrbitsWidgetData m_widget_data;
         RareBreeds_Orbits_Eugene();
 
-        unsigned int readLength();
-        unsigned int readHits(unsigned int length);
+        float readLengthCV() override;
+        float readHitsCV() override;
+        float readShiftCV() override;
+        unsigned int readLength() override;
+        unsigned int readHits(unsigned int length) override;
         unsigned int readShift(unsigned int length);
         bool readReverse();
         bool readInvert();

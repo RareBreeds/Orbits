@@ -82,33 +82,46 @@ bool RareBreeds_Orbits_Polygene::Channel::isOnBeat(unsigned int length, unsigned
         return orbitsNearEvenBeat(length, hits, variation, shift, beat) != invert;
 }
 
-unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
+float RareBreeds_Orbits_Polygene::Channel::readLengthCV()
 {
         auto cv = m_module->getParameterizedVoltage(LENGTH_CV_INPUT, m_channel) / 5.f;
-        auto f_length = m_state.length + cv * (kOrbitsRhythmMaxLength - 1);
-        return clampRounded(f_length, 1, kOrbitsRhythmMaxLength);
+        return cv * (kOrbitsRhythmMaxLength - 1);
+}
+
+unsigned int RareBreeds_Orbits_Polygene::Channel::readLength()
+{
+        return orbitsLength(m_state.length + readLengthCV());
+}
+
+float RareBreeds_Orbits_Polygene::Channel::readHitsCV()
+{
+        return m_module->getParameterizedVoltage(HITS_CV_INPUT, m_channel) / 5.f;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readHits(unsigned int length)
 {
-        auto cv = m_module->getParameterizedVoltage(HITS_CV_INPUT, m_channel) / 5.f;
-        auto f_hits = m_state.hits + cv;
-        return clampRounded(f_hits * static_cast<float>(length), 0, length);
+        return orbitsHitCount(m_state.hits + readHitsCV(), length);
+}
+
+float RareBreeds_Orbits_Polygene::Channel::readShiftCV()
+{
+        auto cv = m_module->getParameterizedVoltage(SHIFT_CV_INPUT, m_channel) / 5.f;
+        return cv * (kOrbitsRhythmMaxLength - 1);
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readShift(unsigned int length)
 {
-        auto cv = m_module->getParameterizedVoltage(SHIFT_CV_INPUT, m_channel) / 5.f;
-        auto f_shift = m_state.shift + cv * (kOrbitsRhythmMaxLength - 1);
-        return clampRounded(f_shift, 0, kOrbitsRhythmMaxLength - 1) % length;
+        return orbitsShift(m_state.shift + readShiftCV(), length);
+}
+
+float RareBreeds_Orbits_Polygene::Channel::readVariationCV()
+{
+        return m_module->getParameterizedVoltage(VARIATION_CV_INPUT, m_channel) / 5.f;
 }
 
 unsigned int RareBreeds_Orbits_Polygene::Channel::readVariation(unsigned int length, unsigned int hits)
 {
-        auto cv = m_module->getParameterizedVoltage(VARIATION_CV_INPUT, m_channel) / 5.f;
-        auto f_variation = m_state.variation + cv;
-        auto count = orbitsNearEvenRhythmCount(length, hits);
-        return clampRounded(f_variation * (static_cast<float>(count - 1)), 0, count - 1);
+        return orbitsVariation(m_state.variation + readVariationCV(), orbitsNearEvenRhythmCount(length, hits));
 }
 
 void RareBreeds_Orbits_Polygene::Channel::process(const ProcessArgs &args)
@@ -253,6 +266,67 @@ PolygeneDisplayData RareBreeds_Orbits_Polygene::getDisplayData(RareBreeds_Orbits
         }
 }
 
+// Shown as variation / number of variations, e.g. "4 / 32", where 1 is the Euclidean rhythm.
+struct PolygeneVariationQuantity : OrbitsPlayedQuantity
+{
+        unsigned int readCount()
+        {
+                const unsigned int length = m_inputs->readLength();
+                return orbitsNearEvenRhythmCount(length, m_inputs->readHits(length));
+        }
+
+        float readCV()
+        {
+                return static_cast<RareBreeds_Orbits_Polygene *>(module)->m_active_channel->readVariationCV();
+        }
+
+        unsigned int readPlayed(float value) override
+        {
+                return orbitsVariation(value + readCV(), readCount()) + 1;
+        }
+
+        float readKnobValue(unsigned int played) override
+        {
+                const unsigned int count = readCount();
+                if(count < 2)
+                {
+                        return getValue();
+                }
+                const unsigned int variation = played > 0 ? played - 1 : 0;
+                return static_cast<float>(variation) / static_cast<float>(count - 1) - readCV();
+        }
+
+        std::string formatPlayed(unsigned int played) override
+        {
+                return std::to_string(played) + " / " + std::to_string(readCount());
+        }
+};
+
+float RareBreeds_Orbits_Polygene::readLengthCV()
+{
+        return m_active_channel->readLengthCV();
+}
+
+float RareBreeds_Orbits_Polygene::readHitsCV()
+{
+        return m_active_channel->readHitsCV();
+}
+
+float RareBreeds_Orbits_Polygene::readShiftCV()
+{
+        return m_active_channel->readShiftCV();
+}
+
+unsigned int RareBreeds_Orbits_Polygene::readLength()
+{
+        return m_active_channel->readLength();
+}
+
+unsigned int RareBreeds_Orbits_Polygene::readHits(unsigned int length)
+{
+        return m_active_channel->readHits(length);
+}
+
 RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
 {
         config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
@@ -260,14 +334,22 @@ RareBreeds_Orbits_Polygene::RareBreeds_Orbits_Polygene()
         configParam(CHANNEL_KNOB_PARAM, 0.f, static_cast<float>(PORT_MAX_CHANNELS - 1), 0.f, "Channel", "", 0.f, 1.f,
                     1.f)
                 ->description = "Channel edited by the knobs and buttons";
-        configParam(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength, kOrbitsRhythmMaxLength, "Length")->description =
-                "Number of steps in the rhythm";
-        configParam(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "%", 0.f, 100.f)->description =
-                "Steps that play, spread as evenly as possible";
-        configParam(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift")->description =
-                "Rotates the rhythm by this many steps";
-        configParam(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f, "Variation", "%", 0.f, 100.f)->description =
-                "Other ways to spread the hits, 0% is the most even";
+        OrbitsPlayedQuantity *length = configParam<OrbitsLengthQuantity>(LENGTH_KNOB_PARAM, 1.f, kOrbitsRhythmMaxLength,
+                                                                         kOrbitsRhythmMaxLength, "Length");
+        length->description = "Number of steps in the rhythm";
+        length->m_inputs = this;
+        OrbitsPlayedQuantity *hits =
+                configParam<OrbitsHitsQuantity>(HITS_KNOB_PARAM, 0.f, 1.f, 0.5f, "Hits", "", 0.f, 100.f);
+        hits->description = "Steps that play, spread as evenly as possible";
+        hits->m_inputs = this;
+        OrbitsPlayedQuantity *shift =
+                configParam<OrbitsShiftQuantity>(SHIFT_KNOB_PARAM, 0.f, kOrbitsRhythmMaxLength - 1, 0.f, "Shift");
+        shift->description = "Rotates the rhythm by this many steps";
+        shift->m_inputs = this;
+        OrbitsPlayedQuantity *variation = configParam<PolygeneVariationQuantity>(VARIATION_KNOB_PARAM, 0.f, 1.f, 0.0f,
+                                                                                 "Variation", "", 0.f, 100.f);
+        variation->description = "Other ways to spread the hits, 1 is the most even";
+        variation->m_inputs = this;
         configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"})->description = "Active channel only";
         configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"})->description = "Active channel only";
         configButton(RANDOM_KNOB_PARAM, "Randomize channel");

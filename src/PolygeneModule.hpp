@@ -75,7 +75,7 @@ struct PolygeneRandomizeRecord
         PolygeneChannelState old_state, new_state;
 };
 
-struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
+struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource, OrbitsKnobInputs
 {
         enum ParamIds
         {
@@ -154,6 +154,10 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
                 bool readInvert();
                 static bool isOnBeat(unsigned int length, unsigned int hits, unsigned int shift, unsigned int variation,
                                      unsigned int beat, bool invert);
+                float readLengthCV();
+                float readHitsCV();
+                float readShiftCV();
+                float readVariationCV();
                 unsigned int readLength();
                 unsigned int readHits(unsigned int length);
                 unsigned int readShift(unsigned int length);
@@ -191,6 +195,12 @@ struct RareBreeds_Orbits_Polygene : Module, OrbitsUndoSource
         void onRandomize(const RandomizeEvent &e) override;
         void onReset(const ResetEvent &e) override;
         void flushUndoHistory() override;
+        // OrbitsKnobInputs, for the active channel
+        float readLengthCV() override;
+        float readHitsCV() override;
+        float readShiftCV() override;
+        unsigned int readLength() override;
+        unsigned int readHits(unsigned int length) override;
         PolygeneDisplayData getDisplayData();
         static PolygeneDisplayData getDisplayData(RareBreeds_Orbits_Polygene *module);
         float getParameterizedVoltage(int input_id, uint8_t channel);

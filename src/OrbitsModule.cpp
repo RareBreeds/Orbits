@@ -1,6 +1,8 @@
 #include "OrbitsModule.hpp"
+#include "OrbitsRhythm.hpp"
 
 #include <algorithm>
+#include <cstdlib>
 #include <limits>
 
 unsigned int clampRounded(float value, unsigned int min, unsigned int max)
@@ -17,6 +19,26 @@ unsigned int clampRounded(float value, unsigned int min, unsigned int max)
         }
 
         return static_cast<unsigned int>(r);
+}
+
+unsigned int orbitsLength(float value)
+{
+        return clampRounded(value, 1, kOrbitsRhythmMaxLength);
+}
+
+unsigned int orbitsHitCount(float value, unsigned int length)
+{
+        return clampRounded(value * static_cast<float>(length), 0, length);
+}
+
+unsigned int orbitsShift(float value, unsigned int length)
+{
+        return clampRounded(value, 0, kOrbitsRhythmMaxLength - 1) % length;
+}
+
+unsigned int orbitsVariation(float value, unsigned int count)
+{
+        return clampRounded(value * static_cast<float>(count - 1), 0, count - 1);
 }
 
 void json_load_real(json_t *root, const char *param, float *result)
@@ -226,4 +248,75 @@ bool BeatGenerator::process(const BeatMode &mode, float delta)
 {
         bool pulse = m_generator.process(delta);
         return beat_mode_options[mode.getMode()].process(pulse, m_state);
+}
+
+std::string OrbitsPlayedQuantity::formatPlayed(unsigned int played)
+{
+        return std::to_string(played);
+}
+
+std::string OrbitsPlayedQuantity::getDisplayValueString()
+{
+        if(!m_inputs)
+        {
+                return ParamQuantity::getDisplayValueString();
+        }
+        return formatPlayed(readPlayed(getValue()));
+}
+
+void OrbitsPlayedQuantity::setDisplayValueString(std::string s)
+{
+        // A percentage sets a percentage knob directly.
+        const size_t percent = s.find('%');
+        if(percent != std::string::npos || !m_inputs)
+        {
+                ParamQuantity::setDisplayValueString(s.substr(0, percent));
+                return;
+        }
+
+        // A number, optionally followed by e.g. "/ 16", which is ignored.
+        const char *text = s.c_str();
+        char *end = NULL;
+        const double played = std::strtod(text, &end);
+        if(end == text || !std::isfinite(played))
+        {
+                return;
+        }
+        const double clamped = std::max(0.0, std::min(std::round(played), 1000.0));
+        setImmediateValue(readKnobValue(static_cast<unsigned int>(clamped)));
+}
+
+unsigned int OrbitsLengthQuantity::readPlayed(float value)
+{
+        return orbitsLength(value + m_inputs->readLengthCV());
+}
+
+float OrbitsLengthQuantity::readKnobValue(unsigned int played)
+{
+        return static_cast<float>(played) - m_inputs->readLengthCV();
+}
+
+unsigned int OrbitsShiftQuantity::readPlayed(float value)
+{
+        return orbitsShift(value + m_inputs->readShiftCV(), m_inputs->readLength());
+}
+
+float OrbitsShiftQuantity::readKnobValue(unsigned int played)
+{
+        return static_cast<float>(played) - m_inputs->readShiftCV();
+}
+
+unsigned int OrbitsHitsQuantity::readPlayed(float value)
+{
+        return orbitsHitCount(value + m_inputs->readHitsCV(), m_inputs->readLength());
+}
+
+float OrbitsHitsQuantity::readKnobValue(unsigned int played)
+{
+        return static_cast<float>(played) / static_cast<float>(m_inputs->readLength()) - m_inputs->readHitsCV();
+}
+
+std::string OrbitsHitsQuantity::formatPlayed(unsigned int played)
+{
+        return std::to_string(played) + " / " + std::to_string(m_inputs->readLength());
 }
