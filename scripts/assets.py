@@ -69,11 +69,11 @@ def build_header(asset_dir: Path, cwd: Path, prefix: str) -> str:
 
         if macro_name in seen_names:
             print(
-                f"warning: macro name collision for '{macro_name}' "
-                f"({seen_names[macro_name]} vs {rel_to_cwd_posix}); skipping duplicate",
+                f"error: {seen_names[macro_name]} and {rel_to_cwd_posix} would both be "
+                f"'{macro_name}'; rename one of them",
                 file=sys.stderr,
             )
-            continue
+            sys.exit(1)
         seen_names[macro_name] = rel_to_cwd_posix
 
         lines.append(f'#define {macro_name} "{rel_to_cwd_posix}"')
