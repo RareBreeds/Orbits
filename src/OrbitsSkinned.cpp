@@ -25,6 +25,32 @@ bool orbitsThemeFromName(const char *name, OrbitsTheme &outTheme)
         return false;
 }
 
+OrbitsSkinnedKnobConfig orbitsKnobConfig(const char *dark, const char *light, Vec pos)
+{
+        OrbitsSkinnedKnobConfig config;
+        config.imagePaths = {dark, light};
+        config.pos = pos;
+        return config;
+}
+
+OrbitsSkinnedSwitchConfig orbitsSwitchConfig(const char *dark_on, const char *light_on, const char *dark_off,
+                                             const char *light_off, Vec pos)
+{
+        OrbitsSkinnedSwitchConfig config;
+        config.onImagePaths = {dark_on, light_on};
+        config.offImagePaths = {dark_off, light_off};
+        config.pos = pos;
+        return config;
+}
+
+OrbitsSkinnedPortConfig orbitsPortConfig(const char *dark, const char *light, Vec pos)
+{
+        OrbitsSkinnedPortConfig config;
+        config.imagePaths = {dark, light};
+        config.pos = pos;
+        return config;
+}
+
 OrbitsSkinnedKnob::OrbitsSkinnedKnob(const OrbitsSkinnedKnobConfig &config) : m_config(config)
 {
         minAngle = -0.83f * static_cast<float>(M_PI);

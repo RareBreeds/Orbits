@@ -137,6 +137,12 @@ struct OrbitsSkinnedPort : app::SvgPort, OrbitsSkinned
         void loadTheme(OrbitsTheme theme) override;
 };
 
+// Configs for a control with an image per theme, at `pos`.
+OrbitsSkinnedKnobConfig orbitsKnobConfig(const char *dark, const char *light, Vec pos);
+OrbitsSkinnedSwitchConfig orbitsSwitchConfig(const char *dark_on, const char *light_on, const char *dark_off,
+                                             const char *light_off, Vec pos);
+OrbitsSkinnedPortConfig orbitsPortConfig(const char *dark, const char *light, Vec pos);
+
 // Moves a widget so it's centred on `pos`
 inline void orbitsCentreOn(widget::Widget *w, Vec pos)
 {
