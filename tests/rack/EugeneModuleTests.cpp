@@ -93,3 +93,16 @@ TEST_CASE("Loading Eugene's widget config twice before the widget draws doesn't 
         json_decref(first);
         json_decref(second);
 }
+
+TEST_CASE("Every Eugene param is configured, and Sync keeps the id that patches saved it with")
+{
+        // Rack labels an unconfigured param "#<id + 1>", which shows up in tools that list every param
+        Eugene eugene;
+        for(int id = 0; id < Eugene::NUM_PARAMS; ++id)
+        {
+                CAPTURE(id);
+                CHECK_FALSE(eugene.getParamQuantity(id)->name.empty());
+        }
+        CHECK(Eugene::SYNC_KNOB_PARAM == 9);
+        CHECK_FALSE(eugene.getParamQuantity(Eugene::UNUSED_PARAM)->randomizeEnabled);
+}

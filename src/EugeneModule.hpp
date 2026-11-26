@@ -36,7 +36,9 @@ struct RareBreeds_Orbits_Eugene : Module
                 SHIFT_CV_KNOB_PARAM,
                 REVERSE_KNOB_PARAM,
                 INVERT_KNOB_PARAM,
-                RANDOM_KNOB_PARAM,
+                // Added in a8fb481 for an RND button that was never made. Kept, as param ids are saved in
+                // patches and mappings, so SYNC_KNOB_PARAM must stay 9.
+                UNUSED_PARAM,
                 SYNC_KNOB_PARAM,
                 NUM_PARAMS
         };

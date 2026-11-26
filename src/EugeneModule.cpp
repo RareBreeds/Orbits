@@ -14,6 +14,8 @@ RareBreeds_Orbits_Eugene::RareBreeds_Orbits_Eugene()
         configParam(SHIFT_CV_KNOB_PARAM, 0.f, 1.f, 0.f, "Shift CV");
         configSwitch(REVERSE_KNOB_PARAM, 0.f, 1.f, 0.f, "Reverse", {"Off", "On"});
         configSwitch(INVERT_KNOB_PARAM, 0.f, 1.f, 0.f, "Invert", {"Off", "On"});
+        // Without a config Rack labels it "#9"
+        configParam(UNUSED_PARAM, 0.f, 1.f, 0.f, "Unused")->randomizeEnabled = false;
         configButton(SYNC_KNOB_PARAM, "Sync");
 
         configInput(CLOCK_INPUT, "Clock");

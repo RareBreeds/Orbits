@@ -281,3 +281,14 @@ TEST_CASE("Loading Polygene's widget config twice before the widget draws doesn'
         json_decref(first);
         json_decref(second);
 }
+
+TEST_CASE("Every Polygene param is configured")
+{
+        // Rack labels an unconfigured param "#<id + 1>", which shows up in tools that list every param
+        Polygene polygene;
+        for(int id = 0; id < Polygene::NUM_PARAMS; ++id)
+        {
+                CAPTURE(id);
+                CHECK_FALSE(polygene.getParamQuantity(id)->name.empty());
+        }
+}
