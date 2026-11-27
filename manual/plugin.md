@@ -1,6 +1,6 @@
 Orbits is a pair of rhythm generators for [VCV Rack](https://vcvrack.com/), based on [Euclidean rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm): a number of hits spread as evenly as possible over a number of steps.
 
-![Eugene, Dark theme](images/RareBreeds_Orbits_Eugene-dark.png) ![Polygene, Dark theme](images/RareBreeds_Orbits_Polygene-dark.png)
+![Eugene, Dark theme](images/RareBreeds_Orbits_Eugene-dark.png) ![Polygene, Dark theme](images/RareBreeds_Orbits_Polygene-dark.png) ![Eugene, Light theme](images/RareBreeds_Orbits_Eugene-light.png) ![Polygene, Light theme](images/RareBreeds_Orbits_Polygene-light.png)
 
 - [Eugene](RareBreeds_Orbits_Eugene.md): a Euclidean rhythm generator.
 - [Polygene](RareBreeds_Orbits_Polygene.md): up to 16 rhythms on one polyphonic cable, each with its own variations around the Euclidean rhythm.
@@ -11,14 +11,8 @@ Orbits is [open source](https://github.com/RareBreeds/Orbits/). See the [changel
 
 Right-click either module to find these:
 
-- **Theme**: **Follow Rack** (the default for new modules) uses the Light theme, or the Dark theme when "Use dark panels if available" is on in Rack's View menu. **Dark** and **Light** keep that theme whatever Rack's setting is. Modules in patches saved by older versions of Orbits keep the theme they were saved with.
+- **Theme**: **Follow Rack** (the default for new modules) uses the Light theme, or the Dark theme when "Use dark panels if available" is on in Rack's View menu. **Dark** and **Light** keep that theme whatever Rack's setting is.
 - **Light boost**, under **Plugin**: how much brighter than Rack's room lighting the displays and lit buttons are, from 0% to 100%, 30% by default. It applies to every Eugene and Polygene module and is saved with Rack's settings rather than the patch.
-
-The modules in the Light theme:
-
-![Eugene, Light theme](images/RareBreeds_Orbits_Eugene-light.png) ![Polygene, Light theme](images/RareBreeds_Orbits_Polygene-light.png)
-
-The displays and the INV, REV, RND and SYNC buttons follow Rack's room brightness ("Room brightness" in the View menu), so they stay visible when the room is dimmed.
 
 ##### Videos and links
 
