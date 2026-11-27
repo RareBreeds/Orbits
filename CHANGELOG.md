@@ -5,6 +5,7 @@
  - "Light boost" plugin-wide setting in the context menu, for how much brighter than the room the lights and displays are
  - "Follow Rack" theme, the default for new modules, which uses the Light or Dark theme to match Rack's "Use dark panels if available" setting. Modules in existing patches keep their theme
  - Tooltip descriptions for most inputs, outputs and knobs, including what Length, Hits, Shift and Variation do
+ - A new manual, this time based on the Rack guidelines
 
 ### Changed
  - Polygene's RND input no longer adds to the undo history each time it randomizes a channel
@@ -13,7 +14,9 @@
  - Eugene's Invert input is named "Invert CV", like its other CV inputs and Polygene's
  - Length, Hits, Shift and Variation show the value being played, including CV, e.g. Hits "5 / 16". Typing a number sets the value played
  - Eugene's CV knobs show percentages
+ - Hits, Variation and Eugene's CV knobs change straight away when turned or typed into, instead of gliding to the new value
  - Bypassing Eugene or Polygene silences their outputs, instead of passing the clock input through to the beat output
+ - The displays fade when a module is bypassed, like the rest of the panel, instead of staying fully bright
 
 ### Fixed
  - Length, Hits and Shift CV well below 0V could jump to the maximum value instead of the minimum
