@@ -1,4 +1,4 @@
-## [Unreleased]
+## [2.1.0] - 2026-11-27
 ### Added
  - Support for the 4ms MetaModule
  - The INV, REV, RND and SYNC buttons behave as lights, so they stay lit when Rack's room lights are dimmed
