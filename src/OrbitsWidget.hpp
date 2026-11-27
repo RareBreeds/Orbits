@@ -44,6 +44,10 @@ struct OrbitsWidget : ModuleWidget
 // orbitsLightBrightness() in each colour channel.
 NVGcolor orbitsLightTint();
 
+// The alpha to draw a widget's layer 1 with.
+// 1 if the module isn't bypassed, or if the platform fades the layer for us.
+float orbitsBypassAlpha(Widget *widget);
+
 #if ORBITS_ROOM_LIGHTING_ENABLED
 // How bright Orbits' lights and displays are, from 0 (off) to 1: the room brightness plus the light
 // boost setting, so they follow the room lights and stay that much brighter.

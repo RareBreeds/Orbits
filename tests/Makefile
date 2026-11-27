@@ -8,6 +8,10 @@
 #   make -C tests widgets RACK_DIR=<path>  check that the modules' widgets have every control and
 #                                          draw everything inside the panel, which opens a Rack
 #                                          window while they run
+#   make -C tests screenshots RACK_DIR=<path>
+#                                          save screenshots of each module in each theme, bypassed
+#                                          or not and with every button off or on, to
+#                                          SCREENSHOT_DIR (default build/screenshots)
 #   make -C tests all RACK_DIR=<path>      run the tests above and the comparison in turn, stopping
 #                                          at the first failure
 #   make -C tests bench RACK_DIR=<path>    build and run the benchmarks, which use VCV Rack and
@@ -108,7 +112,7 @@ RACK_LDFLAGS = $(LDFLAGS) -pthread -L$(RACK_DIR) -lRack
 WIDGETS_CXXFLAGS = $(RACK_CXXFLAGS) -DORBITS_TEST_RACK_DIR=\"$(abspath $(RACK_DIR))\" -DORBITS_TEST_PLUGIN_DIR=\"$(abspath ..)\"
 WIDGETS_LDFLAGS = $(RACK_LDFLAGS) $(GL_LDFLAGS)
 
-ifneq ($(filter all rack widgets bench compare %/orbits-compare,$(MAKECMDGOALS)),)
+ifneq ($(filter all rack widgets screenshots bench compare %/orbits-compare,$(MAKECMDGOALS)),)
 ifndef RACK_DIR
 $(error Set RACK_DIR to a Rack SDK or Rack source directory, e.g. make -C tests $(firstword $(filter all rack widgets bench compare,$(MAKECMDGOALS))) RACK_DIR=$$HOME/Rack-SDK)
 endif
@@ -128,7 +132,7 @@ BENCH_OBJECTS += $(addprefix $(BUILD_DIR)/bench-,$(notdir $(BENCH_SOURCES:.cpp=.
 COMPARE_OBJECTS := $(addprefix $(BUILD_DIR)/compare-src-,$(notdir $(COMPARE_PLUGIN_SOURCES:.cpp=.o)))
 COMPARE_OBJECTS += $(addprefix $(BUILD_DIR)/compare-,$(notdir $(COMPARE_SOURCES:.cpp=.o)))
 
-.PHONY: test svg generated rack widgets all bench compare clean
+.PHONY: test svg generated rack widgets screenshots all bench compare clean
 
 test: svg generated $(TARGET)
 	$(abspath $(TARGET))
@@ -154,6 +158,12 @@ rack: $(RACK_TARGET)
 
 widgets: $(WIDGETS_TARGET)
 	DYLD_LIBRARY_PATH="$(RACK_DIR)" LD_LIBRARY_PATH="$(RACK_DIR)" $(abspath $(WIDGETS_TARGET))
+
+SCREENSHOT_DIR ?= $(BUILD_DIR)/screenshots
+screenshots: $(WIDGETS_TARGET)
+	mkdir -p "$(SCREENSHOT_DIR)"
+	ORBITS_SCREENSHOT_DIR="$(abspath $(SCREENSHOT_DIR))" DYLD_LIBRARY_PATH="$(RACK_DIR)" LD_LIBRARY_PATH="$(RACK_DIR)" \
+		$(abspath $(WIDGETS_TARGET)) --no-skip --test-case=Screenshots --success=false
 
 # One after another, so a failure stops the rest and their output doesn't interleave.
 all:

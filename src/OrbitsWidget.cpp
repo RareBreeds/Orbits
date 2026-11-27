@@ -161,6 +161,21 @@ struct OrbitsLightBoostSlider : ui::Slider
 };
 #endif
 
+float orbitsBypassAlpha(Widget *widget)
+{
+#if ORBITS_BYPASS_FADE_ENABLED
+        ModuleWidget *module_widget = widget->getAncestorOfType<ModuleWidget>();
+        if(module_widget && module_widget->module && module_widget->module->isBypassed())
+        {
+                // ModuleWidget::draw()'s alpha for a bypassed module
+                return 0.33f;
+        }
+#else
+        UNUSED(widget);
+#endif
+        return 1.f;
+}
+
 NVGcolor orbitsLightTint()
 {
 #if ORBITS_ROOM_LIGHTING_ENABLED
@@ -413,7 +428,9 @@ void OrbitsDisplay::drawLayer(const DrawArgs &args, int layer)
 {
         if(layer == 1 && m_content)
         {
-                nvgGlobalTint(args.vg, orbitsLightTint());
+                NVGcolor tint = orbitsLightTint();
+                tint.a *= orbitsBypassAlpha(this);
+                nvgGlobalTint(args.vg, tint);
 #if ORBITS_FRAMEBUFFER_CACHING_ENABLED
                 drawChild(m_fb, args);
 #else

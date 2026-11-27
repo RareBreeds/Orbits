@@ -166,7 +166,7 @@ void OrbitsLitOverlay::drawLayer(const DrawArgs &args, int layer)
         const float brightness = orbitsLightBrightness();
         if(layer == 1 && brightness > 0.f)
         {
-                nvgGlobalTint(args.vg, nvgRGBAf(1.f, 1.f, 1.f, brightness));
+                nvgGlobalTint(args.vg, nvgRGBAf(1.f, 1.f, 1.f, brightness * orbitsBypassAlpha(this)));
                 drawChild(m_fb, args);
         }
 }

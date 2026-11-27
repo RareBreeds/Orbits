@@ -26,3 +26,12 @@
 #else
 #define ORBITS_ROOM_LIGHTING_ENABLED 1
 #endif
+
+// Rack fades a bypassed module in ModuleWidget::draw(), which doesn't cover what's drawn in layer 1,
+// so Orbits' lit buttons and displays fade themselves. MetaModule fades everything on a bypassed
+// module itself.
+#ifdef METAMODULE
+#define ORBITS_BYPASS_FADE_ENABLED 0
+#else
+#define ORBITS_BYPASS_FADE_ENABLED 1
+#endif

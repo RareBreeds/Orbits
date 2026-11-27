@@ -62,12 +62,12 @@ static bool hasDirtyFramebuffer(rack::widget::Widget *widget)
         return false;
 }
 
-TestImage renderTestWidget(rack::app::ModuleWidget *widget, int margin)
+TestImage renderTestWidget(rack::app::ModuleWidget *widget, int margin, float scale)
 {
         NVGcontext *vg = APP->window->vg;
         TestImage image;
-        image.width = static_cast<int>(widget->box.size.x) + 2 * margin;
-        image.height = static_cast<int>(widget->box.size.y) + 2 * margin;
+        image.width = static_cast<int>(widget->box.size.x * scale) + 2 * margin;
+        image.height = static_cast<int>(widget->box.size.y * scale) + 2 * margin;
         image.rgba.resize(static_cast<size_t>(image.width * image.height * 4));
         NVGLUframebuffer *fb = nvgluCreateFramebuffer(vg, image.width, image.height, 0);
         REQUIRE(fb);
@@ -79,13 +79,14 @@ TestImage renderTestWidget(rack::app::ModuleWidget *widget, int margin)
         {
                 nvgBeginFrame(vg, static_cast<float>(image.width), static_cast<float>(image.height), 1.f);
                 nvgTranslate(vg, static_cast<float>(margin), static_cast<float>(margin));
+                nvgScale(vg, scale, scale);
                 widget->step();
                 APP->window->fbCount() = 0;
                 rack::widget::Widget::DrawArgs args;
                 args.vg = vg;
-                args.clipBox = rack::math::Rect(
-                        rack::math::Vec(static_cast<float>(-margin)),
-                        rack::math::Vec(static_cast<float>(image.width), static_cast<float>(image.height)));
+                args.clipBox = rack::math::Rect(rack::math::Vec(static_cast<float>(-margin) / scale),
+                                                rack::math::Vec(static_cast<float>(image.width) / scale,
+                                                                static_cast<float>(image.height) / scale));
                 widget->draw(args);
                 widget->drawLayer(args, 1);
 

@@ -30,6 +30,7 @@ builds and runs the unit tests that don't need VCV Rack, after checking the pane
 
 - `make -C tests rack RACK_DIR=...`: tests that use Rack, such as patch loading and the modules' outputs.
 - `make -C tests widgets RACK_DIR=...`: opens a Rack window and checks both modules' widgets in each theme: every param, input and output has a widget, everything is drawn inside the panel, and each widget draws something. Needs a display.
+- `make -C tests screenshots RACK_DIR=...`: saves PNG screenshots of both modules in each theme, bypassed or not and with every button off or on, to `tests/build/screenshots/` (or `SCREENSHOT_DIR=...`). Needs a display.
 - `make -C tests compare RACK_DIR=...`: runs scenarios in Rack's engine and compares every output change, sample by sample, with the last release, and loads patches saved by that release. Expected differences are marked in the scenarios. It then runs everything again with sanitizers, along with randomly generated invalid patch data. Logs are in `tests/build/compare/`.
 - `make -C tests all RACK_DIR=...`: runs the unit tests, `rack`, `widgets` and `compare` in turn, stopping at the first failure.
 - `make -C tests bench RACK_DIR=...`: engine and drawing benchmarks.

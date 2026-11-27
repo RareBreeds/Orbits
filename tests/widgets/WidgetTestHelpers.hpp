@@ -33,8 +33,9 @@ struct TestImage
 
 // Defined in WidgetTestMain.cpp.
 std::vector<rack::plugin::Model *> testModels();
-// Draws `widget` both layers, as Rack does, onto a transparent image with `margin` pixels around it.
-TestImage renderTestWidget(rack::app::ModuleWidget *widget, int margin);
+// Draws `widget` both layers, as Rack does, onto a transparent image with `margin` pixels around it,
+// at `scale` pixels per Rack pixel. The image's colours are premultiplied by its alpha.
+TestImage renderTestWidget(rack::app::ModuleWidget *widget, int margin, float scale = 1.f);
 
 // Checks the widget of the model with `slug`, with and without a module and in each theme: every
 // param except `params_without_widgets`, input and output has one widget; every widget, and
